@@ -1,0 +1,18 @@
+/snap/clion/152/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/ggarrett/Repositories/tudat-learn/cpp
+CMake Error at CMakeLists.txt:19:
+  Parse error.  Function missing ending ")".  Instead found unterminated
+  string with text "${CMAKE_CURRENT_SOURCE_DIR}/src/benchmark
+
+  
+
+          )
+
+  
+
+  add_library(tudat_learn SHARED )
+
+  add_subdirectory(app)".
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/ggarrett/Repositories/tudat-learn/cpp/cmake-build-debug/CMakeFiles/CMakeOutput.log".
