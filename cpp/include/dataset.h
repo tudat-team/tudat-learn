@@ -11,6 +11,12 @@
 #ifndef TUDAT_LEARN_DATASET_H
 #define TUDAT_LEARN_DATASET_H
 
-class dataset {};
+namespace tudat_learn
+{
+  
+class Dataset {};
+  
+} // namespace tudat_learn
+
 
 #endif // TUDAT_LEARN_DATASET_H

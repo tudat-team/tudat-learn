@@ -12,8 +12,12 @@
 #define TUDAT_LEARN_LEARN_H
 
 #include <vector>
-using namespace std;
 
-typdef vector<double> vector_double;
+namespace tudat_learn
+{
+  
+typedef std::vector<double> vector_double;
+  
+} // namespace tudat_learn
 
 #endif // TUDAT_LEARN_LEARN_H

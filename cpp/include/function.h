@@ -11,6 +11,12 @@
 #ifndef TUDAT_LEARN_FUNCTION_H
 #define TUDAT_LEARN_FUNCTION_H
 
+namespace tudat_learn
+{
+  
 class Function {};
+  
+} // namespace tudat_learn
+
 
 #endif // TUDAT_LEARN_FUNCTION_H

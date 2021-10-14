@@ -9,3 +9,8 @@
  */
 
 #include "dataset.h"
+
+namespace tudat_learn
+{
+  
+} // namespace tudat_learn

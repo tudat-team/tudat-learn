@@ -11,6 +11,12 @@
 #ifndef TUDAT_LEARN_PROCESSING_H
 #define TUDAT_LEARN_PROCESSING_H
 
-class processing {};
+namespace tudat_learn
+{
+  
+class Processor {};
+  
+} // namespace tudat_learn
+
 
 #endif // TUDAT_LEARN_PROCESSING_H

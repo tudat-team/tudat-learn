@@ -11,6 +11,12 @@
 #ifndef TUDAT_LEARN_ESTIMATOR_H
 #define TUDAT_LEARN_ESTIMATOR_H
 
-class estimator {};
+namespace tudat_learn
+{
+  
+class Estimator {};
+  
+} // namespace tudat_learn
+
 
 #endif // TUDAT_LEARN_ESTIMATOR_H

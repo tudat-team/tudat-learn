@@ -10,7 +10,11 @@
 
 #ifndef TUDAT_LEARN_SAMPLING_H
 #define TUDAT_LEARN_SAMPLING_H
-
-class sampling {};
+namespace tudat_learn
+{
+  
+class Sampler {};
+  
+} // namespace tudat_learn
 
 #endif // TUDAT_LEARN_SAMPLING_H
