@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(tudat_learn VERSION 0.1.0 LANGUAGES CXX)
 
+enable_testing()
+
 include(CTest)
 include(GNUInstallDirs)
 
@@ -27,3 +29,4 @@ target_include_directories(tudat_learn PUBLIC
 
 
 add_subdirectory(app)
+add_subdirectory(tests)

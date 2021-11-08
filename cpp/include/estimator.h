@@ -15,7 +15,7 @@ namespace tudat_learn
 {
   
 class Estimator {};
-  
+
 } // namespace tudat_learn
 
 
