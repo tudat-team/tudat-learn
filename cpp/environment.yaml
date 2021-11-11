@@ -1,0 +1,6 @@
+name: tudat-learn
+channels:
+  - conda-forge
+dependencies:
+  - eigen
+  

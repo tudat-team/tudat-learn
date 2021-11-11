@@ -11,10 +11,15 @@
 #ifndef TUDAT_LEARN_ESTIMATOR_H
 #define TUDAT_LEARN_ESTIMATOR_H
 
+#include "dataset.h"
+
 namespace tudat_learn
 {
   
-class Estimator {};
+class Estimator {
+  public:
+    virtual void fit(const Dataset &dataset) = 0;
+};
 
 } // namespace tudat_learn
 

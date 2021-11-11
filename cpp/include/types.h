@@ -8,21 +8,20 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_REGRESSOR_H
-#define TUDAT_LEARN_REGRESSOR_H
+#ifndef TUDAT_LEARN_TYPES_H
+#define TUDAT_LEARN_TYPES_H
 
-#include "estimator.h"
-#include "dataset.h"
+#include <vector>
+
 
 namespace tudat_learn
 {
-  
-class Regressor : public Estimator {
-  public:
-    void fit(const Dataset &dataset) = 0;
-};
-  
-} // namespace tudat_learn
+  /// Alias for an std::vector of type double
+  using vector_double = std::vector<double>;
 
+  /// Alias for an std::vector of vector_double, vector_double std::pairs
+  using data_t = std::vector< std::pair< std::vector< double >, std::vector< double > > >;
 
-#endif // TUDAT_LEARN_REGRESSOR_H
+} // TUDAT_LEARN_TYPES_H
+
+#endif // TUDAT_LEARN_TYPES_H

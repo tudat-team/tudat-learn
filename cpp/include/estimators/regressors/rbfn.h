@@ -8,17 +8,27 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_CLASSIFIER_H
-#define TUDAT_LEARN_CLASSIFIER_H
+#ifndef TUDAT_LEARN_RBFN_H
+#define TUDAT_LEARN_RBFN_H
 
+#include "dataset.h"
 #include "estimators/regressor.h"
 
 namespace tudat_learn
 {
   
-class RBFN : public Regressor {};
+class RBFN : public Regressor {
+  public:
+    RBFN();
+
+    // RBFN(rbf, dimension of input/output, const RBF &rbf)
+
+    void fit(const Dataset &dataset) override final{
+        
+    }
+};
   
 } // namespace tudat_learn
 
 
-#endif // TUDAT_LEARN_CLASSIFIER_H
+#endif // TUDAT_LEARN_RBFN_H

@@ -7,6 +7,14 @@ enable_testing()
 include(CTest)
 include(GNUInstallDirs)
 
+# TUDAT_LEARN_EXTERNAL_LIBS contains the external libraries
+set(TUDAT_EXTERNAL_LIBS "")
+
+# Eigen
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+# set(TUDAT_EXTERNAL_LIBS "${TUDAT_EXTERNAL_LIBS}" Eigen3::Eigen) doesn't work
+
+
 set(TUDAT_LEARN_SRC_FILES
         ### Core Classes ###
         ${CMAKE_CURRENT_SOURCE_DIR}/src/dataset.cpp
@@ -21,6 +29,7 @@ set(TUDAT_LEARN_SRC_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/estimators/regressor.cpp
 
         # Regressors #
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/estimators/regressors/rbf.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/estimators/regressors/rbfn.cpp
 
 )
@@ -33,7 +42,6 @@ add_library(tudat_learn SHARED
 
 target_include_directories(tudat_learn PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        # ${CMAKE_CURRENT_SOURCE_DIR}/include/benchmark might not be needed
 )
 
 

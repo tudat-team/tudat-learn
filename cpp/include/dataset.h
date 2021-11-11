@@ -11,10 +11,23 @@
 #ifndef TUDAT_LEARN_DATASET_H
 #define TUDAT_LEARN_DATASET_H
 
+#include <map>
+#include <vector>
+
+#include "types.h"
+
 namespace tudat_learn
 {
   
-class Dataset {};
+class Dataset {
+  
+  data_t data;
+
+  public:
+    Dataset();
+
+    Dataset(const data_t &dataset);
+};
   
 } // namespace tudat_learn
 
