@@ -34,15 +34,15 @@ struct RBF {
   virtual double eval(const vector_double &x, const vector_double &c) = 0;
 
   /**
-   * @brief Evaluating the derivative using two vectors.
+   * @brief Evaluating the jacobian using two vectors.
    * 
    * @param x input vector
    * @param c center point
    * @return std::shared_ptr<vector_double> jacobian at point x
    */
-  virtual std::shared_ptr<vector_double> eval_derivative(const vector_double &x, const vector_double &c) = 0;
+  virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) = 0;
 
-  virtual double eval_second_derivative(const double radius) = 0;
+  virtual std::shared_ptr< std::vector<vector_double> > eval_hessian(const vector_double &x, const vector_double &c) = 0;
 };
 
 
@@ -75,12 +75,18 @@ struct CubicRBF : public RBF {
    */
   double eval(const vector_double &x, const vector_double &c) override final;
 
+  
+  /**
+   * @brief Evaluating the jacobian using two vectors.
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return std::shared_ptr<vector_double> jacobian at point x
+   */
+  virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) override final;
 
 
-  std::shared_ptr<vector_double> eval_derivative(const vector_double &x, const vector_double &c) override final;
-
-
-  virtual double eval_second_derivative(const double radius);
+  virtual std::shared_ptr< std::vector<vector_double> > eval_hessian(const vector_double &x, const vector_double &c) = 0;
 };
 
 /**
@@ -114,7 +120,17 @@ struct GaussianRBF : public RBF {
    */
   double eval(const vector_double &x, const vector_double &c) override final;
 
-  std::shared_ptr<vector_double> eval_derivative(const vector_double &x, const vector_double &c) override final;
+  /**
+   * @brief Evaluating the jacobian using two vectors.
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return std::shared_ptr<vector_double> jacobian at point x
+   */
+  virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) override final;
+
+  virtual std::shared_ptr< std::vector<vector_double> > eval_hessian(const vector_double &x, const vector_double &c) = 0;
+
 
   private:
     const double sigma_sqrd;
