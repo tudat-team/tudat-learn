@@ -133,5 +133,24 @@ int main()
   t.stop();
   std::cout << "Default initialisation + reserve with size takes " << t.seconds() << " seconds." << std::endl;
 
+  t.start();
+  for(int i = 0; i < 10000; ++i) {
+    double a(rand()/ RAND_MAX);
+    double c(0);
+    c = std::pow(a, 3/2);
+  }
+  t.stop();
+  std::cout << "Pow takes " << t.seconds() << " seconds." << std::endl;
+
+  t.start();
+  for(int i = 0; i < 10000; ++i) {
+    double a(rand()/ RAND_MAX);
+    double c(0);
+    c = std::sqrt(a);
+    c = c * c * c;
+  }
+  t.stop();
+  std::cout << "sqrt *** takes " << t.seconds() << " seconds." << std::endl;
+
   return 0;
 }

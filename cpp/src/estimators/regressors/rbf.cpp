@@ -32,7 +32,7 @@ double CubicRBF::eval(const vector_double &x, const vector_double &c) {
     result += (x[j] - c[j]) * (x[j] - c[j]);
 
   result = std::sqrt(result);
-  result = result * result * result;
+  result = result * result * result; // faster than pow(result, 3/2)
 
   return result;
 }
@@ -59,7 +59,7 @@ std::shared_ptr<vector_double> CubicRBF::eval_derivative(const vector_double &x,
 }
 
 double GaussianRBF::eval(const double radius) {
-  return std::exp(- (radius * radius) / (2 * sigma));
+  return std::exp(- (radius * radius) / (sigma_sqrd));
 }
 
 double GaussianRBF::eval(const vector_double &x, const vector_double &c) {
@@ -71,7 +71,7 @@ double GaussianRBF::eval(const vector_double &x, const vector_double &c) {
   for(auto j = 0u; j < x.size(); ++j)
     result += (x[j] - c[j]) * (x[j] - c[j]);
 
-  result = std::exp( - result / (2 * sigma * sigma));
+  result = std::exp( - result / (sigma_sqrd));
 
   return result;
 }
@@ -84,19 +84,10 @@ std::shared_ptr<vector_double> GaussianRBF::eval_derivative(const vector_double 
 
   jacobian_at_x->reserve(x.size());
   
-  double radius = 0;
-  double eval_at_x = 0;
+  double gaussian_at_x = eval(x, c);
 
   for(auto j = 0u; j < x.size(); ++j)
-    radius += (x[j] - c[j]) * (x[j] - c[j]);
-
-  // use squared radius for evaluation before the sqrt
-  eval_at_x = std::exp( - radius / (2 * sigma));
-
-  radius = std::sqrt(radius);
-
-  for(auto j = 0u; j < x.size(); ++j)
-    jacobian_at_x.get()->at(j) = eval_at_x * (- (x[j] - c[j]) / (radius * sigma * sigma));
+    jacobian_at_x.get()->at(j) = gaussian_at_x * (-2 * (x[j] - c[j]) / (sigma_sqrd));
 
   return jacobian_at_x;
 }

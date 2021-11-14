@@ -95,7 +95,7 @@ struct GaussianRBF : public RBF {
    * @param sigma eval(x) = e(-x^2 / 2 * sigma^2)
    */
   GaussianRBF(const double sigma)
-  : sigma(sigma) {}
+  : sigma_sqrd(sigma * sigma) {}
 
   /**
    * @brief Evaluation using the radius.
@@ -117,7 +117,7 @@ struct GaussianRBF : public RBF {
   std::shared_ptr<vector_double> eval_derivative(const vector_double &x, const vector_double &c) override final;
 
   private:
-    const double sigma;
+    const double sigma_sqrd;
 };
   
 
