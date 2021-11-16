@@ -21,7 +21,7 @@ namespace tudat_learn
 {
 
 struct RBF {
-  virtual double eval(const double radius);
+  virtual double eval(const double radius) = 0;
   // virtual double eval(const vector_double input_vector);
 
   /**
@@ -42,7 +42,9 @@ struct RBF {
    */
   virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) = 0;
 
-  virtual std::shared_ptr< std::vector<vector_double> > eval_hessian(const vector_double &x, const vector_double &c) = 0;
+  // vector using pagmo's indexing fopr the hessian
+  virtual std::shared_ptr< vector_double > eval_hessian(const vector_double &x, const vector_double &c) = 0;
+  
 };
 
 
@@ -56,7 +58,7 @@ struct CubicRBF : public RBF {
    * @brief Construct a new CubicRBF object.
    * 
    */
-  CubicRBF() {}
+  CubicRBF() : RBF() {}
 
   /**
    * @brief Evaluation using the radius.
@@ -86,7 +88,7 @@ struct CubicRBF : public RBF {
   virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) override final;
 
 
-  virtual std::shared_ptr< std::vector<vector_double> > eval_hessian(const vector_double &x, const vector_double &c) = 0;
+  virtual std::shared_ptr< vector_double > eval_hessian(const vector_double &x, const vector_double &c) override final;
 };
 
 /**
@@ -129,7 +131,7 @@ struct GaussianRBF : public RBF {
    */
   virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) override final;
 
-  virtual std::shared_ptr< std::vector<vector_double> > eval_hessian(const vector_double &x, const vector_double &c) = 0;
+  virtual std::shared_ptr< vector_double > eval_hessian(const vector_double &x, const vector_double &c) override final;
 
 
   private:
