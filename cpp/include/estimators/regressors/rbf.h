@@ -42,8 +42,14 @@ struct RBF {
    */
   virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) = 0;
 
-  // vector using pagmo's indexing fopr the hessian
-  virtual std::shared_ptr< vector_double > eval_hessian(const vector_double &x, const vector_double &c) = 0;
+  /**
+   * @brief Evaluating the hessian using two vectors
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return std::shared_ptr<vector_double> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   */
+  virtual std::shared_ptr<vector_double> eval_hessian(const vector_double &x, const vector_double &c) = 0;
   
 };
 
@@ -87,8 +93,14 @@ struct CubicRBF : public RBF {
    */
   virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) override final;
 
-
-  virtual std::shared_ptr< vector_double > eval_hessian(const vector_double &x, const vector_double &c) override final;
+  /**
+   * @brief Evaluating the hessian using two vectors
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return std::shared_ptr<vector_double> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   */
+  virtual std::shared_ptr<vector_double> eval_hessian(const vector_double &x, const vector_double &c) override final;
 };
 
 /**
@@ -131,7 +143,14 @@ struct GaussianRBF : public RBF {
    */
   virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) override final;
 
-  virtual std::shared_ptr< vector_double > eval_hessian(const vector_double &x, const vector_double &c) override final;
+  /**
+   * @brief Evaluating the hessian using two vectors
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return std::shared_ptr<vector_double> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   */
+  virtual std::shared_ptr<vector_double> eval_hessian(const vector_double &x, const vector_double &c) override final;
 
 
   private:
