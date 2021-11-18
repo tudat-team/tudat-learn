@@ -21,15 +21,17 @@ namespace tudat_learn
 
 // CubicRBF //
 
-double CubicRBF::eval(const double radius) {
+template <typename T>
+T CubicRBF<T>::eval(const T radius) {
   return radius * radius * radius;
 }
 
-double CubicRBF::eval(const vector_double &x, const vector_double &c) {
+template <typename T>
+T CubicRBF<T>::eval(const vector_t &x, const vector_t &c) {
   if( x.size() != c.size())
     throw std::runtime_error("Vector dimensions are not the same in  CubicRBF::eval(const vector_double x, const vector_double c)");
 
-  double result = 0;
+  T result = 0;
 
   for(auto j = 0; j < x.size(); ++j)
     result += (x[j] - c[j]) * (x[j] - c[j]);
@@ -40,15 +42,16 @@ double CubicRBF::eval(const vector_double &x, const vector_double &c) {
   return result;
 }
 
-std::shared_ptr<vector_double> CubicRBF::eval_jacobian(const vector_double &x, const vector_double &c) {
+template <typename T>
+std::shared_ptr< typename RBF<T>::vector_t > CubicRBF<T>::eval_jacobian(const vector_t &x, const vector_t &c) {
   if( x.size() != c.size())
     throw std::runtime_error("Vector dimensions are not the same in  CubicRBF::eval_derivative(const vector_double x, const vector_double c)");
   
-  auto jacobian_at_x = std::make_shared<vector_double>();
+  auto jacobian_at_x = std::make_shared<vector_t>();
 
   jacobian_at_x->reserve(x.size());
   
-  double radius = 0;
+  T radius = 0;
 
   for(auto j = 0; j < x.size(); ++j)
     radius += (x[j] - c[j]) * (x[j] - c[j]);
@@ -61,13 +64,14 @@ std::shared_ptr<vector_double> CubicRBF::eval_jacobian(const vector_double &x, c
   return jacobian_at_x;
 }
 
-std::shared_ptr< vector_double > CubicRBF::eval_hessian(const vector_double &x, const vector_double &c) {
+template <typename T>
+std::shared_ptr< typename RBF<T>::vector_t > CubicRBF<T>::eval_hessian(const vector_t &x, const vector_t &c) {
   if( x.size() != c.size())
     throw std::runtime_error("Vector dimensions are not the same in  CubicRBF::eval_second_derivative(const vector_double x, const vector_double c)");
   
-  auto hessian_at_x = std::make_shared< vector_double>(x.size() * x.size());
+  auto hessian_at_x = std::make_shared<vector_t>(x.size() * x.size());
 
-  double radius = 0;
+  T radius = 0;
 
   for(auto j = 0; j < x.size(); ++j)
     radius += (x[j] - c[j]) * (x[j] - c[j]);
@@ -92,15 +96,17 @@ std::shared_ptr< vector_double > CubicRBF::eval_hessian(const vector_double &x, 
 
 // GaussianRBF //
 
-double GaussianRBF::eval(const double radius) {
+template <typename T>
+T GaussianRBF<T>::eval(const T radius) {
   return std::exp(- (radius * radius) / (sigma_sqrd));
 }
 
-double GaussianRBF::eval(const vector_double &x, const vector_double &c) {
+template <typename T>
+T GaussianRBF<T>::eval(const vector_t &x, const vector_t &c) {
   if( x.size() != c.size())
     throw std::runtime_error("Vector dimensions are not the same in  GaussianRBF::eval(const vector_double x, const vector_double c)");
 
-  double result = 0;
+  T result = 0;
 
   for(auto j = 0; j < x.size(); ++j)
     result += (x[j] - c[j]) * (x[j] - c[j]);
@@ -110,15 +116,16 @@ double GaussianRBF::eval(const vector_double &x, const vector_double &c) {
   return result;
 }
 
-std::shared_ptr<vector_double> GaussianRBF::eval_jacobian(const vector_double &x, const vector_double &c) {
+template <typename T>
+std::shared_ptr< typename RBF<T>::vector_t > GaussianRBF<T>::eval_jacobian(const vector_t &x, const vector_t &c) {
   if( x.size() != c.size())
     throw std::runtime_error("Vector dimensions are not the same in  GaussianRBF::eval_derivative(const vector_double x, const vector_double c)");
   
-  auto jacobian_at_x = std::make_shared<vector_double>();
+  auto jacobian_at_x = std::make_shared<vector_t>();
 
   jacobian_at_x->reserve(x.size());
   
-  double gaussian_at_x = eval(x, c);
+  T gaussian_at_x = eval(x, c);
 
   for(auto j = 0; j < x.size(); ++j)
     jacobian_at_x.get()->push_back(gaussian_at_x * (-2 * (x[j] - c[j]) / (sigma_sqrd)));
@@ -126,13 +133,14 @@ std::shared_ptr<vector_double> GaussianRBF::eval_jacobian(const vector_double &x
   return jacobian_at_x;
 }
 
-std::shared_ptr< vector_double > GaussianRBF::eval_hessian(const vector_double &x, const vector_double &c) {
+template <typename T>
+std::shared_ptr< typename RBF<T>::vector_t > GaussianRBF<T>::eval_hessian(const vector_t &x, const vector_t &c) {
   if( x.size() != c.size())
     throw std::runtime_error("Vector dimensions are not the same in  GaussianRBF::eval_second_derivative(const vector_double x, const vector_double c)");
   
-  auto hessian_at_x = std::make_shared< vector_double>(x.size() * x.size());
+  auto hessian_at_x = std::make_shared< vector_t>(x.size() * x.size());
 
-  double gaussian_at_x = eval(x, c);
+  T gaussian_at_x = eval(x, c);
 
   // above the diagonal and diagonal
   for(auto j = 0; j < x.size(); ++j) {

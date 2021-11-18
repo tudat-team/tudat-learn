@@ -26,8 +26,11 @@ namespace tudat_learn
   // Alias for an std::vector of type int or double
   using vector_double_int = std::vector< std::variant< double, int > >;
 
-  /// Alias for an std::vector of (vector_double_int, vector_double_int) std::pairs
-  using dataset_t = std::vector< std::pair< vector_double_int, vector_double_int > >;
+  // Alias for an std::pair of types vector_double_int, vector_double_int
+  using datum_t = std::pair< vector_double_int, vector_double_int >;
+
+  /// Alias for an std::vector of type datum_t
+  using dataset_t = std::vector< datum_t >;
 
 
 

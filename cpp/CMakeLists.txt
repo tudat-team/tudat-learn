@@ -31,7 +31,7 @@ set(TUDAT_LEARN_SRC_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/estimators/regressor.cpp
 
         # Regressors #
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/estimators/regressors/rbf.cpp
+        # ${CMAKE_CURRENT_SOURCE_DIR}/src/estimators/regressors/rbf.cpp CHANGED TO .tpp FOR TEMPLATE DEFINITION
         ${CMAKE_CURRENT_SOURCE_DIR}/src/estimators/regressors/rbfn.cpp
 
 )
@@ -44,6 +44,7 @@ add_library(tudat_learn SHARED
 
 target_include_directories(tudat_learn PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${EIGEN3_INCLUDE_DIRS}
 )
 
 

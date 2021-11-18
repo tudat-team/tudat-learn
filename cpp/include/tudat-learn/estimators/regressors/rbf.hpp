@@ -13,6 +13,8 @@
 
 #include <memory>
 
+#include <Eigen/Core>
+
 #include "tudat-learn/dataset.hpp"
 #include "tudat-learn/types.hpp"
 #include "tudat-learn/estimators/regressor.hpp"
@@ -20,9 +22,14 @@
 namespace tudat_learn
 {
 
+template <typename T>
 struct RBF {
-  virtual double eval(const double radius) = 0;
-  // virtual double eval(const vector_double input_vector);
+  using vector_t = std::vector< T >;
+  using VectorXt = Eigen::Matrix< T, Eigen::Dynamic, 1 >;
+  using MatrixXt = Eigen::Matrix< T, Eigen::Dynamic, Eigen::Dynamic >;
+
+  virtual T eval(const T radius) = 0;
+  // virtual double eval(const vector_t input_vector);
 
   /**
    * @brief Evaluation using two vectors.
@@ -31,25 +38,28 @@ struct RBF {
    * @param c center point
    * @return double 
    */
-  virtual double eval(const vector_double &x, const vector_double &c) = 0;
+  virtual T eval(const vector_t &x, const vector_t &c) = 0;
+  virtual T eval(const VectorXt &x, const VectorXt &c) = 0;
 
   /**
    * @brief Evaluating the jacobian using two vectors.
    * 
    * @param x input vector
    * @param c center point
-   * @return std::shared_ptr<vector_double> jacobian at point x
+   * @return std::shared_ptr<vector_t> jacobian at point x
    */
-  virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) = 0;
+  virtual std::shared_ptr<vector_t> eval_jacobian(const vector_t &x, const vector_t &c) = 0;
+  virtual std::shared_ptr<VectorXt> eval_jacobian(const VectorXt &x, const VectorXt &c) = 0;
 
   /**
    * @brief Evaluating the hessian using two vectors
    * 
    * @param x input vector
    * @param c center point
-   * @return std::shared_ptr<vector_double> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   * @return std::shared_ptr<vector_t> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
    */
-  virtual std::shared_ptr<vector_double> eval_hessian(const vector_double &x, const vector_double &c) = 0;
+  virtual std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) = 0;
+  virtual std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) = 0;
   
 };
 
@@ -58,13 +68,17 @@ struct RBF {
  * @brief CubicRBF implements a simple Cubic Radial Basis Function.
  * 
  */
-struct CubicRBF : public RBF {
+template <typename T>
+struct CubicRBF : public RBF<T> {
+  using typename RBF<T>::vector_t;
+  using typename RBF<T>::VectorXt;
+  using typename RBF<T>::MatrixXt;
 
   /**
    * @brief Construct a new CubicRBF object.
    * 
    */
-  CubicRBF() : RBF() {}
+  CubicRBF() : RBF< T >() {}
 
   /**
    * @brief Evaluation using the radius.
@@ -72,8 +86,8 @@ struct CubicRBF : public RBF {
    * @param radius: Euclidean norm of the radius vector.
    * @return double 
    */
-  double eval(const double radius) override final;
-
+  T eval(const T radius) override final;
+  
   /**
    * @brief Evaluation using two vectors.
    * 
@@ -81,33 +95,39 @@ struct CubicRBF : public RBF {
    * @param c center point
    * @return double 
    */
-  double eval(const vector_double &x, const vector_double &c) override final;
-
+  T eval(const vector_t &x, const vector_t &c) override final;
+  T eval(const VectorXt &x, const VectorXt &c) override final;
   
   /**
    * @brief Evaluating the jacobian using two vectors.
    * 
    * @param x input vector
    * @param c center point
-   * @return std::shared_ptr<vector_double> jacobian at point x
+   * @return std::shared_ptr<vector_t> jacobian at point x
    */
-  virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) override final;
+  std::shared_ptr<vector_t> eval_jacobian(const vector_t &x, const vector_t &c) override final;
+  std::shared_ptr<VectorXt> eval_jacobian(const VectorXt &x, const VectorXt &c) override final;
 
   /**
    * @brief Evaluating the hessian using two vectors
    * 
    * @param x input vector
    * @param c center point
-   * @return std::shared_ptr<vector_double> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   * @return std::shared_ptr<vector_t> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
    */
-  virtual std::shared_ptr<vector_double> eval_hessian(const vector_double &x, const vector_double &c) override final;
+  std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) override final;
+  std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) override final;
 };
 
 /**
  * @brief CubicRBF implements a simple Gaussian Radial Basis Function.
  * 
  */
-struct GaussianRBF : public RBF {
+template <typename T>
+struct GaussianRBF : public RBF<T> {
+  using typename RBF<T>::vector_t;
+  using typename RBF<T>::VectorXt;
+  using typename RBF<T>::MatrixXt;
   
   /**
    * @brief Construct a new GaussianRBF object
@@ -115,7 +135,7 @@ struct GaussianRBF : public RBF {
    * @param sigma eval(x) = e(-x^2 / 2 * sigma^2)
    */
   GaussianRBF(const double sigma)
-  : sigma_sqrd(sigma * sigma) {}
+  : RBF< T >(), sigma_sqrd(sigma * sigma) {}
 
   /**
    * @brief Evaluation using the radius.
@@ -123,7 +143,7 @@ struct GaussianRBF : public RBF {
    * @param radius: Euclidean norm of the radius vector.
    * @return double 
    */
-  virtual double eval(const double radius) override final;
+  T eval(const T radius) override final;
 
   /**
    * @brief Evaluation using two vectors.
@@ -132,33 +152,37 @@ struct GaussianRBF : public RBF {
    * @param c center point
    * @return double 
    */
-  double eval(const vector_double &x, const vector_double &c) override final;
-
+  T eval(const vector_t &x, const vector_t &c) override final;
+  T eval(const VectorXt &x, const VectorXt &c) override final;
+  
   /**
    * @brief Evaluating the jacobian using two vectors.
    * 
    * @param x input vector
    * @param c center point
-   * @return std::shared_ptr<vector_double> jacobian at point x
+   * @return std::shared_ptr<vector_t> jacobian at point x
    */
-  virtual std::shared_ptr<vector_double> eval_jacobian(const vector_double &x, const vector_double &c) override final;
+  std::shared_ptr<vector_t> eval_jacobian(const vector_t &x, const vector_t &c) override final;
+  std::shared_ptr<VectorXt> eval_jacobian(const VectorXt &x, const VectorXt &c) override final;
 
   /**
    * @brief Evaluating the hessian using two vectors
    * 
    * @param x input vector
    * @param c center point
-   * @return std::shared_ptr<vector_double> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   * @return std::shared_ptr<vector_t> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
    */
-  virtual std::shared_ptr<vector_double> eval_hessian(const vector_double &x, const vector_double &c) override final;
+  std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) override final;
+  std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) override final;
 
 
   private:
-    const double sigma_sqrd;
+    const T sigma_sqrd;
 };
   
 
 } // namespace tudat_learn
 
+#include "tudat-learn/estimators/regressors/rbf.tpp"
 
 #endif // TUDAT_LEARN_RBF_HPP

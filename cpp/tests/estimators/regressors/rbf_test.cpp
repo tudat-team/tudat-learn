@@ -14,6 +14,8 @@
 
 #include <iostream>
 
+#include <Eigen/Core>
+
 #include "tudat-learn/estimators/regressors/rbf.hpp"
  
 int main() {
@@ -56,7 +58,7 @@ int main() {
   // Testing the CubicRBF
   std::cout << "\nTesting CubicRBF:" << std::endl;
   
-  tudat_learn::CubicRBF cubic_rbf;
+  tudat_learn::CubicRBF<double> cubic_rbf;
 
   std::cout << "CubicRBF evaluated at x, c:" << std::endl;
   std::cout << cubic_rbf.eval(x, c) << std::endl;
@@ -98,7 +100,7 @@ int main() {
 
   std::cout << "\nTesting GaussianRBF(sigma):" << std::endl;
 
-  tudat_learn::GaussianRBF gaussian_rbf(sigma);
+  tudat_learn::GaussianRBF<double> gaussian_rbf(sigma);
 
   std::cout << "GaussianRBF(sigma) evaluated at x, c:" << std::endl;
   std::cout << gaussian_rbf.eval(x, c) << std::endl;

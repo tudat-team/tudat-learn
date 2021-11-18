@@ -24,9 +24,27 @@ class Dataset {
   dataset_t data;
 
   public:
-    Dataset();
-
     Dataset(const dataset_t &dataset);
+
+    /**
+     * @brief Access datum_t at position n in the vector of dataset_t.
+     * 
+     * @param n 
+     * @return datum_t& reference to the datum_t element
+     */
+    datum_t &at(const size_t n) {
+      return data.at(n);
+    }
+
+    /**
+     * @brief Access datum_t at position n in the vector of dataset_t.
+     * 
+     * @param n 
+     * @return const datum_t& constant reference to the datum_t element
+     */
+    const datum_t &at(const size_t n) const {
+      return data.at(n);
+    }
 };
   
 } // namespace tudat_learn

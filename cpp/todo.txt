@@ -1,2 +1,4 @@
 To do:
 - Release vs Debug
+- Template RBFs. Make sure that they work only for float, double, long double, any other floating point type.
+- Eigen
