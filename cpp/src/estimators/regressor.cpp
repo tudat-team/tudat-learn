@@ -8,7 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "estimators/regressor.h"
+#include "tudat-learn/estimators/regressor.hpp"
 
 namespace tudat_learn
 {

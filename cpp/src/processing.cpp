@@ -8,7 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "processing.h"
+#include "tudat-learn/processing.hpp"
 
 namespace tudat_learn
 {

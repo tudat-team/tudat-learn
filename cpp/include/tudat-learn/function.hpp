@@ -8,16 +8,15 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_LEARN_H
-#define TUDAT_LEARN_LEARN_H
-
-#include <vector>
+#ifndef TUDAT_LEARN_FUNCTION_HPP
+#define TUDAT_LEARN_FUNCTION_HPP
 
 namespace tudat_learn
 {
   
-typedef std::vector<double> vector_double;
+class Function {};
   
 } // namespace tudat_learn
 
-#endif // TUDAT_LEARN_LEARN_H
+
+#endif // TUDAT_LEARN_FUNCTION_HPP

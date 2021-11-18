@@ -8,21 +8,14 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_REGRESSOR_H
-#define TUDAT_LEARN_REGRESSOR_H
-
-#include "estimator.h"
-#include "dataset.h"
+#ifndef TUDAT_LEARN_IO_HPP
+#define TUDAT_LEARN_IO_HPP
 
 namespace tudat_learn
 {
-  
-class Regressor : public Estimator {
-  public:
-    void fit(const Dataset &dataset) = 0;
-};
-  
+
+
 } // namespace tudat_learn
 
 
-#endif // TUDAT_LEARN_REGRESSOR_H
+#endif // TUDAT_LEARN_IO_HPP

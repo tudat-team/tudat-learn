@@ -8,7 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "estimators/regressors/rbfn.h"
+#include "tudat-learn/estimators/regressors/rbfn.hpp"
 
 namespace tudat_learn
 {

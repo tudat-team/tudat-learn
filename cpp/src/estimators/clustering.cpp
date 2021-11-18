@@ -8,7 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "estimators/clustering.h"
+#include "tudat-learn/estimators/clustering.hpp"
 
 namespace tudat_learn
 {

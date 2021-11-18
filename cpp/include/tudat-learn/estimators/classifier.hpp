@@ -8,13 +8,17 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_SAMPLING_H
-#define TUDAT_LEARN_SAMPLING_H
+#ifndef TUDAT_LEARN_CLASSIFIER_HPP
+#define TUDAT_LEARN_CLASSIFIER_HPP
+
+#include "tudat-learn/estimator.hpp"
+
 namespace tudat_learn
 {
   
-class Sampler {};
+class Classifier : public Estimator {};
   
 } // namespace tudat_learn
 
-#endif // TUDAT_LEARN_SAMPLING_H
+
+#endif // TUDAT_LEARN_CLASSIFIER_HPP

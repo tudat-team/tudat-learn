@@ -8,9 +8,17 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#ifndef TUDAT_LEARN_CLUSTERING_HPP
+#define TUDAT_LEARN_CLUSTERING_HPP
+
 #include "tudat-learn/estimator.hpp"
 
 namespace tudat_learn
 {
   
+class Clustering : public Estimator {};
+  
 } // namespace tudat_learn
+
+
+#endif // TUDAT_LEARN_CLUSTERING_HPP

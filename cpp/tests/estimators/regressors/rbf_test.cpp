@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-#include "estimators/regressors/rbf.h"
+#include "tudat-learn/estimators/regressors/rbf.hpp"
  
 int main() {
   std::cout.precision(9);

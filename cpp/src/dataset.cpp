@@ -8,7 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "dataset.h"
+#include "tudat-learn/dataset.hpp"
 
 namespace tudat_learn
 {

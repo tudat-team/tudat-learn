@@ -8,28 +8,15 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_DATASET_H
-#define TUDAT_LEARN_DATASET_H
-
-#include <map>
-#include <vector>
-
-#include "types.h"
+#ifndef TUDAT_LEARN_PROCESSING_HPP
+#define TUDAT_LEARN_PROCESSING_HPP
 
 namespace tudat_learn
 {
   
-class Dataset {
-  
-  data_t data;
-
-  public:
-    Dataset();
-
-    Dataset(const data_t &dataset);
-};
+class Processor {};
   
 } // namespace tudat_learn
 
 
-#endif // TUDAT_LEARN_DATASET_H
+#endif // TUDAT_LEARN_PROCESSING_HPP

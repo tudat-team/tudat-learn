@@ -3,8 +3,8 @@
 
 #include <Eigen/Core>
 
-#include "dataset.h"
-#include "estimators/regressors/rbfn.h"
+#include "tudat-learn/dataset.hpp"
+#include "tudat-learn/estimators/regressors/rbfn.hpp"
 
 
   

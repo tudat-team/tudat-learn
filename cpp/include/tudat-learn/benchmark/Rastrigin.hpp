@@ -8,14 +8,14 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_RASTRIGIN_H
-#define TUDAT_LEARN_RASTRIGIN_H
+#ifndef TUDAT_LEARN_RASTRIGIN_HPP
+#define TUDAT_LEARN_RASTRIGIN_HPP
 
 #include <utility>
 #include <vector>
 #include <cmath>
 
-#include "function.h"
+#include "tudat-learn/function.hpp"
 
 namespace tudat_learn
 {
@@ -72,4 +72,4 @@ namespace tudat_learn
 
 } // namespace tudat_learn
 
-#endif // TUDAT_LEARN_RASTRIGIN_H
+#endif // TUDAT_LEARN_RASTRIGIN_HPP

@@ -8,7 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "sampling.h"
+#include "tudat-learn/sampling.hpp"
 
 namespace tudat_learn
 {

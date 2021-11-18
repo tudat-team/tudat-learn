@@ -8,20 +8,16 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_ESTIMATOR_H
-#define TUDAT_LEARN_ESTIMATOR_H
+#ifndef TUDAT_LEARN_LEARN_HPP
+#define TUDAT_LEARN_LEARN_HPP
 
-#include "dataset.h"
+#include <vector>
 
 namespace tudat_learn
 {
   
-class Estimator {
-  public:
-    virtual void fit(const Dataset &dataset) = 0;
-};
 
+  
 } // namespace tudat_learn
 
-
-#endif // TUDAT_LEARN_ESTIMATOR_H
+#endif // TUDAT_LEARN_LEARN_HPP

@@ -8,10 +8,11 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_TYPES_H
-#define TUDAT_LEARN_TYPES_H
+#ifndef TUDAT_LEARN_TYPES_HPP
+#define TUDAT_LEARN_TYPES_HPP
 
 #include <vector>
+#include <variant>
 
 
 namespace tudat_learn
@@ -19,9 +20,17 @@ namespace tudat_learn
   /// Alias for an std::vector of type double
   using vector_double = std::vector<double>;
 
-  /// Alias for an std::vector of vector_double, vector_double std::pairs
-  using data_t = std::vector< std::pair< std::vector< double >, std::vector< double > > >;
+  // Alias for an std::vector of type int
+  using vector_int = std::vector<int>;
 
-} // TUDAT_LEARN_TYPES_H
+  // Alias for an std::vector of type int or double
+  using vector_double_int = std::vector< std::variant< double, int > >;
 
-#endif // TUDAT_LEARN_TYPES_H
+  /// Alias for an std::vector of (vector_double_int, vector_double_int) std::pairs
+  using dataset_t = std::vector< std::pair< vector_double_int, vector_double_int > >;
+
+
+
+} // namespace tudat_learn
+
+#endif // TUDAT_LEARN_TYPES_HPP

@@ -8,7 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "estimators/classifier.h"
+#include "tudat-learn/estimators/classifier.hpp"
 
 namespace tudat_learn
 {

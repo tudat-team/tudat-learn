@@ -13,8 +13,8 @@
 #include <vector>
 #include <stdexcept>
 
-#include "types.h"
-#include "estimators/regressors/rbf.h"
+#include "tudat-learn/types.hpp"
+#include "tudat-learn/estimators/regressors/rbf.hpp"
 
 namespace tudat_learn
 {

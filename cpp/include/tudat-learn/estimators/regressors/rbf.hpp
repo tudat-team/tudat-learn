@@ -8,14 +8,14 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_RBF_H
-#define TUDAT_LEARN_RBF_H
+#ifndef TUDAT_LEARN_RBF_HPP
+#define TUDAT_LEARN_RBF_HPP
 
 #include <memory>
 
-#include "dataset.h"
-#include "types.h"
-#include "estimators/regressor.h"
+#include "tudat-learn/dataset.hpp"
+#include "tudat-learn/types.hpp"
+#include "tudat-learn/estimators/regressor.hpp"
 
 namespace tudat_learn
 {
@@ -161,4 +161,4 @@ struct GaussianRBF : public RBF {
 } // namespace tudat_learn
 
 
-#endif // TUDAT_LEARN_RBF_H
+#endif // TUDAT_LEARN_RBF_HPP
