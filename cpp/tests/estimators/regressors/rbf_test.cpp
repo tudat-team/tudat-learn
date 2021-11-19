@@ -43,20 +43,37 @@ int main() {
     0.05028078,  0.02118384, -1.68553831
   });
 
+  Eigen::Vector3d x_e({0.84442185, 0.7579544,  0.42057158});
+  Eigen::Vector3d c_e({0.25891675, 0.51127472, 0.40493414});
+
+  Eigen::Vector3d cubic_jacobian_e({1.11633646, 0.47032472, 0.02981468});
+  Eigen::Matrix3d cubic_hessian_e({
+    {3.52484826, 0.68177668, 0.04321898},
+    {0.68177668, 2.19386119, 0.01820863},
+    {0.04321898, 0.01820863, 1.90777552}
+  });
+
+  Eigen::Vector3d gaussian_jacobian_e({-0.98767754, -0.41611931, -0.02637851});
+  Eigen::Matrix3d gaussian_hessian_e({
+    {0.19575717,  0.79317606,  0.05028078},
+    {0.79317606, -1.35270747,  0.02118384},
+    {0.05028078,  0.02118384, -1.68553831}
+  });
+
   // Printing variables
   std::cout << "Variables:" << std::endl;
-  std::cout << "x:" << std::endl;
+  std::cout << "x, x_e:" << std::endl;
   for(const auto &it : x)
     std::cout << it << ", ";
   std::cout << std::endl;
-  std::cout << "c:" << std::endl;
+  std::cout << "c, c_e:" << std::endl;
   for(const auto &it : c)
     std::cout << it << ", ";
   std::cout << std::endl;
   std::cout << "sigma:\n" << sigma << std::endl;
 
   // Testing the CubicRBF
-  std::cout << "\nTesting CubicRBF:" << std::endl;
+  std::cout << "\nTesting CubicRBF (std::vector):" << std::endl;
   
   tudat_learn::CubicRBF<double> cubic_rbf;
 
@@ -96,9 +113,33 @@ int main() {
     if(std::abs(cubic_hessian_ptr.get()->at(i) - cubic_hessian.at(i)) > 1e-7 )
       return 1;
 
-  
 
-  std::cout << "\nTesting GaussianRBF(sigma):" << std::endl;
+  std::cout << "\nTesting CubicRBF (Eigen):" << std::endl;
+
+  std::cout << "CubicRBF evaluated at x_e, c_e:" << std::endl;
+  std::cout << cubic_rbf.eval(x_e, c_e) << std::endl;
+
+  if(std::abs(cubic_rbf.eval(x_e, c_e) - cubic) > 1e-7 )
+    return 1;
+
+  auto cubic_jacobian_ptr_e = cubic_rbf.eval_jacobian(x_e, c_e);
+
+  std::cout << "CubicRBF Jacobian evaluated at x_e, c_e:" << std::endl;
+  std::cout << *cubic_jacobian_ptr_e << std::endl;
+
+  if(!cubic_jacobian_ptr_e->isApprox(cubic_jacobian_e, 1e-7))
+    return 1;
+
+  auto cubic_hessian_ptr_e = cubic_rbf.eval_hessian(x_e, c_e);
+
+  std::cout << "CubicRBF Hessian evaluated at x_e, c_e:" << std::endl;
+  std::cout << *cubic_hessian_ptr_e << std::endl;
+
+  if(!cubic_hessian_ptr_e->isApprox(cubic_hessian_e, 1e-7))
+    return 1;
+
+
+  std::cout << "\nTesting GaussianRBF(sigma) (std::vector):" << std::endl;
 
   tudat_learn::GaussianRBF<double> gaussian_rbf(sigma);
 
@@ -137,6 +178,29 @@ int main() {
     if(std::abs(gaussian_hessian_ptr.get()->at(i) - gaussian_hessian.at(i)) > 1e-7 )
       return 1;
 
+  std::cout << "\nTesting GaussianRBF(sigma) (std::vector):" << std::endl;
+
+  std::cout << "GaussianRBF(sigma) evaluated at x_e, c_e:" << std::endl;
+  std::cout << gaussian_rbf.eval(x_e, c_e) << std::endl;
+
+  if(std::abs(gaussian_rbf.eval(x_e, c_e) - gaussian) > 1e-7 )
+    return 1;
+
+  auto gaussian_jacobian_ptr_e = gaussian_rbf.eval_jacobian(x_e, c_e);
+
+  std::cout << "GaussianRBF(sigma) Jacobian evaluated at x_e, c_e:" << std::endl;
+  std::cout << *gaussian_jacobian_ptr_e << std::endl;
+
+  if(!gaussian_jacobian_ptr_e->isApprox(gaussian_jacobian_e, 1e-7))
+    return 1;
+
+  auto gaussian_hessian_ptr_e = gaussian_rbf.eval_hessian(x_e, c_e);
+
+  std::cout << "GaussianRBF(sigma) Hessian evaluated at x_e, c_e:" << std::endl;
+  std::cout << *gaussian_hessian_ptr_e << std::endl;
+
+  if(!gaussian_hessian_ptr_e->isApprox(gaussian_hessian_e, 1e-7))
+    return 1; 
 
   return 0;
 }
