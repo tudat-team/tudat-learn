@@ -1,4 +1,6 @@
 #include <iostream>
+#include <memory>
+#include <typeinfo>
 #include <vector>
 
 #include <Eigen/Core>
@@ -26,6 +28,7 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include <type_traits>
 
 /// @brief A timer using the C++11 high resolution monotonic clock.
 struct Timer {
@@ -66,11 +69,145 @@ struct Timer {
   }
 };
 
+// typedef class Null_t {
 
+// } null_t;
+
+
+// template< typename Datum_t, typename Target_t = null_t >
+// class Dataset {
+//   public:
+//     Dataset(const std::vector< Datum_t > &data) : data(data) {
+//       std::cout << "Only Data." << std::endl;
+//     }
+
+//     Dataset(const std::vector< Datum_t > &data, const std::vector< Target_t > &targets) 
+//     : data(data), targets(targets) { 
+//       std::cout << "Data and Targets." << std::endl;
+//     }
+
+//     std::vector< Datum_t > data;
+
+//     std::vector< Target_t > targets;
+
+// };
+
+
+
+// class BaseDataset{
+//   public:
+//     // virtual void print_type() const {
+//     //   std::cout << "Base Class" << std::endl;
+//     // }
+//     virtual void print_type() const = 0;
+
+// };
+
+// template <typename Datum_t>
+// class UnlabelledDataset : public BaseDataset {
+//   public:
+//     UnlabelledDataset(const std::vector< Datum_t > &data) : data(data) {
+//       std::cout << "Only Data." << std::endl;
+//     }
+
+//     void print_type() const {
+//       std::cout << "Data is the type." << std::endl;
+//     }
+
+//     std::vector< Datum_t > data;
+// };
+
+// template <typename Datum_t, typename Target_t>
+// class LabelledDataset : public BaseDataset {
+//   public:
+//     LabelledDataset(const std::vector< Datum_t > &data, const std::vector< Target_t > &targets) 
+//       : data(data), targets(targets) { 
+//         std::cout << "Data and Targets." << std::endl;
+//     }
+
+//     void print_type() const {
+//       std::cout << "Data and Targets is the type." << std::endl;
+//     }
+
+//     void print_data() const {
+//       for(const auto &it : data)
+//         std::cout << it << ", ";
+//       std::cout << std::endl;
+//     }
+
+//     std::vector< Datum_t > data;
+//     std::vector< Target_t > targets;
+// };
+
+// class BaseOther {
+//   public:
+//     virtual void print_type(const BaseDataset &dataset) = 0;
+
+//     // template< typename T, typename U >
+//     // virtual void print_temp(const LabelledDataset<T, U> &dataset) = 0;
+// };
+
+// class DerivedOther : public BaseOther {
+//   public:
+//     void print_type(const BaseDataset &base_dataset) override final {
+//       base_dataset.print_type();
+//     };
+// };
+
+// class DerivedAnother: public BaseOther {
+//   public:
+//     DerivedAnother(const std::shared_ptr<BaseDataset> &dataset) : dataset(dataset) {}
+
+//     std::shared_ptr<BaseDataset> dataset;
+
+//     virtual void print_type(const BaseDataset &dataset) override final {
+//       std::cout << "Typeid name of the input dataset: " << typeid(dataset).name() << std::endl;
+//       std::cout << "Typeid name of the desired dataset: " << typeid(LabelledDataset< int, char >).name() << std::endl;
+//       std::cout << "Checking if the Dataset type is LabelledDataset< double, char >: " << (typeid(dataset) == typeid(LabelledDataset< int, char >)) << std::endl;
+//     }
+
+
+// };
+
+template<typename T, typename U = int>
+struct Foo{
+  Foo() {
+    std::cout << "Helloooooo" << std::endl;
+  }
+};
+
+template<typename T>
+struct Foo<T, int> {
+  Foo(){
+    std::cout << "It is an int nowwwwww" << std::endl;
+  }
+};
 
 
 int main()
 {
+
+  Foo<double, double> f;
+  Foo<double, int> f1;
+
+  // UnlabelledDataset un_d(std::vector({1, 2, 3}));
+  // un_d.print_type();
+  // LabelledDataset<int, char> l_d(std::vector<int>({1, 2, 3}), std::vector<char>({'a', 'b', 'c'}));
+  // l_d.print_type();
+
+  // DerivedOther other;
+  // other.print_type(un_d);
+  // other.print_type(l_d);
+
+  // l_d.print_data();
+  // auto ptr_l_d = std::shared_ptr< LabelledDataset<int, char> >(&l_d);
+  // l_d.data[0] = 5;
+  // l_d.print_data();
+  // ptr_l_d->print_data();
+  // DerivedAnother another(ptr_l_d);
+  
+  // another.print_type(l_d);
+
   std::cout << "Hello World." << std::endl;
   Eigen::VectorXd      ev1(100), ev2(100), ev3(100);
   
@@ -90,67 +227,7 @@ int main()
   t.stop();
   std::cout << "Adding Eigen::Vectors takes " << t.seconds() << " seconds." << std::endl;
 
-  t.start();
-  std::vector<double>  sv1(100), sv2(100), sv3(100);
-   for(int i = 0; i < 100; ++i) {
-    sv1[i] = rand() / RAND_MAX;
-    sv2[i] = rand() / RAND_MAX;
-  }
-  for(int i = 0; i < 100000; ++i) {
-    for(int j = 0; j < 100; ++j)
-      sv3[j] = sv1[j] + sv2[j];
-  }
-  t.stop();
-  std::cout << "Adding std::vectors takes " << t.seconds() << " seconds." << std::endl;
-
-  // tudat_learn::Dataset d;
-  // tudat_learn::RBFN rbfn;
-
-  // rbfn.fit(d);
-
-  t.start();
-  for(int i = 0; i < 10000; ++i){
-    {
-      std::vector<double> vec1(10000);
-      for(int j = 0; j < 10000; ++j) {
-        vec1[j] = rand() / RAND_MAX;
-      }
-    }
-  }
-  t.stop();
-  std::cout << "Initialisation with size takes " << t.seconds() << " seconds." << std::endl;
-
-  t.start();
-  for(int i = 0; i < 10000; ++i){
-    {
-      std::vector<double> vec1;
-      vec1.reserve(10000);
-      for(int j = 0; j < 10000; ++j) {
-        vec1[j] = rand() / RAND_MAX;
-      }
-    }
-  }
-  t.stop();
-  std::cout << "Default initialisation + reserve with size takes " << t.seconds() << " seconds." << std::endl;
-
-  t.start();
-  for(int i = 0; i < 10000; ++i) {
-    double a(rand()/ RAND_MAX);
-    double c(0);
-    c = std::pow(a, 3/2);
-  }
-  t.stop();
-  std::cout << "Pow takes " << t.seconds() << " seconds." << std::endl;
-
-  t.start();
-  for(int i = 0; i < 10000; ++i) {
-    double a(rand()/ RAND_MAX);
-    double c(0);
-    c = std::sqrt(a);
-    c = c * c * c;
-  }
-  t.stop();
-  std::cout << "sqrt *** takes " << t.seconds() << " seconds." << std::endl;
+  
 
   return 0;
 }

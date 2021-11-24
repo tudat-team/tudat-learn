@@ -171,6 +171,7 @@ struct GaussianRBF : public RBF<T> {
    * @param x input vector
    * @param c center point
    * @return std::shared_ptr<vector_t> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   * @return std::shared_ptr<MatrixXt> hessian with indexing (i,j) yields (d^2 f) / (dxi dxj) derivative
    */
   std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const override final;
   std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const override final;

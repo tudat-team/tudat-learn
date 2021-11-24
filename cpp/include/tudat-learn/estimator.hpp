@@ -11,14 +11,24 @@
 #ifndef TUDAT_LEARN_ESTIMATOR_HPP
 #define TUDAT_LEARN_ESTIMATOR_HPP
 
+#include "memory"
+
 #include "tudat-learn/dataset.hpp"
 
 namespace tudat_learn
 {
   
+template <typename Datum_t, typename Label_t = none_t>
 class Estimator {
+  protected:
+    Estimator(const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr)
+    : dataset_ptr(dataset_ptr) { }
+
   public:
-    virtual void fit(const Dataset &dataset) = 0;
+    virtual void fit( ) = 0;
+
+  protected:
+    std::shared_ptr< Dataset<Datum_t, Label_t> > dataset_ptr;
 };
 
 } // namespace tudat_learn

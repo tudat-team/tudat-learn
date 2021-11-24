@@ -15,8 +15,16 @@
 
 namespace tudat_learn
 {
-  
-class Clustering : public Estimator {};
+
+template <typename Datum_t, typename Label_t = none_t>
+class Clustering : public Estimator<Datum_t, Label_t> {
+  public:
+    Clustering(const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr)
+    : Estimator<Datum_t, Label_t>(dataset_ptr) { }
+
+    virtual void fit( ) = 0;
+
+};
   
 } // namespace tudat_learn
 

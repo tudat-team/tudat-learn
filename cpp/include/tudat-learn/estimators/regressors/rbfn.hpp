@@ -11,21 +11,28 @@
 #ifndef TUDAT_LEARN_RBFN_HPP
 #define TUDAT_LEARN_RBFN_HPP
 
+#include <memory>
+
 #include "tudat-learn/dataset.hpp"
 #include "tudat-learn/estimators/regressor.hpp"
 
 namespace tudat_learn
 {
   
-class RBFN : public Regressor {
+template <typename Datum_t, typename Label_t>
+class RBFN : public Regressor<Datum_t, Label_t> {
   public:
-    RBFN();
 
-    // RBFN(rbf, dimension of input/output, const RBF &rbf)
+    /**
+     * @brief Deleting the default constructor to make sure the object is created with settings.
+     * 
+     */
+    RBFN() = delete;
 
-    void fit(const Dataset &dataset) override final{
-        
-    }
+    RBFN(const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr)
+    : Regressor<Datum_t, Label_t>(dataset_ptr) { }
+
+    void fit( ) override final;
 };
   
 } // namespace tudat_learn

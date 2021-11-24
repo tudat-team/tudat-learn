@@ -17,9 +17,15 @@
 namespace tudat_learn
 {
   
-class Regressor : public Estimator {
+template <typename Datum_t, typename Label_t = none_t>
+class Regressor : public Estimator<Datum_t, Label_t> {
+  protected:
+    Regressor(const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr)
+    : Estimator<Datum_t, Label_t>(dataset_ptr) { }
+
   public:
-    virtual void fit(const Dataset &dataset) = 0;
+    virtual void fit( ) = 0;
+
 };
   
 } // namespace tudat_learn
