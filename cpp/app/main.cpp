@@ -207,15 +207,25 @@ int main()
   // tudat_learn::RBFN<int, char> rbfn_instance(ldptr);
 
   // using type_test = Eigen::Matrix<float, 5, 1>;
+  // using type_test = Eigen::VectorXf;
+
+  // type_test vec1(5); vec1 << 1.0,2.0,3.0,2.0,1.0;
+  // type_test vec2(5); vec2 << 1.0,2.0,3.0,2.0,1.0;
+
+  // tudat_learn::Dataset new_dataset(std::vector<type_test>({vec1, vec2}), std::vector<char>({'a', 'b', 'c'}));
+  // auto new_ptr = std::make_shared< tudat_learn::Dataset<type_test, char> >(new_dataset);
+
+  // tudat_learn::RBFN<type_test, char> rbfn_instance(new_ptr);
+
   using type_test = Eigen::VectorXf;
 
   type_test vec1(5); vec1 << 1.0,2.0,3.0,2.0,1.0;
   type_test vec2(5); vec2 << 1.0,2.0,3.0,2.0,1.0;
 
-  tudat_learn::Dataset new_dataset(std::vector<type_test>({vec1, vec2}), std::vector<char>({'a', 'b', 'c'}));
-  auto new_ptr = std::make_shared< tudat_learn::Dataset<type_test, char> >(new_dataset);
+  tudat_learn::Dataset new_dataset(std::vector<type_test>({vec1, vec2}), std::vector<float>({1, 2, 3}));
+  auto new_ptr = std::make_shared< tudat_learn::Dataset<type_test, float> >(new_dataset);
 
-  tudat_learn::RBFN<type_test, char> rbfn_instance(new_ptr);
+  tudat_learn::RBFN<type_test, float> rbfn_instance(new_ptr);
 
   // std::vector<
 

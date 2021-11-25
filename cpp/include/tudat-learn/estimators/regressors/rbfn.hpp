@@ -34,7 +34,9 @@ class RBFN : public Regressor<Datum_t, Label_t> {
     // template< typename Datum_tt = Datum_t, typename Label_tt = Label_t,
     //           std::enable_if< 
     template < typename Datum_tt = Datum_t, typename Label_tt = Label_t, 
-              typename = std::enable_if_t< is_floating_point_eigen_matrix<Datum_tt>::value > 
+               typename = std::enable_if_t< is_floating_point_eigen_matrix<Datum_tt>::value &&
+                                            std::is_floating_point<Label_tt>::value 
+                                          > 
     >
     RBFN(const std::shared_ptr< Dataset<Datum_tt, Label_tt> > &dataset_ptr)
     : Regressor<Datum_tt, Label_tt>(dataset_ptr) { }
