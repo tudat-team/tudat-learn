@@ -189,10 +189,12 @@ int main()
 
   Foo<double, double> f;
   Foo<double, int> f1;
+  Foo<double> f3;
 
   // UnlabelledDataset un_d(std::vector({1, 2, 3}));
   // un_d.print_type();
-  // LabelledDataset<int, char> l_d(std::vector<int>({1, 2, 3}), std::vector<char>({'a', 'b', 'c'}));
+  tudat_learn::Dataset l_d(std::vector<int>({1, 2, 3}), std::vector<char>({'a', 'b', 'c'}));
+  tudat_learn::Dataset<int> l_d1(std::vector<int>({1, 2, 3}));
   // l_d.print_type();
 
   // DerivedOther other;
