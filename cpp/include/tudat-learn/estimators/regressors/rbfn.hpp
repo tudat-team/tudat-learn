@@ -12,8 +12,10 @@
 #define TUDAT_LEARN_RBFN_HPP
 
 #include <memory>
+#include <type_traits>
 
 #include "tudat-learn/dataset.hpp"
+#include "tudat-learn/types.hpp"
 #include "tudat-learn/estimators/regressor.hpp"
 
 namespace tudat_learn
@@ -29,10 +31,19 @@ class RBFN : public Regressor<Datum_t, Label_t> {
      */
     RBFN() = delete;
 
-    RBFN(const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr)
-    : Regressor<Datum_t, Label_t>(dataset_ptr) { }
+    // template< typename Datum_tt = Datum_t, typename Label_tt = Label_t,
+    //           std::enable_if< 
+    template < typename Datum_tt = Datum_t, typename Label_tt = Label_t, 
+              typename = std::enable_if_t< is_floating_point_eigen_matrix<Datum_tt>::value > 
+    >
+    RBFN(const std::shared_ptr< Dataset<Datum_tt, Label_tt> > &dataset_ptr)
+    : Regressor<Datum_tt, Label_tt>(dataset_ptr) { }
 
-    void fit( ) override final;
+    // template < typename Datum_tt = Datum_t typename = typename std::enable_if< std::is_integral<Datum_t>::value > >
+    // RBFN(const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr)
+    // : Regressor<Datum_t, Label_t>(dataset_ptr) { }
+
+    void fit( ) override final { }
 };
   
 } // namespace tudat_learn

@@ -7,6 +7,7 @@
 
 #include "tudat-learn/dataset.hpp"
 #include "tudat-learn/estimators/regressors/rbfn.hpp"
+#include "tudat-learn/types.hpp"
 
 
   
@@ -186,16 +187,37 @@ struct Foo<T, int> {
 
 int main()
 {
+  std::cout << "Is it a vector? " << tudat_learn::is_vector<int>::value << std::endl;
+  std::cout << "Is it a vector? " << tudat_learn::is_vector<std::vector<std::pair<int,double>>>::value << std::endl;
+
 
   Foo<double, double> f;
   Foo<double, int> f1;
   Foo<double> f3;
+  
 
   // UnlabelledDataset un_d(std::vector({1, 2, 3}));
   // un_d.print_type();
   tudat_learn::Dataset l_d(std::vector<int>({1, 2, 3}), std::vector<char>({'a', 'b', 'c'}));
   tudat_learn::Dataset<int> l_d1(std::vector<int>({1, 2, 3}));
   // l_d.print_type();
+
+  auto ldptr = std::make_shared< tudat_learn::Dataset<int, char> >(l_d);
+
+  // tudat_learn::RBFN<int, char> rbfn_instance(ldptr);
+
+  // using type_test = Eigen::Matrix<float, 5, 1>;
+  using type_test = Eigen::VectorXf;
+
+  type_test vec1(5); vec1 << 1.0,2.0,3.0,2.0,1.0;
+  type_test vec2(5); vec2 << 1.0,2.0,3.0,2.0,1.0;
+
+  tudat_learn::Dataset new_dataset(std::vector<type_test>({vec1, vec2}), std::vector<char>({'a', 'b', 'c'}));
+  auto new_ptr = std::make_shared< tudat_learn::Dataset<type_test, char> >(new_dataset);
+
+  tudat_learn::RBFN<type_test, char> rbfn_instance(new_ptr);
+
+  // std::vector<
 
   // DerivedOther other;
   // other.print_type(un_d);

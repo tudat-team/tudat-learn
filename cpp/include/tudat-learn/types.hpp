@@ -12,7 +12,9 @@
 #define TUDAT_LEARN_TYPES_HPP
 
 #include <vector>
-#include <variant>
+#include <type_traits>
+
+#include <Eigen/Core>
 
 
 namespace tudat_learn
@@ -26,6 +28,25 @@ namespace tudat_learn
   // None type to be used in unlabelled datasets
   typedef struct None_t { } none_t;
 
+  // Type trait for std::vector class
+  template <typename T>       struct is_vector :                         std::false_type { };
+  template <typename... Args> struct is_vector< std::vector<Args...> > : std::true_type  { };
+
+  // Type trait for Eigen::Vector with floating-point type
+  template <typename T> 
+  struct __is_floating_point_eigen_matrix_helper                                                     : std::false_type { };
+  
+  template <int RowsAtCompileTime> 
+  struct __is_floating_point_eigen_matrix_helper< Eigen::Matrix<      float, RowsAtCompileTime, 1> > : std::true_type { };
+
+  template <int RowsAtCompileTime> 
+  struct __is_floating_point_eigen_matrix_helper< Eigen::Matrix<     double, RowsAtCompileTime, 1> > : std::true_type { };
+
+  template <int RowsAtCompileTime> 
+  struct __is_floating_point_eigen_matrix_helper< Eigen::Matrix<long double, RowsAtCompileTime, 1> > : std::true_type { };
+
+  template <typename F>
+  struct is_floating_point_eigen_matrix : __is_floating_point_eigen_matrix_helper<typename std::remove_cv< F >::type>::type { };
 
 
 } // namespace tudat_learn
