@@ -17,6 +17,7 @@
 #include "tudat-learn/dataset.hpp"
 #include "tudat-learn/types.hpp"
 #include "tudat-learn/estimators/regressor.hpp"
+#include "tudat-learn/estimators/regressors/rbf.hpp"
 
 namespace tudat_learn
 {
@@ -38,10 +39,17 @@ class RBFN : public Regressor<Datum_t, Label_t> {
                                             std::is_floating_point<Label_tt>::value 
                                           > 
     >
-    RBFN(const std::shared_ptr< Dataset<Datum_tt, Label_tt> > &dataset_ptr)
-    : Regressor<Datum_tt, Label_tt>(dataset_ptr) { }
+    RBFN(const std::shared_ptr< Dataset<Datum_tt, Label_tt> > &dataset_ptr,
+         const std::shared_ptr< RBF<Label_t> > &rbf_ptr
+    ) : 
+    Regressor<Datum_tt, Label_tt>(dataset_ptr),
+    rbf_ptr(rbf_ptr)
+    { }
 
     void fit( ) override final;
+
+  private:
+    std::shared_ptr< RBF<Label_t> > rbf_ptr;
 };
   
 } // namespace tudat_learn

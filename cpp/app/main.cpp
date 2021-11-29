@@ -222,10 +222,10 @@ int main()
   type_test vec1(5); vec1 << 1.0,2.0,3.0,2.0,1.0;
   type_test vec2(5); vec2 << 1.0,2.0,3.0,2.0,1.0;
 
-  tudat_learn::Dataset new_dataset(std::vector<type_test>({vec1, vec2}), std::vector<float>({1, 2, 3}));
+  tudat_learn::Dataset new_dataset(std::vector<type_test>({vec1, vec2}), std::vector<float>({1, 2}));
   auto new_ptr = std::make_shared< tudat_learn::Dataset<type_test, float> >(new_dataset);
 
-  tudat_learn::RBFN<type_test, float> rbfn_instance(new_ptr);
+  tudat_learn::RBFN<type_test, float> rbfn_instance(new_ptr, std::make_shared<tudat_learn::CubicRBF<float>>(tudat_learn::CubicRBF<float>()));
 
   // std::vector<
 
