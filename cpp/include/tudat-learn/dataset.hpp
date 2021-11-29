@@ -16,6 +16,7 @@
 #include <utility>
 #include <vector>
 
+#include "tudat-learn/response.hpp"
 #include "tudat-learn/types.hpp"
 
 namespace tudat_learn
@@ -28,7 +29,14 @@ class Dataset {
     Dataset( ) { }
 
     Dataset(const std::vector<Datum_t> &data, const std::vector<Label_t> &labels)
-    : data(data), labels(labels) { }
+    : data(data), labels(labels) { 
+      if(data.size() != labels.size()) throw std::length_error("Vectors with Data and Targets must have the same length.\n");
+    }
+
+    Dataset(const std::vector<Datum_t> &data, const std::vector<Label_t> &labels, const Response<Label_t> &response)
+    : data(data), labels(labels), response(response.get()) { 
+      if(data.size() != response.size()) throw std::length_error("Vectors with Data and Response must have the same length.\n");
+    }
 
     void push_back(const Datum_t  &datum, const Label_t  &label) {
       data.push_back(datum);
@@ -40,10 +48,15 @@ class Dataset {
       labels.push_back(std::move(label));
     }
 
+    template <typename Datum_tt, typename Response_tt>
+    friend Dataset<Datum_tt, Response_tt> get_datset_with_response(Dataset<Datum_tt> &dataset, Response<Response_tt> &response);
+
   private:
     std::vector<Datum_t> data;
 
     std::vector<Label_t> labels;
+
+    std::vector<Label_t> response;
 };
 
 template <typename Datum_t>
@@ -65,6 +78,21 @@ class Dataset<Datum_t, none_t> {
   private:
     std::vector<Datum_t> data;
 };
+
+
+/**
+ * @brief Creates a labelled dataset from an unlabelled dataset and a Response object. Vector is created with empty labels!
+ * 
+ * @tparam Datum_tt 
+ * @tparam Response_tt 
+ * @param dataset 
+ * @param response 
+ * @return Dataset<Datum_tt, Response_tt> 
+ */
+template <typename Datum_tt, typename Response_tt>
+Dataset<Datum_tt, Response_tt> get_datset_with_response(Dataset<Datum_tt> &dataset, Response<Response_tt> &response) {
+  return Dataset<Datum_tt, Response_tt>(dataset.data, std::vector<Response_tt>(), response.get_response());
+}
 
 /**
  * @brief Commented other possible implementations of Dataset

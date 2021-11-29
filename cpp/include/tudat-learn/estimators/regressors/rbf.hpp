@@ -24,6 +24,15 @@ namespace tudat_learn
 
 template <typename T>
 struct RBF {
+
+  /**
+   * @brief Types used in the RBFs
+   * 
+   * vector_t STL vector of type T 
+   * VectorXt Eigen::Vector of type T, Dynamic number of rows, single column
+   * MatrixXt Eigen::Matrix of type T, Dynamic number of rows amd columns
+   * 
+   */
   using vector_t = std::vector< T >;
   using VectorXt = Eigen::Matrix< T, Eigen::Dynamic, 1 >;
   using MatrixXt = Eigen::Matrix< T, Eigen::Dynamic, Eigen::Dynamic >;
