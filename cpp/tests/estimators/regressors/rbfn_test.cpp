@@ -27,6 +27,14 @@ int main( ) {
     (Eigen::VectorXf(5) << 2.0, 4.0, 6.0, 8.0, 10.0).finished(),
   });
 
+  std::vector<float> labels({
+    1, 2
+  });
+
+  auto dataset_ptr = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, float> >(tudat_learn::Dataset(data, labels));
+  auto rbf_ptr = std::make_shared< tudat_learn::CubicRBF<float> >(tudat_learn::CubicRBF<float>( ));
+
+  tudat_learn::RBFN<Eigen::VectorXf, float> rbfn(dataset_ptr, rbf_ptr);
 
   return 0;
 }
