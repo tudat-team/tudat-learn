@@ -41,14 +41,11 @@ class RBFN : public Regressor<Datum_t, Label_t> {
     RBFN(const std::shared_ptr< Dataset<Datum_tt, Label_tt> > &dataset_ptr)
     : Regressor<Datum_tt, Label_tt>(dataset_ptr) { }
 
-    // template < typename Datum_tt = Datum_t typename = typename std::enable_if< std::is_integral<Datum_t>::value > >
-    // RBFN(const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr)
-    // : Regressor<Datum_t, Label_t>(dataset_ptr) { }
-
-    void fit( ) override final { }
+    void fit( ) override final;
 };
   
 } // namespace tudat_learn
 
+#include "tudat-learn/estimators/regressors/rbfn.tpp"
 
 #endif // TUDAT_LEARN_RBFN_HPP

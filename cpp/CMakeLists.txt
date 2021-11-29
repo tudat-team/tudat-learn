@@ -32,7 +32,7 @@ set(TUDAT_LEARN_SRC_FILES
 
         # Regressors #
         # ${CMAKE_CURRENT_SOURCE_DIR}/src/estimators/regressors/rbf.cpp CHANGED TO .tpp FOR TEMPLATE DEFINITION
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/estimators/regressors/rbfn.cpp
+        # ${CMAKE_CURRENT_SOURCE_DIR}/src/estimators/regressors/rbfn.cpp CHANGED TO .tpp FOR TEMPLATE DEFINITION
 
 )
 

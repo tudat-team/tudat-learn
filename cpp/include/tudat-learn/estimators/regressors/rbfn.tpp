@@ -12,5 +12,10 @@
 
 namespace tudat_learn
 {
+
+template <typename Datum_t, typename Label_t>
+void RBFN<Datum_t, Label_t>::fit( ) {
+  
+}
   
 } // namespace tudat_learn
