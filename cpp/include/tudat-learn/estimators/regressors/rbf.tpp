@@ -8,6 +8,9 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#ifndef TUDAT_LEARN_RBF_TPP
+#define TUDAT_LEARN_RBF_TPP
+
 #include <cmath>
 #include <memory>
 #include <vector>
@@ -16,7 +19,6 @@
 #include <Eigen/Core>
 
 #include "tudat-learn/types.hpp"
-#include "tudat-learn/estimators/regressors/rbf.hpp"
 
 namespace tudat_learn
 {
@@ -251,3 +253,5 @@ std::shared_ptr< typename RBF<T>::MatrixXt > GaussianRBF<T>::eval_hessian(const 
 
   
 } // namespace tudat_learn
+
+#endif // TUDAT_LEARN_RBF_TPP

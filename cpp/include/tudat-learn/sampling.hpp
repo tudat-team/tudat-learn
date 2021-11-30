@@ -10,10 +10,16 @@
 
 #ifndef TUDAT_LEARN_SAMPLING_HPP
 #define TUDAT_LEARN_SAMPLING_HPP
+
+#include <vector>
+
 namespace tudat_learn
 {
   
-class Sampler {};
+template <typename Datum_t, typename Label_t>
+class Sampler {
+  virtual std::vector<Datum_t> sample() = 0;
+};
   
 } // namespace tudat_learn
 

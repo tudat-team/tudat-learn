@@ -14,7 +14,10 @@
 namespace tudat_learn
 {
   
-class Processor {};
+template <typename Datum_t, typename Label_t>
+class Processing {
+
+};
   
 } // namespace tudat_learn
 

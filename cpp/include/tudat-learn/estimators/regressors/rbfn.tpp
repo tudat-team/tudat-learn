@@ -8,7 +8,8 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "tudat-learn/estimators/regressors/rbfn.hpp"
+#ifndef TUDAT_LEARN_RBFN_TPP
+#define TUDAT_LEARN_RBFN_TPP
 
 namespace tudat_learn
 {
@@ -19,3 +20,5 @@ void RBFN<Datum_t, Label_t>::fit( ) {
 }
   
 } // namespace tudat_learn
+
+#endif // TUDAT_LEARN_RBFN_TPP

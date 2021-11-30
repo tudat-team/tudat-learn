@@ -8,9 +8,12 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "tudat-learn/dataset.hpp"
+#ifndef TUDAT_LEARN_DATASET_TPP
+#define TUDAT_LEARN_DATASET_TPP
 
 namespace tudat_learn
 {
   
 } // namespace tudat_learn
+
+#endif // TUDAT_LEARN_DATASET_TPP

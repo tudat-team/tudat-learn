@@ -19,7 +19,7 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 set(TUDAT_LEARN_SRC_FILES
         ### Core Classes ###
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/dataset.cpp
+        # ${CMAKE_CURRENT_SOURCE_DIR}/src/dataset.cpp CHANGED TO .tpp FOR TEMPLATE DEFINITION
         ${CMAKE_CURRENT_SOURCE_DIR}/src/estimator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/function.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/processing.cpp
