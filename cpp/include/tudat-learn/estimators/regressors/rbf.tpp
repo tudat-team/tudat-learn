@@ -11,14 +11,9 @@
 #ifndef TUDAT_LEARN_RBF_TPP
 #define TUDAT_LEARN_RBF_TPP
 
-#include <cmath>
-#include <memory>
-#include <vector>
-#include <stdexcept>
-
-#include <Eigen/Core>
-
-#include "tudat-learn/types.hpp"
+#ifndef TUDAT_LEARN_RBF_HPP
+#ERROR __FILE__ should only be included from rbf.hpp
+#endif
 
 namespace tudat_learn
 {

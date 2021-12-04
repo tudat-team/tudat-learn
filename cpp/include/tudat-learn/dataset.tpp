@@ -11,6 +11,10 @@
 #ifndef TUDAT_LEARN_DATASET_TPP
 #define TUDAT_LEARN_DATASET_TPP
 
+#ifndef TUDAT_LEARN_DATASET_HPP
+#ERROR __FILE__ should only be included from dataset.hpp
+#endif
+
 namespace tudat_learn
 {
   

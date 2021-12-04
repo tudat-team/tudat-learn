@@ -11,6 +11,10 @@
 #ifndef TUDAT_LEARN_RBFN_TPP
 #define TUDAT_LEARN_RBFN_TPP
 
+#ifndef TUDAT_LEARN_RBF_HPP
+#ERROR __FILE__ should only be included from rbfn.hpp
+#endif
+
 namespace tudat_learn
 {
 
