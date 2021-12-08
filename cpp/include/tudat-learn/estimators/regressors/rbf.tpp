@@ -26,6 +26,11 @@ T CubicRBF<T>::eval(const T radius) const {
 }
 
 template <typename T>
+typename CubicRBF<T>::MatrixXt CubicRBF<T>::eval_matrix(const MatrixXt &distance_matrix) const {
+  return distance_matrix.array().cube().matrix();
+}
+
+template <typename T>
 T CubicRBF<T>::eval(const vector_t &x, const vector_t &c) const {
   if(x.size() != c.size())
     throw std::runtime_error("Vector dimensions are not the same in   CubicRBF<T>::eval(const vector_t &x, const vector_t &c) const");
@@ -141,6 +146,11 @@ std::shared_ptr< typename RBF<T>::MatrixXt > CubicRBF<T>::eval_hessian(const Vec
 template <typename T>
 T GaussianRBF<T>::eval(const T radius) const {
   return std::exp(- (radius * radius) / (sigma_sqrd));
+}
+
+template <typename T>
+typename GaussianRBF<T>::MatrixXt GaussianRBF<T>::eval_matrix(const MatrixXt &distance_matrix) const {
+  return (distance_matrix.array().square() / (-sigma_sqrd)).exp().matrix();
 }
 
 template <typename T>

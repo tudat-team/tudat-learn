@@ -1,0 +1,7 @@
+name: tudat-learn
+channels:
+  - conda-forge
+dependencies:
+  - numpy
+  - sympy
+  

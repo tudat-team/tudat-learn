@@ -38,6 +38,14 @@ class Dataset {
       if(data.size() != response.size()) throw std::length_error("Vectors with Data and Response must have the same length.\n");
     }
 
+    const size_t size( ) const { return data.size(); }
+
+          Datum_t &data_at(size_t pos)       { return data.at(pos); }
+    const Datum_t &data_at(size_t pos) const { return data.at(pos); }
+
+          Datum_t &labels_at(size_t pos)       { return labels.at(pos); }
+    const Datum_t &labels_at(size_t pos) const { return labels.at(pos); }
+
     void push_back(const Datum_t  &datum, const Label_t  &label) {
       data.push_back(datum);
       labels.push_back(label);
@@ -66,6 +74,11 @@ class Dataset<Datum_t, none_t> {
 
     Dataset(const std::vector<Datum_t> &data)
     : data(data) { }
+
+    const size_t size( ) const { return data.size(); }
+
+          Datum_t &data_at(size_t pos)       { return data.at(pos); }
+    const Datum_t &data_at(size_t pos) const { return data.at(pos); }
 
     void push_back(const Datum_t  &datum) {
         data.push_back(datum);

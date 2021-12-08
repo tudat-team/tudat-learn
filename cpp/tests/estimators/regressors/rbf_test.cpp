@@ -19,6 +19,7 @@
 #include "tudat-learn/estimators/regressors/rbf.hpp"
  
 int main() {
+  // Values generated using /tudat-learn/cpp/tests/python_scripts/estimators/regressors/rbf_test.py
   std::cout.precision(9);
 
   // values obtained using cpp/tests/estimators/regressors/rbf_test.cpp

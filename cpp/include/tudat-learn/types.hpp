@@ -34,19 +34,19 @@ namespace tudat_learn
 
   // Type trait for Eigen::Vector with floating-point type
   template <typename T> 
-  struct __is_floating_point_eigen_matrix_helper                                                     : std::false_type { };
+  struct __is_floating_point_eigen_vector_helper                                                     : std::false_type { };
   
   template <int RowsAtCompileTime> 
-  struct __is_floating_point_eigen_matrix_helper< Eigen::Matrix<      float, RowsAtCompileTime, 1> > : std::true_type { };
+  struct __is_floating_point_eigen_vector_helper< Eigen::Matrix<      float, RowsAtCompileTime, 1> > : std::true_type { };
 
   template <int RowsAtCompileTime> 
-  struct __is_floating_point_eigen_matrix_helper< Eigen::Matrix<     double, RowsAtCompileTime, 1> > : std::true_type { };
+  struct __is_floating_point_eigen_vector_helper< Eigen::Matrix<     double, RowsAtCompileTime, 1> > : std::true_type { };
 
   template <int RowsAtCompileTime> 
-  struct __is_floating_point_eigen_matrix_helper< Eigen::Matrix<long double, RowsAtCompileTime, 1> > : std::true_type { };
+  struct __is_floating_point_eigen_vector_helper< Eigen::Matrix<long double, RowsAtCompileTime, 1> > : std::true_type { };
 
   template <typename F>
-  struct is_floating_point_eigen_matrix : __is_floating_point_eigen_matrix_helper<typename std::remove_cv< F >::type>::type { };
+  struct is_floating_point_eigen_vector : __is_floating_point_eigen_vector_helper<typename std::remove_cv< F >::type>::type { };
 
 
 } // namespace tudat_learn

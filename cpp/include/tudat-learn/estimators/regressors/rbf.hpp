@@ -12,6 +12,7 @@
 #define TUDAT_LEARN_RBF_HPP
 
 #include <memory>
+#include <vector>
 
 #include <Eigen/Core>
 
@@ -38,7 +39,7 @@ struct RBF {
   using MatrixXt = Eigen::Matrix< T, Eigen::Dynamic, Eigen::Dynamic >;
 
   virtual T eval(const T radius) const = 0;
-  // virtual double eval(const vector_t input_vector);
+  virtual MatrixXt eval_matrix(const MatrixXt &distance_matrix) const = 0;
 
   /**
    * @brief Evaluation using two vectors.
@@ -49,6 +50,7 @@ struct RBF {
    */
   virtual T eval(const vector_t &x, const vector_t &c) const = 0;
   virtual T eval(const VectorXt &x, const VectorXt &c) const = 0;
+  
 
   /**
    * @brief Evaluating the jacobian using two vectors.
@@ -95,7 +97,8 @@ struct CubicRBF : public RBF<T> {
    * @param radius: Euclidean norm of the radius vector.
    * @return double 
    */
-  T eval(const T radius) const override final;
+  virtual T eval(const T radius) const override final;
+  virtual MatrixXt eval_matrix(const MatrixXt &distance_matrix) const override final;
   
   /**
    * @brief Evaluation using two vectors.
@@ -104,8 +107,8 @@ struct CubicRBF : public RBF<T> {
    * @param c center point
    * @return double 
    */
-  T eval(const vector_t &x, const vector_t &c) const override final;
-  T eval(const VectorXt &x, const VectorXt &c) const override final;
+  virtual T eval(const vector_t &x, const vector_t &c) const override final;
+  virtual T eval(const VectorXt &x, const VectorXt &c) const override final;
   
   /**
    * @brief Evaluating the jacobian using two vectors.
@@ -114,8 +117,8 @@ struct CubicRBF : public RBF<T> {
    * @param c center point
    * @return std::shared_ptr<vector_t> jacobian at point x
    */
-  std::shared_ptr<vector_t> eval_jacobian(const vector_t &x, const vector_t &c) const override final;
-  std::shared_ptr<VectorXt> eval_jacobian(const VectorXt &x, const VectorXt &c) const override final;
+  virtual std::shared_ptr<vector_t> eval_jacobian(const vector_t &x, const vector_t &c) const override final;
+  virtual std::shared_ptr<VectorXt> eval_jacobian(const VectorXt &x, const VectorXt &c) const override final;
 
   /**
    * @brief Evaluating the hessian using two vectors
@@ -124,8 +127,8 @@ struct CubicRBF : public RBF<T> {
    * @param c center point
    * @return std::shared_ptr<vector_t> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
    */
-  std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const override final;
-  std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const override final;
+  virtual std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const override final;
+  virtual std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const override final;
 };
 
 /**
@@ -152,7 +155,8 @@ struct GaussianRBF : public RBF<T> {
    * @param radius: Euclidean norm of the radius vector.
    * @return double 
    */
-  T eval(const T radius) const override final;
+  virtual T eval(const T radius) const override final;
+  virtual MatrixXt eval_matrix(const MatrixXt &distance_matrix) const override final;
 
   /**
    * @brief Evaluation using two vectors.
@@ -161,8 +165,8 @@ struct GaussianRBF : public RBF<T> {
    * @param c center point
    * @return double 
    */
-  T eval(const vector_t &x, const vector_t &c) const override final;
-  T eval(const VectorXt &x, const VectorXt &c) const override final;
+  virtual T eval(const vector_t &x, const vector_t &c) const override final;
+  virtual T eval(const VectorXt &x, const VectorXt &c) const override final;
   
   /**
    * @brief Evaluating the jacobian using two vectors.
@@ -171,8 +175,8 @@ struct GaussianRBF : public RBF<T> {
    * @param c center point
    * @return std::shared_ptr<vector_t> jacobian at point x
    */
-  std::shared_ptr<vector_t> eval_jacobian(const vector_t &x, const vector_t &c) const override final;
-  std::shared_ptr<VectorXt> eval_jacobian(const VectorXt &x, const VectorXt &c) const override final;
+  virtual std::shared_ptr<vector_t> eval_jacobian(const vector_t &x, const vector_t &c) const override final;
+  virtual std::shared_ptr<VectorXt> eval_jacobian(const VectorXt &x, const VectorXt &c) const override final;
 
   /**
    * @brief Evaluating the hessian using two vectors
@@ -182,8 +186,8 @@ struct GaussianRBF : public RBF<T> {
    * @return std::shared_ptr<vector_t> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
    * @return std::shared_ptr<MatrixXt> hessian with indexing (i,j) yields (d^2 f) / (dxi dxj) derivative
    */
-  std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const override final;
-  std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const override final;
+  virtual std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const override final;
+  virtual std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const override final;
 
 
   private:

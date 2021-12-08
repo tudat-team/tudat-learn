@@ -8,11 +8,11 @@
 #  *    http://tudat.tudelft.nl/LICENSE.
 #  */
 
+import random
 
 from sympy import *
 import numpy as np
 
-import random
 
 if __name__ == '__main__':
   x1 = Symbol('x1')

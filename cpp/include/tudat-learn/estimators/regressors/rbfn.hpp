@@ -14,6 +14,9 @@
 #include <memory>
 #include <type_traits>
 
+#include <Eigen/Core>
+#include <Eigen/Dense>
+
 #include "tudat-learn/dataset.hpp"
 #include "tudat-learn/types.hpp"
 #include "tudat-learn/estimators/regressor.hpp"
@@ -32,24 +35,32 @@ class RBFN : public Regressor<Datum_t, Label_t> {
      */
     RBFN() = delete;
 
-    // template< typename Datum_tt = Datum_t, typename Label_tt = Label_t,
-    //           std::enable_if< 
+    // Requires Label_tt and Datum_tt to be vectors of the same floating-point type
     template < typename Datum_tt = Datum_t, typename Label_tt = Label_t, 
-               typename = std::enable_if_t< is_floating_point_eigen_matrix<Datum_tt>::value &&
-                                            std::is_floating_point<Label_tt>::value 
+               typename = std::enable_if_t< is_floating_point_eigen_vector<Datum_tt>::value &&
+                                            is_floating_point_eigen_vector<Label_tt>::value &&
+                                            std::is_same<typename Datum_tt::Scalar, typename Label_tt::Scalar>::value
                                           > 
     >
     RBFN(const std::shared_ptr< Dataset<Datum_tt, Label_tt> > &dataset_ptr,
-         const std::shared_ptr< RBF<Label_t> > &rbf_ptr
+         const std::shared_ptr< RBF<typename Label_tt::Scalar> > &rbf_ptr
     ) : 
     Regressor<Datum_tt, Label_tt>(dataset_ptr),
     rbf_ptr(rbf_ptr)
     { }
 
-    void fit( ) override final;
+    virtual void fit( ) override final;
+
+    virtual void fit(const std::vector<int> &fit_indices);
+
+    const Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> get_coefficients( ) const {
+      return coefficients;
+    }
 
   private:
-    std::shared_ptr< RBF<Label_t> > rbf_ptr;
+    std::shared_ptr< RBF<typename Label_t::Scalar> > rbf_ptr;
+
+    Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> coefficients; 
 };
   
 } // namespace tudat_learn
