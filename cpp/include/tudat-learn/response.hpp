@@ -14,17 +14,17 @@
 namespace tudat_learn
 {
 
-template <typename Response_t>
-class Response {
-  public:
-    Response( ) { }
+// template <typename Response_t>
+// class Response {
+//   public:
+//     Response( ) { }
 
-          std::vector<Response_t> &get( )       { return response; }
-    const std::vector<Response_t> &get( ) const { return response; }
+//           std::vector<Response_t> &get( )       { return response; }
+//     const std::vector<Response_t> &get( ) const { return response; }
 
-  private:
-    std::vector<Response_t> response;
-};
+//   private:
+//     std::vector<Response_t> response;
+// };
 
 } // namespace tudat_learn
 
