@@ -11,6 +11,8 @@
 #ifndef TUDAT_LEARN_DATASET_HPP
 #define TUDAT_LEARN_DATASET_HPP
 
+#include <algorithm>
+#include <numeric>
 #include <stdexcept>
 #include <type_traits>
 #include <utility>
@@ -55,6 +57,22 @@ class Dataset {
       labels.push_back(std::move(label));
     }
 
+    /**
+     * @brief Gets the `amount` indices of the closest instances to vector_of_interest in the dataset. Indices are sorted
+     * from closest to furthest away if and only if amount < data.size(). Otherwise they are in natural order:
+     * 0, 1, ..., data.size()-1
+     * 
+     * @tparam Datum_tt Must be an Eigen::Vector of floating point type.
+     * @param vector_of_interest vector to which the closest data points will be found.
+     * @param amount Desired amount of instances in the dataset. Defaults to data.size() if no amount is given or if
+     * it is larger than the amount of instances in the vector
+     * @return std::enable_if< std::is_floating_point<F>::value && is_floating_point_eigen_vector<Datum_tt>::value,
+     * std::vector<int> >::type 
+     */
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, std::vector<int> >::type
+    get_closest_data(Datum_tt vector_of_interest, int amount=-1);
+
     template <typename Datum_tt, typename Response_tt>
     friend Dataset<Datum_tt, Response_tt> get_datset_with_response(Dataset<Datum_tt> &dataset, std::vector<Response_tt> &response);
 
@@ -86,6 +104,22 @@ class Dataset<Datum_t, none_t> {
     void push_back(     Datum_t &&datum) {
       data.push_back(std::move(datum));
     }
+
+    /**
+     * @brief Gets the `amount` indices of the closest instances to vector_of_interest in the dataset. Indices are sorted
+     * from closest to furthest away if and only if amount < data.size(). Otherwise they are in natural order:
+     * 0, 1, ..., data.size()-1
+     * 
+     * @tparam Datum_tt Must be an Eigen::Vector of floating point type.
+     * @param vector_of_interest vector to which the closest data points will be found.
+     * @param amount Desired amount of instances in the dataset. Defaults to data.size() if no amount is given or if
+     * it is larger than the amount of instances in the vector
+     * @return std::enable_if< std::is_floating_point<F>::value && is_floating_point_eigen_vector<Datum_tt>::value,
+     * std::vector<int> >::type 
+     */
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, std::vector<int> >::type
+    get_closest_data(Datum_tt vector_of_interest, int amount=-1);
 
   private:
     std::vector<Datum_t> data;
@@ -187,5 +221,6 @@ Dataset<Datum_tt, Response_tt> get_datset_with_response(Dataset<Datum_tt> &datas
   
 } // namespace tudat_learn
 
+#include "dataset.tpp"
 
 #endif // TUDAT_LEARN_DATASET_HPP
