@@ -22,19 +22,17 @@ namespace tudat_learn
 
 template <typename Datum_t, typename Label_t>
 void RBFN<Datum_t, Label_t>::fit( ) {
-    using scalar = typename Datum_t::Scalar;
+    using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 
     // center_points matrix: has each center point as a column in the matrix 
     // Reads size of data vectors at runtime in case they are dynamic size matrices.
     // Assumes all the data vectors in the std::vector have the same size 
     // #rows = #(center points); #columns = input dimension
-    Eigen::Matrix<scalar, Eigen::Dynamic, Eigen::Dynamic > center_points(
-        this->dataset_ptr->size(), this->dataset_ptr->data_at(0).rows()
-    );
+    center_points.resize(this->dataset_ptr->size(), this->dataset_ptr->data_at(0).rows());
 
     // Creating a matrix for the known values of the function at the center points
     // #rows = #(center points); #columns = output dimension
-    Eigen::Matrix<scalar, Eigen::Dynamic, Eigen::Dynamic > output_at_center(
+    MatrixX output_at_center(
         this->dataset_ptr->size(), this->dataset_ptr->labels_at(0).rows()
     );
 
@@ -45,7 +43,7 @@ void RBFN<Datum_t, Label_t>::fit( ) {
 
     // Creating the distance matrix
     // #rows and #columns = #(center points)
-    Eigen::Matrix<scalar, Eigen::Dynamic, Eigen::Dynamic > distance_matrix(
+    MatrixX distance_matrix(
         this->dataset_ptr->size(), this->dataset_ptr->size()
     );
 
@@ -66,6 +64,58 @@ void RBFN<Datum_t, Label_t>::fit( ) {
 template <typename Datum_t, typename Label_t>
 void RBFN<Datum_t, Label_t>::fit(const std::vector<int> &fit_indices) {
     
+}
+
+template <typename Datum_t, typename Label_t>
+Label_t RBFN<Datum_t, Label_t>::eval(const Datum_t &input) const {
+    using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
+    // matrix that will contain the radial basis function values of the distances between the input and the center points
+    MatrixX distance_matrix_input(
+        1, coefficients.rows() // 1 is due to a single vector being processed in this function
+    );
+
+    distance_matrix_input = rbf_ptr->eval_matrix(
+        (center_points.rowwise() - input.transpose()).rowwise().norm()
+    );
+
+    MatrixX output_matrix(
+        1, coefficients.cols() // 1 is the same as input.cols() due to Datum_t being a column vector
+    );
+
+    output_matrix = distance_matrix_input * coefficients;
+
+    return output_matrix;
+}
+
+template <typename Datum_t, typename Label_t>
+Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> RBFN<Datum_t, Label_t>::eval(const std::vector<Datum_t> &input_vector) const {
+    using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
+    MatrixX input_eigen(
+        input_vector.size(), input_vector.at(0).rows() // 1 is due to a single vector being processed in this function
+    );
+
+    for(int i = 0; i < input_vector.size(); ++i) 
+        input_eigen.row(i) = this->input_vector.at(i);
+
+    MatrixX distance_matrix_input(
+        input_vector.size(), center_points.rows()
+    );
+
+    for(int i = 0; i < input_vector.size(); ++i) {
+        distance_matrix_input.row(i) = rbf_ptr->eval_matrix(
+            (center_points.rowwise() - input_eigen.row(i)).rowwise().norm()
+        );
+    }
+
+    MatrixX output_matrix(
+        input_vector.size(), coefficients.cols()
+    );
+
+    output_matrix = distance_matrix_input * coefficients;
+
+    return output_matrix;
 }
   
 } // namespace tudat_learn

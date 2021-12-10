@@ -1,4 +1,4 @@
 To do:
 - Release vs Debug
-- Template RBFs. Make sure that they work only for float, double, long double, any other floating point type.
-- Eigen RBFs!!!!
+- Maybe Estimator shouldn't have fit(), only regressors, classifiers and clustering. This way we can introduce
+reinforcement learning techniques, for instance(?).

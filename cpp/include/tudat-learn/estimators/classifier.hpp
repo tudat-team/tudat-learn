@@ -18,11 +18,14 @@ namespace tudat_learn
 
 template <typename Datum_t, typename Label_t = none_t>
 class Classifier : public Estimator<Datum_t, Label_t> {
-  public:
+  protected:
     Classifier(const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr)
     : Estimator<Datum_t, Label_t>(dataset_ptr) { }
 
+  public:
     virtual void fit( ) = 0;
+
+    virtual Label_t eval(const Datum_t &input) const = 0;
 
 };
   

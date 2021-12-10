@@ -26,6 +26,8 @@ class Regressor : public Estimator<Datum_t, Label_t> {
   public:
     virtual void fit( ) = 0;
 
+    virtual Label_t eval(const Datum_t &input) const = 0;
+
 };
   
 } // namespace tudat_learn

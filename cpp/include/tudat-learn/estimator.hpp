@@ -11,7 +11,7 @@
 #ifndef TUDAT_LEARN_ESTIMATOR_HPP
 #define TUDAT_LEARN_ESTIMATOR_HPP
 
-#include "memory"
+#include <memory>
 
 #include "tudat-learn/dataset.hpp"
 

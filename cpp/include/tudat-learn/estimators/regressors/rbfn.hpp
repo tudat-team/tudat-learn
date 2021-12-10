@@ -51,7 +51,11 @@ class RBFN : public Regressor<Datum_t, Label_t> {
 
     virtual void fit( ) override final;
 
-    virtual void fit(const std::vector<int> &fit_indices);
+    void fit(const std::vector<int> &fit_indices);
+
+    Label_t eval(const Datum_t &input) const;
+
+    Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> eval(const std::vector<Datum_t> &input_vector) const;
 
     const Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> get_coefficients( ) const {
       return coefficients;
@@ -59,6 +63,8 @@ class RBFN : public Regressor<Datum_t, Label_t> {
 
   private:
     std::shared_ptr< RBF<typename Label_t::Scalar> > rbf_ptr;
+
+    Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic > center_points;
 
     Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> coefficients; 
 };
