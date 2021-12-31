@@ -50,11 +50,11 @@ class RBFN : public Regressor<Datum_t, Label_t> {
 
     virtual void fit( ) override;
 
-    void fit(const std::vector<int> &fit_indices);
+    virtual void fit(const std::vector<int> &fit_indices);
 
-    Label_t eval(const Datum_t &input) const;
+    virtual Label_t eval(const Datum_t &input) const;
 
-    Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> eval(const std::vector<Datum_t> &input_vector) const;
+    virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> eval(const std::vector<Datum_t> &input_vector) const;
 
     const Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> get_coefficients( ) const {
       return coefficients;
@@ -77,9 +77,20 @@ class RBFNPolynomial : public RBFN<Datum_t, Label_t> {
      */
     RBFNPolynomial() = delete;
 
+    RBFNPolynomial(
+      const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr,
+      const std::shared_ptr< RBF<typename Label_t::Scalar> > &rbf_ptr
+    ) : 
+    RBFN<Datum_t, Label_t>(dataset_ptr, rbf_ptr)
+    { }
+
     virtual void fit( ) override;
 
-    void fit(const std::vector<int> &fit_indices);
+    // virtual void fit(const std::vector<int> &fit_indices) override;
+
+    virtual Label_t eval(const Datum_t &input) const override;
+
+    // virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> eval(const std::vector<Datum_t> &input_vector) const override;
 };
 
 } // namespace tudat_learn

@@ -179,6 +179,61 @@ int main( ) {
 
   if( !gaussian_coefficients_expected.isApprox(gaussian_rbfn_extra.get_coefficients()) )
     return 1;
+
+  // Testing RBFNPolynomial
+  tudat_learn::RBFNPolynomial<Eigen::VectorXf, Eigen::VectorXf> cubic_rbfn_poly(dataset_ptr, cubic_rbf_ptr);
+  cubic_rbfn_poly.fit();
+  std::cout << "Coefficients of the Cubic RBFNPolynomial:\n" << cubic_rbfn_poly.get_coefficients() << std::endl;
+
+  Eigen::MatrixXf cubic_coefficients_expected_poly(18,2);
+  cubic_coefficients_expected_poly <<  0.210345, -0.124317,
+                                      -0.047379,  0.017144,
+                                       0.061512, -0.046473,
+                                      -0.112250,  0.019956,
+                                      -0.019254, -0.009396,
+                                      -0.058411,  0.108840,
+                                       0.100389, -0.089431,
+                                       0.014692, -0.048700,
+                                       0.006936,  0.066522,
+                                      -0.156580,  0.105854,
+                                       0.543433, -1.464384,
+                                      -0.472862,  0.854898,
+                                       0.850252, -0.588660,
+                                      -0.088981,  1.370274,
+                                      -0.243245,  0.940585,
+                                      -0.722858, -1.034396,
+                                       0.615800,  1.275494,
+                                       0.524939,  0.396612;
+
+  if( !cubic_coefficients_expected_poly.isApprox(cubic_rbfn_poly.get_coefficients()) )
+    return 1;
+
+  tudat_learn::RBFNPolynomial<Eigen::VectorXf, Eigen::VectorXf> gaussian_rbfn_poly(dataset_ptr, gaussian_rbf_ptr);
+  gaussian_rbfn_poly.fit();
+  std::cout << "Coefficients of the Gaussian RBFNPolynomial:\n" << gaussian_rbfn_poly.get_coefficients() << std::endl;
+
+  Eigen::MatrixXf gaussian_coefficients_expected_poly(18,2);
+  gaussian_coefficients_expected_poly <<  0.164707, -0.080970,
+                                         -0.043197,  0.016828,
+                                          0.042483, -0.024992,
+                                         -0.113948,  0.037186,
+                                         -0.026745,  0.004714,
+                                         -0.003996,  0.032135,
+                                          0.061702, -0.042552,
+                                         -0.010971, -0.010852,
+                                          0.045096,  0.006501,
+                                         -0.115131,  0.062003,
+                                          0.360567, -1.450516,
+                                         -0.397730,  0.858258,
+                                          0.820341, -0.567872,
+                                         -0.171501,  1.422127,
+                                         -0.153605,  0.888652,
+                                         -0.674028, -1.052130,
+                                          0.513273,  1.337520,
+                                          0.513274,  0.398121;
+
+  if( !gaussian_coefficients_expected_poly.isApprox(gaussian_rbfn_poly.get_coefficients()) )
+    return 1;
                             
   return 0;
 }

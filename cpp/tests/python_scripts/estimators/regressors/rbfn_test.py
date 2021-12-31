@@ -66,11 +66,11 @@ if __name__ == '__main__':
     print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in input_distance_matrix))
 
     gaussian_input_distance_matrix = np.exp(- (input_distance_matrix / sigma)**2 )
-    print("Gaussian Distance Matrix:")
+    print("Gaussian Input Distance Matrix:")
     print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in gaussian_input_distance_matrix))
 
     cubic_input_distance_matrix = input_distance_matrix ** 3
-    print("Cubic Distance Matrix:")
+    print("Cubic Input Distance Matrix:")
     print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in cubic_input_distance_matrix))
 
     expected_gaussian_output = np.matmul(gaussian_input_distance_matrix, gaussian_coefficients) # EXPRESSION?
@@ -106,3 +106,42 @@ if __name__ == '__main__':
     # gaussian_coefficients = np.linalg.solve(gaussian_distance_matrix, output)
     # print("Gaussian Coefficients:")
     # print('\n'.join((' '.join(str(format(nn, '.6f')) for nn in n)) for n in gaussian_coefficients))
+
+
+    # Testing RBFNPolynomial
+    output_poly = np.concatenate((output, np.zeros((center_points.shape[1] + 1, output.shape[1]))))
+    print("Output Polynomial:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in output_poly))
+
+    gaussian_matrix_poly = np.zeros((
+        gaussian_distance_matrix.shape[0] + center_points.shape[1] + 1,
+        gaussian_distance_matrix.shape[1] + center_points.shape[1] + 1
+    ))
+    gaussian_matrix_poly[    :gaussian_distance_matrix.shape[0],       :gaussian_distance_matrix.shape[1]  ] = gaussian_distance_matrix
+    gaussian_matrix_poly[    :gaussian_distance_matrix.shape[0],        gaussian_distance_matrix.shape[1]  ] = np.ones((gaussian_distance_matrix.shape[0]))
+    gaussian_matrix_poly[     gaussian_distance_matrix.shape[0],       :gaussian_distance_matrix.shape[1]  ] = np.ones((gaussian_distance_matrix.shape[1]))
+    gaussian_matrix_poly[    :gaussian_distance_matrix.shape[0],   (1 + gaussian_distance_matrix.shape[1]):] = center_points
+    gaussian_matrix_poly[(1 + gaussian_distance_matrix.shape[0]):,     :gaussian_distance_matrix.shape[1]  ] = center_points.T
+    print("Gaussian Distance Matrix Polynomial:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in gaussian_matrix_poly))
+
+    gaussian_coefficients_poly = np.linalg.solve(gaussian_matrix_poly, output_poly)
+    print("Gaussian Coefficients Polynomial:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in gaussian_coefficients_poly))
+
+
+    cubic_matrix_poly = np.zeros((
+        cubic_distance_matrix.shape[0] + center_points.shape[1] + 1,
+        cubic_distance_matrix.shape[1] + center_points.shape[1] + 1
+    ))
+    cubic_matrix_poly[    :cubic_distance_matrix.shape[0],       :cubic_distance_matrix.shape[1]  ] = cubic_distance_matrix
+    cubic_matrix_poly[    :cubic_distance_matrix.shape[0],        cubic_distance_matrix.shape[1]  ] = np.ones((cubic_distance_matrix.shape[0]))
+    cubic_matrix_poly[     cubic_distance_matrix.shape[0],       :cubic_distance_matrix.shape[1]  ] = np.ones((cubic_distance_matrix.shape[1]))
+    cubic_matrix_poly[    :cubic_distance_matrix.shape[0],   (1 + cubic_distance_matrix.shape[1]):] = center_points
+    cubic_matrix_poly[(1 + cubic_distance_matrix.shape[0]):,     :cubic_distance_matrix.shape[1]  ] = center_points.T
+    print("Cubic Distance Matrix Polynomial:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in cubic_matrix_poly))
+
+    cubic_coefficients_poly = np.linalg.solve(cubic_matrix_poly, output_poly)
+    print("Cubic Coefficients Polynomial:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in cubic_coefficients_poly))
