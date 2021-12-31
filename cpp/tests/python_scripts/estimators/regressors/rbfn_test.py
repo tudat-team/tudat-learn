@@ -34,6 +34,8 @@ if __name__ == '__main__':
     #     for j in range(10):
     #         dm[i, j] = np.linalg.norm(center_points[i,:] - center_points[j, :])
 
+    # computing parameters (except sigma)
+
     cubic_distance_matrix = distance_matrix ** 3
     print("Cubic Distance Matrix:")
     print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in cubic_distance_matrix))
@@ -53,6 +55,35 @@ if __name__ == '__main__':
     print("Gaussian Coefficients:")
     print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in gaussian_coefficients))
 
+
+    # generating random inputs to evaluate after fitting
+    inputs = np.around(np.random.rand(3, 7), 6)
+    print("Inputs:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in inputs))
+
+    input_distance_matrix = np.sqrt(np.sum((inputs[:, np.newaxis, :] - center_points[np.newaxis, :, :]) **2, axis=-1))
+    print("Input Distance Matrix:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in input_distance_matrix))
+
+    gaussian_input_distance_matrix = np.exp(- (input_distance_matrix / sigma)**2 )
+    print("Gaussian Distance Matrix:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in gaussian_input_distance_matrix))
+
+    cubic_input_distance_matrix = input_distance_matrix ** 3
+    print("Cubic Distance Matrix:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in cubic_input_distance_matrix))
+
+    expected_gaussian_output = np.matmul(gaussian_input_distance_matrix, gaussian_coefficients) # EXPRESSION?
+    print("Expected Gaussian Output:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in expected_gaussian_output))
+
+    expected_cubic_output = np.matmul(cubic_input_distance_matrix, cubic_coefficients) # EXPPRESSION?
+    print("Expected Cubic Output:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in expected_cubic_output))
+
+
+    print("Expected Gaussian Output:")
+    print(',\n'.join((', '.join(np.format_float_scientific(nn, precision=6) for nn in n)) for n in expected_gaussian_output))
 
     # TO USE IN LATEX TABLES
 

@@ -31,7 +31,6 @@ class RBFN : public Regressor<Datum_t, Label_t> {
 
     /**
      * @brief Deleting the default constructor to make sure the object is created with settings.
-     * 
      */
     RBFN() = delete;
 
@@ -49,7 +48,7 @@ class RBFN : public Regressor<Datum_t, Label_t> {
     rbf_ptr(rbf_ptr)
     { }
 
-    virtual void fit( ) override final;
+    virtual void fit( ) override;
 
     void fit(const std::vector<int> &fit_indices);
 
@@ -61,7 +60,7 @@ class RBFN : public Regressor<Datum_t, Label_t> {
       return coefficients;
     }
 
-  private:
+  protected:
     std::shared_ptr< RBF<typename Label_t::Scalar> > rbf_ptr;
 
     Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic > center_points;
@@ -69,6 +68,20 @@ class RBFN : public Regressor<Datum_t, Label_t> {
     Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> coefficients; 
 };
   
+template <typename Datum_t, typename Label_t>
+class RBFNPolynomial : public RBFN<Datum_t, Label_t> {
+  public:
+
+    /**
+     * @brief Deleting the default constructor to make sure the object is created with settings.
+     */
+    RBFNPolynomial() = delete;
+
+    virtual void fit( ) override;
+
+    void fit(const std::vector<int> &fit_indices);
+};
+
 } // namespace tudat_learn
 
 #include "tudat-learn/estimators/regressors/rbfn.tpp"

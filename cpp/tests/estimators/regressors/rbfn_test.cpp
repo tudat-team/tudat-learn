@@ -48,6 +48,7 @@ int main( ) {
     (Eigen::VectorXf(2) << 0.575946, 0.929296).finished()
   });
 
+
   float sigma = 0.318569;
 
   auto dataset_ptr = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, Eigen::VectorXf> >(tudat_learn::Dataset(data, labels));
@@ -91,6 +92,93 @@ int main( ) {
 
   if( !gaussian_coefficients_expected.isApprox(gaussian_rbfn.get_coefficients()) )
     return 1;
-                                  
+
+  std::vector< Eigen::VectorXf > inputs({
+    (Eigen::VectorXf(7) << 0.667410, 0.131798, 0.716327, 0.289406, 0.183191, 0.586513, 0.020108).finished(),
+    (Eigen::VectorXf(7) << 0.828940, 0.004695, 0.677817, 0.270008, 0.735194, 0.962189, 0.248753).finished(),
+    (Eigen::VectorXf(7) << 0.576157, 0.592042, 0.572252, 0.223082, 0.952749, 0.447125, 0.846409).finished()
+  });
+
+  Eigen::MatrixXf cubic_output(3,2);
+  cubic_output = cubic_rbfn.eval(inputs);
+  std::cout << "Cubic RBFN output:\n" << cubic_output << std::endl;
+
+  Eigen::MatrixXf cubic_output_expected(3, 2);
+  cubic_output_expected << 1.349381,  0.979610,
+                           0.858228, -0.700269,
+                           0.105554,  0.109006;
+
+  if( !cubic_output_expected.isApprox(cubic_output) )
+    return 1;
+
+  for(int i = 0; i < inputs.size(); ++i)
+    if( !cubic_rbfn.eval(inputs[i]).isApprox(cubic_output_expected.row(i).transpose()) )
+      return 1;
+
+  Eigen::MatrixXf gaussian_output(3,2);
+  gaussian_output = gaussian_rbfn.eval(inputs);
+  std::cout << "Gaussian RBFN output:\n" << gaussian_output << std::endl;
+
+  Eigen::MatrixXf gaussian_output_expected(3, 2);
+  gaussian_output_expected << 3.301947e-03, 9.486395e-03,
+                              1.595987e-04, 8.165682e-05,
+                              1.47863e-02,  6.625883e-03;
+
+  if( !gaussian_output_expected.isApprox(gaussian_output) )
+    return 1;
+
+  for(int i = 0; i < inputs.size(); ++i)
+    if( !gaussian_rbfn.eval(inputs[i]).isApprox(gaussian_output_expected.row(i).transpose()) )
+      return 1;
+
+  // Testing fit(const std::vector<int> &fit_indices)
+  std::vector< Eigen::VectorXf > data_extra({
+    (Eigen::VectorXf(7) << 1, 1, 2, 0, 0, 0, 0).finished(),
+    (Eigen::VectorXf(7) << 0.548814, 0.715189, 0.602763, 0.544883, 0.423655, 0.645894, 0.437587).finished(),
+    (Eigen::VectorXf(7) << 0.891773, 0.963663, 0.383442, 0.791725, 0.528895, 0.568045, 0.925597).finished(),
+    (Eigen::VectorXf(7) << 0.071036, 0.087129, 0.020218, 0.832620, 0.778157, 0.870012, 0.978618).finished(),
+    (Eigen::VectorXf(7) << 0.799159, 0.461479, 0.780529, 0.118274, 0.639921, 0.143353, 0.944669).finished(),
+    (Eigen::VectorXf(7) << 0.521848, 0.414662, 0.264556, 0.774234, 0.456150, 0.568434, 0.018790).finished(),
+    (Eigen::VectorXf(7) << 0.617635, 0.612096, 0.616934, 0.943748, 0.681820, 0.359508, 0.437032).finished(),
+    (Eigen::VectorXf(7) << 0.697631, 0.060225, 0.666767, 0.670638, 0.210383, 0.128926, 0.315428).finished(),
+    (Eigen::VectorXf(7) << 0.363711, 0.570197, 0.438602, 0.988374, 0.102045, 0.208877, 0.161310).finished(),
+    (Eigen::VectorXf(7) << 0.653108, 0.253292, 0.466311, 0.244426, 0.158970, 0.110375, 0.656330).finished(),
+    (Eigen::VectorXf(7) << 0.138183, 0.196582, 0.368725, 0.820993, 0.097101, 0.837945, 0.096098).finished(),
+    (Eigen::VectorXf(7) << 0, 0, 0, 0, 0, 0, 0).finished()
+  });
+
+  std::vector< Eigen::VectorXf > labels_extra({
+    (Eigen::VectorXf(2) << 1, 0).finished(),
+    (Eigen::VectorXf(2) << 0.976459, 0.468651).finished(),
+    (Eigen::VectorXf(2) << 0.976761, 0.604846).finished(),
+    (Eigen::VectorXf(2) << 0.739264, 0.039188).finished(),
+    (Eigen::VectorXf(2) << 0.282807, 0.120197).finished(),
+    (Eigen::VectorXf(2) << 0.296140, 0.118728).finished(),
+    (Eigen::VectorXf(2) << 0.317983, 0.414263).finished(),
+    (Eigen::VectorXf(2) << 0.064147, 0.692472).finished(),
+    (Eigen::VectorXf(2) << 0.566601, 0.265389).finished(),
+    (Eigen::VectorXf(2) << 0.523248, 0.093941).finished(),
+    (Eigen::VectorXf(2) << 0.575946, 0.929296).finished(),
+    (Eigen::VectorXf(2) << 0, 0).finished()
+  });
+  
+  auto dataset_extra_ptr = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, Eigen::VectorXf> >(tudat_learn::Dataset(data_extra, labels_extra));
+
+  tudat_learn::RBFN<Eigen::VectorXf, Eigen::VectorXf> cubic_rbfn_extra(dataset_extra_ptr, cubic_rbf_ptr);
+  cubic_rbfn_extra.fit(std::vector<int>({1,2,3,4,5,6,7,8,9,10}));
+  std::cout << "Coefficients of the Cubic RBFN when fitting to specific indices:\n" 
+            << cubic_rbfn_extra.get_coefficients() << std::endl;
+
+  if( !cubic_coefficients_expected.isApprox(cubic_rbfn_extra.get_coefficients()) )
+    return 1;
+
+  tudat_learn::RBFN<Eigen::VectorXf, Eigen::VectorXf> gaussian_rbfn_extra(dataset_extra_ptr, gaussian_rbf_ptr);
+  gaussian_rbfn_extra.fit(std::vector<int>({1,2,3,4,5,6,7,8,9,10}));
+  std::cout << "Coefficients of the Gaussian RBFN when fitting to specific indices:\n" 
+            << gaussian_rbfn_extra.get_coefficients() << std::endl;
+
+  if( !gaussian_coefficients_expected.isApprox(gaussian_rbfn_extra.get_coefficients()) )
+    return 1;
+                            
   return 0;
 }
