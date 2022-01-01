@@ -145,3 +145,25 @@ if __name__ == '__main__':
     cubic_coefficients_poly = np.linalg.solve(cubic_matrix_poly, output_poly)
     print("Cubic Coefficients Polynomial:")
     print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in cubic_coefficients_poly))
+
+
+    # inputs
+    gaussian_input_distance_matrix_poly = np.ones((gaussian_input_distance_matrix.shape[0], gaussian_input_distance_matrix.shape[1] + 1 + inputs.shape[1]))
+    gaussian_input_distance_matrix_poly[:gaussian_input_distance_matrix.shape[0], :gaussian_input_distance_matrix.shape[1]] = gaussian_input_distance_matrix
+    gaussian_input_distance_matrix_poly[                                       :, (gaussian_input_distance_matrix.shape[1] + 1):] = inputs 
+    print("Gaussian Input Distance Matrix Polynomial:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in gaussian_input_distance_matrix_poly))
+
+    expected_gaussian_output_poly = np.matmul(gaussian_input_distance_matrix_poly, gaussian_coefficients_poly)
+    print("Expected Gaussian Output Polynomial:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in expected_gaussian_output_poly))
+
+    cubic_input_distance_matrix_poly = np.ones((cubic_input_distance_matrix.shape[0], cubic_input_distance_matrix.shape[1] + 1 + inputs.shape[1]))
+    cubic_input_distance_matrix_poly[:cubic_input_distance_matrix.shape[0], :cubic_input_distance_matrix.shape[1]] = cubic_input_distance_matrix
+    cubic_input_distance_matrix_poly[                                       :, (cubic_input_distance_matrix.shape[1] + 1):] = inputs 
+    print("Cubic Input Distance Matrix Polynomial:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in cubic_input_distance_matrix_poly))
+
+    expected_cubic_output_poly = np.matmul(cubic_input_distance_matrix_poly, cubic_coefficients_poly)
+    print("Expected Cubic Output Polynomial:")
+    print(',\n'.join((', '.join(str(format(nn, '.6f')) for nn in n)) for n in expected_cubic_output_poly))

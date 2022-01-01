@@ -86,11 +86,11 @@ class RBFNPolynomial : public RBFN<Datum_t, Label_t> {
 
     virtual void fit( ) override;
 
-    // virtual void fit(const std::vector<int> &fit_indices) override;
+    virtual void fit(const std::vector<int> &fit_indices) override;
 
     virtual Label_t eval(const Datum_t &input) const override;
 
-    // virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> eval(const std::vector<Datum_t> &input_vector) const override;
+    virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> eval(const std::vector<Datum_t> &input_vector) const override;
 };
 
 } // namespace tudat_learn

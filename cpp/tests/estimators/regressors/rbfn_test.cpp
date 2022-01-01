@@ -234,6 +234,56 @@ int main( ) {
 
   if( !gaussian_coefficients_expected_poly.isApprox(gaussian_rbfn_poly.get_coefficients()) )
     return 1;
-                            
+
+  Eigen::MatrixXf cubic_output_poly(3,2);
+  cubic_output_poly = cubic_rbfn_poly.eval(inputs);
+  std::cout << "Cubic RBFNPolynomial output:\n" << cubic_output_poly << std::endl;
+
+  Eigen::MatrixXf cubic_output_expected_poly(3, 2);
+  cubic_output_expected_poly << 0.337597,  0.844558,
+                                0.071872,  1.007463,
+                                0.486969, -0.348277;
+
+  if( !cubic_output_expected_poly.isApprox(cubic_output_poly) )
+    return 1;
+
+  for(int i = 0; i < inputs.size(); ++i) {
+    if( !cubic_rbfn_poly.eval(inputs[i]).isApprox(cubic_output_expected_poly.row(i).transpose()) )
+      return 1;
+  }
+
+  Eigen::MatrixXf gaussian_output_poly(3,2);
+  gaussian_output_poly = gaussian_rbfn_poly.eval(inputs);
+  std::cout << "gaussian RBFNPolynomial output:\n" << gaussian_output_poly << std::endl;
+
+  Eigen::MatrixXf gaussian_output_expected_poly(3, 2);
+  gaussian_output_expected_poly << 0.224686,  0.922516,
+                                   0.003029,  1.074597,
+                                   0.502017, -0.346183;
+
+  if( !gaussian_output_expected_poly.isApprox(gaussian_output_poly) )
+    return 1;
+
+  for(int i = 0; i < inputs.size(); ++i) {
+    if( !gaussian_rbfn_poly.eval(inputs[i]).isApprox(gaussian_output_expected_poly.row(i).transpose()) )
+      return 1;
+  }
+
+  tudat_learn::RBFNPolynomial<Eigen::VectorXf, Eigen::VectorXf> cubic_rbfn_extra_poly(dataset_extra_ptr, cubic_rbf_ptr);
+  cubic_rbfn_extra_poly.fit(std::vector<int>({1,2,3,4,5,6,7,8,9,10}));
+  std::cout << "Coefficients of the Cubic RBFNPolynomial when fitting to specific indices:\n" 
+            << cubic_rbfn_extra_poly.get_coefficients() << std::endl;
+
+  if( !cubic_coefficients_expected_poly.isApprox(cubic_rbfn_extra_poly.get_coefficients()) )
+    return 1;
+
+  tudat_learn::RBFNPolynomial<Eigen::VectorXf, Eigen::VectorXf> gaussian_rbfn_extra_poly(dataset_extra_ptr, gaussian_rbf_ptr);
+  gaussian_rbfn_extra_poly.fit(std::vector<int>({1,2,3,4,5,6,7,8,9,10}));
+  std::cout << "Coefficients of the Gaussian RBFNPolynomial when fitting to specific indices:\n" 
+            << gaussian_rbfn_extra_poly.get_coefficients() << std::endl;
+
+  if( !gaussian_coefficients_expected_poly.isApprox(gaussian_rbfn_extra_poly.get_coefficients()) )
+    return 1;
+
   return 0;
 }
