@@ -29,9 +29,9 @@ struct RBF {
   /**
    * @brief Types used in the RBFs
    * 
-   * vector_t STL vector of type T 
-   * VectorXt Eigen::Vector of type T, Dynamic number of rows, single column
-   * MatrixXt Eigen::Matrix of type T, Dynamic number of rows amd columns
+   * @param vector_t STL vector of type T 
+   * @param VectorXt Eigen::Vector of type T, Dynamic number of rows, single column
+   * @param MatrixXt Eigen::Matrix of type T, Dynamic number of rows amd columns
    * 
    */
   using vector_t = std::vector< T >;
@@ -39,6 +39,13 @@ struct RBF {
   using MatrixXt = Eigen::Matrix< T, Eigen::Dynamic, Eigen::Dynamic >;
 
   virtual T eval(const T radius) const = 0;
+
+  /**
+   * @brief Applies the RBF to every value of a matrix.
+   * 
+   * @param distance_matrix Receives a matrix with euclidean distances between the input and a number of center points
+   * @return MatrixXt output matrix
+   */
   virtual MatrixXt eval_matrix(const MatrixXt &distance_matrix) const = 0;
 
   /**
@@ -51,7 +58,6 @@ struct RBF {
   virtual T eval(const vector_t &x, const vector_t &c) const = 0;
   virtual T eval(const VectorXt &x, const VectorXt &c) const = 0;
   
-
   /**
    * @brief Evaluating the jacobian using two vectors.
    * 
@@ -72,6 +78,52 @@ struct RBF {
   virtual std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const = 0;
   virtual std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const = 0;
   
+  
+  /**
+   * @brief Computes a matrix of RBF partial derivatives so that the Jacobian of the RBFN at the point x
+   * can be computed using:
+   * coefficients.transpose() * jacobian_rbfn(x, center_points)
+   * 
+   * In case of an RBFNPolynomial, one just needs to concatenate a matrix of dimensions 
+   * [(dimension_input + 1) x dimension_output] below the output of this function before the multiplication.
+   * The matrix shall have the form presented below:
+   * 0 0 ... 0
+   * 1 1 ... 1
+   * 1 1 ... 1
+   *   ...
+   * 1 1 ... 1
+   * 
+   * Done to take advantage of Eigen's vectorization capabilities.
+   * 
+   * @param x point at which the Jacobian is to be computed
+   * @param center_points center points with which the RBFN was built. Matrix should be of size 
+   * [(#center points) x dimension_input], with the center point vectors being displayed horizontally.
+   * @return MatrixXt [(#center points) x dimension_input] matrix that it is multiplied by the 
+   * [(#center points) x dimension input].transposed() coefficient matrix yields the 
+   * [dimension_output x dimension_input] Jacobian.
+   */
+  virtual             MatrixXt  jacobian_rbfn(const VectorXt &x, const MatrixXt &center_points) const = 0;
+
+  /**
+   * @brief Computes a vector of [(#center points) x dimension_input] matrices with part of the second
+   * partial derivatives of the RBFN or RBFN polynomial functions. In order to obtain the Hessian of the output 
+   * dimension k, one should transpose and multiply the RBFN coefficients of the k-th dimension, that is,
+   * RBFN::coefficients.col(k).transpose(), by each of the matrices in the vector produced by this function.
+   * Each multiplication will yield a row of the corresponding Hessian. 
+   * 
+   * This multiplication process should be repeated for each set of coefficients (each output dimension)
+   * in order to obtain the Hessian matrices for every output dimension.
+   * 
+   * Done to take advantage of Eigen's vectorization capabilities.
+   * 
+   * @param x point at which the Jacobian is to be computed
+   * @param center_points center points with which the RBFN was built. Matrix should be of size 
+   * [(#center points) x dimension_input], with the center point vectors being displayed horizontally.
+   * @return std::vector<MatrixXt> vector of [(#center points) x dimension_input] matrices that when multiplied
+   * by the coefficient vectors yield the Hessian matrix associated with the respective output dimensions.
+   */
+  virtual std::vector<MatrixXt>  hessian_rbfn(const VectorXt &x, const MatrixXt &center_points) const = 0;
+
 };
 
 
@@ -98,6 +150,13 @@ struct CubicRBF : public RBF<T> {
    * @return double 
    */
   virtual T eval(const T radius) const override final;
+
+  /**
+   * @brief Cubes (^3) every value of a matrix.
+   * 
+   * @param distance_matrix Receives a matrix with euclidean distances between the input and a number of center points
+   * @return MatrixXt output matrix
+   */
   virtual MatrixXt eval_matrix(const MatrixXt &distance_matrix) const override final;
   
   /**
@@ -156,6 +215,13 @@ struct GaussianRBF : public RBF<T> {
    * @return double 
    */
   virtual T eval(const T radius) const override final;
+
+  /**
+   * @brief Applies the Gaussian RBF to every value of a matrix.
+   * 
+   * @param distance_matrix Receives a matrix with euclidean distances between the input and a number of center points
+   * @return MatrixXt output matrix
+   */
   virtual MatrixXt eval_matrix(const MatrixXt &distance_matrix) const override final;
 
   /**
@@ -188,6 +254,7 @@ struct GaussianRBF : public RBF<T> {
    */
   virtual std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const override final;
   virtual std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const override final;
+
 
 
   private:
