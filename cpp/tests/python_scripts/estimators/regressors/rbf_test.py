@@ -38,9 +38,9 @@ if __name__ == '__main__':
   cubic_l = lambdify((x1, x2, x3, c1, c2, c3), cubic, 'numpy')
   print("Cubic evaluated at x and c is: ", cubic_l(x[0], x[1], x[2], c[0], c[1], c[2]))
 
-  cubic_jacobian = cubic.jacobian([x1, x2, x3])
-  cubic_jacobian_l = lambdify((x1, x2, x3, c1, c2, c3), cubic_jacobian, 'numpy')
-  print("Cubic Jacobian evaluated at x and c is: ", cubic_jacobian_l(x[0], x[1], x[2], c[0], c[1], c[2]))
+  cubic_gradient = cubic.gradient([x1, x2, x3])
+  cubic_gradient_l = lambdify((x1, x2, x3, c1, c2, c3), cubic_gradient, 'numpy')
+  print("Cubic gradient evaluated at x and c is: ", cubic_gradient_l(x[0], x[1], x[2], c[0], c[1], c[2]))
 
   cubic_hessian = hessian(cubic, (x1, x2, x3))
   cubic_hessian_l = lambdify((x1, x2, x3, c1, c2, c3), cubic_hessian, 'numpy')
@@ -51,9 +51,9 @@ if __name__ == '__main__':
   gaussian_l = lambdify((x1, x2, x3, c1, c2, c3, sigma), gaussian, 'numpy')
   print("Gaussian evaluated at x, c and sigma is: ", gaussian_l(x[0], x[1], x[2], c[0], c[1], c[2], sigma_val))
 
-  gaussian_jacobian = gaussian.jacobian([x1, x2, x3])
-  gaussian_jacobian_l = lambdify((x1, x2, x3, c1, c2, c3, sigma), gaussian_jacobian, 'numpy')
-  print("Gaussian Jacobian evaluated at x, c and sigma is: ", gaussian_jacobian_l(x[0], x[1], x[2], c[0], c[1], c[2], sigma_val))
+  gaussian_gradient = gaussian.gradient([x1, x2, x3])
+  gaussian_gradient_l = lambdify((x1, x2, x3, c1, c2, c3, sigma), gaussian_gradient, 'numpy')
+  print("Gaussian gradient evaluated at x, c and sigma is: ", gaussian_gradient_l(x[0], x[1], x[2], c[0], c[1], c[2], sigma_val))
 
   gaussian_hessian = hessian(gaussian, (x1, x2, x3))
   gaussian_hessian_l = lambdify((x1, x2, x3, c1, c2, c3, sigma), gaussian_hessian, 'numpy')
@@ -62,7 +62,7 @@ if __name__ == '__main__':
   #Expressions
   print("\nCubic:\n", cubic)
 
-  print("\nCubic Jacobian:\n", cubic_jacobian)
+  print("\nCubic gradient:\n", cubic_gradient)
 
   print("\nCubic Hessian:\n")
   for line in cubic_hessian:
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
   print("\nGaussian:\n", gaussian)
 
-  print("\nGaussian Jacobian:\n", gaussian_jacobian)
+  print("\nGaussian gradient:\n", gaussian_gradient)
 
   print("\nGaussian Hessian:\n")
   for line in gaussian_hessian:

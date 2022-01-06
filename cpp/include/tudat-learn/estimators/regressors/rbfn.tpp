@@ -156,6 +156,42 @@ Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> RBFN<Dat
     return output_matrix;
 }
 
+template <typename Datum_t, typename Label_t>
+Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> RBFN<Datum_t, Label_t>::gradient(const Datum_t &x) const {
+    using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
+    MatrixX gradient(
+        this->coefficients.cols(), this->center_points.cols()
+    );
+
+    gradient = this->coefficients.transpose() * this->rbf_ptr->gradient_rbfn(x, this->center_points);
+
+    return gradient;
+}
+
+template <typename Datum_t, typename Label_t>
+std::vector< Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> > RBFN<Datum_t, Label_t>::hessians(const Datum_t &x) const {
+    using MatrixX = Eigen::Matrix< typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
+    std::vector<MatrixX> rbf_second_order_derivatives = this->rbf_ptr->hessian_rbfn(x, this->center_points);
+    
+    std::vector<MatrixX> hessians;
+    hessians.reserve(this->coefficients.cols());
+
+    for(int i = 0; i < this->coefficients.cols(); ++i) {
+        MatrixX hessian(
+            this->center_points.cols(), this->center_points.cols()
+        );
+
+        for(int j = 0; j < this->center_points.cols(); ++j) 
+            hessian.row(j) = coefficients.col(i).transpose() * rbf_second_order_derivatives.at(j);
+
+        hessians.push_back(hessian);
+    }
+    
+    return hessians;
+}
+
 // RBFNPolynomial
 template <typename Datum_t, typename Label_t>
 void RBFNPolynomial<Datum_t, Label_t>::fit( ) {
@@ -343,6 +379,36 @@ Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> RBFNPoly
     output_matrix = concatenated_matrix * this->coefficients;
 
     return output_matrix;
+}
+
+template <typename Datum_t, typename Label_t>
+Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> RBFNPolynomial<Datum_t, Label_t>::gradient(const Datum_t &x) const {
+    using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;    
+    
+    // Matrix that contains the partial derivatives dependant on the RBF that when multiplied by the
+    // coefficients yield the gradient of the RBFN.
+    // The bottom part of the matrix is of size [(dimension_input + 1) x dimension_input] and is of 
+    // the form presented below:
+    // 0 0 ... 0
+    // 1 1 ... 1
+    // 1 1 ... 1
+    //   ...
+    // 1 1 ... 1
+    MatrixX partial_derivatives_rbf(
+        this->center_points.rows() + this->center_points.cols() + 1, this->center_points.cols()
+    );
+
+    partial_derivatives_rbf << this->rbf_ptr->gradient_rbfn(x, this->center_points),
+                               MatrixX::Zero(1, this->center_points.cols()),
+                               MatrixX::Ones(this->center_points.cols(), this->center_points.cols());
+
+    MatrixX gradient(
+        this->coefficients.cols(), this->center_points.cols()
+    );
+
+    gradient = this->coefficients.transpose() * partial_derivatives_rbf;
+
+    return gradient;
 }
 
 } // namespace tudat_learn

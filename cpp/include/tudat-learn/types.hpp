@@ -48,6 +48,35 @@ namespace tudat_learn
   template <typename F>
   struct is_floating_point_eigen_vector : __is_floating_point_eigen_vector_helper<typename std::remove_cv< F >::type>::type { };
 
+  // Type trait for either Eigen::Matrix or Eigen::Array (compile or runtime)
+  template <typename T> 
+  struct is_eigen                                                            : std::false_type { };
+
+  template <int RowsAtCompileTime, int ColsAtCompileTime, typename T>
+  struct is_eigen< Eigen::Matrix< T, RowsAtCompileTime, ColsAtCompileTime> > : std::true_type  { };
+
+  template <int RowsAtCompileTime, int ColsAtCompileTime, typename T>
+  struct is_eigen< Eigen::Array < T, RowsAtCompileTime, ColsAtCompileTime> > : std::true_type  { };
+
+  template <                                              typename T>
+  struct is_eigen< Eigen::Matrix< T,   Eigen::Dynamic,     Eigen::Dynamic> > : std::true_type  { };
+
+  template <                                              typename T>
+  struct is_eigen< Eigen::Array < T,   Eigen::Dynamic,     Eigen::Dynamic> > : std::true_type  { };
+
+  template <int RowsAtCompileTime,                        typename T>
+  struct is_eigen< Eigen::Matrix< T, RowsAtCompileTime,    Eigen::Dynamic> > : std::true_type  { };
+
+  template <int RowsAtCompileTime,                        typename T>
+  struct is_eigen< Eigen::Array < T, RowsAtCompileTime,    Eigen::Dynamic> > : std::true_type  { };
+
+  template <                       int ColsAtCompileTime, typename T>
+  struct is_eigen< Eigen::Matrix< T,    Eigen::Dynamic, ColsAtCompileTime> > : std::true_type  { };
+
+  template <                       int ColsAtCompileTime, typename T>
+  struct is_eigen< Eigen::Array< T,     Eigen::Dynamic, ColsAtCompileTime> > : std::true_type  { };
+
+
 
 } // namespace tudat_learn
 

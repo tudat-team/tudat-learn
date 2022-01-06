@@ -29,7 +29,7 @@ int main() {
   double sigma = 0.7837985890347726;
 
   double cubic = 0.25670216;
-  std::vector< double > cubic_jacobian({1.11633646, 0.47032472, 0.02981468});
+  std::vector< double > cubic_gradient({1.11633646, 0.47032472, 0.02981468});
   std::vector< double > cubic_hessian({
     3.52484826, 0.68177668, 0.04321898,
     0.68177668, 2.19386119, 0.01820863,
@@ -37,7 +37,7 @@ int main() {
   });
 
   double gaussian = 0.51815949;
-  std::vector< double > gaussian_jacobian({-0.98767754, -0.41611931, -0.02637851});
+  std::vector< double > gaussian_gradient({-0.98767754, -0.41611931, -0.02637851});
   std::vector< double > gaussian_hessian({
     0.19575717,  0.79317606,  0.05028078,
     0.79317606, -1.35270747,  0.02118384,
@@ -47,14 +47,14 @@ int main() {
   Eigen::Vector3d x_e({0.84442185, 0.7579544,  0.42057158});
   Eigen::Vector3d c_e({0.25891675, 0.51127472, 0.40493414});
 
-  Eigen::Vector3d cubic_jacobian_e({1.11633646, 0.47032472, 0.02981468});
+  Eigen::Vector3d cubic_gradient_e({1.11633646, 0.47032472, 0.02981468});
   Eigen::Matrix3d cubic_hessian_e({
     {3.52484826, 0.68177668, 0.04321898},
     {0.68177668, 2.19386119, 0.01820863},
     {0.04321898, 0.01820863, 1.90777552}
   });
 
-  Eigen::Vector3d gaussian_jacobian_e({-0.98767754, -0.41611931, -0.02637851});
+  Eigen::Vector3d gaussian_gradient_e({-0.98767754, -0.41611931, -0.02637851});
   Eigen::Matrix3d gaussian_hessian_e({
     {0.19575717,  0.79317606,  0.05028078},
     {0.79317606, -1.35270747,  0.02118384},
@@ -85,18 +85,18 @@ int main() {
     return 1;
 
 
-  auto cubic_jacobian_ptr = cubic_rbf.eval_jacobian(x, c);
+  auto cubic_gradient_ptr = cubic_rbf.eval_gradient(x, c);
 
-  std::cout << "CubicRBF Jacobian evaluated at x, c:" << std::endl;
-  for(auto i = 0; i < cubic_jacobian_ptr.get()->size(); ++i)
-    std::cout << cubic_jacobian_ptr.get()->at(i) << ", ";
+  std::cout << "CubicRBF gradient evaluated at x, c:" << std::endl;
+  for(auto i = 0; i < cubic_gradient_ptr.get()->size(); ++i)
+    std::cout << cubic_gradient_ptr.get()->at(i) << ", ";
   std::cout << std::endl;
 
-  if(cubic_jacobian_ptr.get()->size() != cubic_jacobian.size())
+  if(cubic_gradient_ptr.get()->size() != cubic_gradient.size())
     return 1;
 
-  for(auto i = 0; i < cubic_jacobian_ptr.get()->size(); ++i)
-    if(std::abs(cubic_jacobian_ptr.get()->at(i) - cubic_jacobian.at(i)) > 1e-7 )
+  for(auto i = 0; i < cubic_gradient_ptr.get()->size(); ++i)
+    if(std::abs(cubic_gradient_ptr.get()->at(i) - cubic_gradient.at(i)) > 1e-7 )
       return 1;  
 
 
@@ -123,12 +123,12 @@ int main() {
   if(std::abs(cubic_rbf.eval(x_e, c_e) - cubic) > 1e-7 )
     return 1;
 
-  auto cubic_jacobian_ptr_e = cubic_rbf.eval_jacobian(x_e, c_e);
+  auto cubic_gradient_ptr_e = cubic_rbf.eval_gradient(x_e, c_e);
 
-  std::cout << "CubicRBF Jacobian evaluated at x_e, c_e:" << std::endl;
-  std::cout << *cubic_jacobian_ptr_e << std::endl;
+  std::cout << "CubicRBF gradient evaluated at x_e, c_e:" << std::endl;
+  std::cout << *cubic_gradient_ptr_e << std::endl;
 
-  if(!cubic_jacobian_ptr_e->isApprox(cubic_jacobian_e, 1e-7))
+  if(!cubic_gradient_ptr_e->isApprox(cubic_gradient_e, 1e-7))
     return 1;
 
   auto cubic_hessian_ptr_e = cubic_rbf.eval_hessian(x_e, c_e);
@@ -150,19 +150,19 @@ int main() {
   if(std::abs(gaussian_rbf.eval(x, c) - gaussian) > 1e-7 )
     return 1;
 
-  auto gaussian_jacobian_ptr = gaussian_rbf.eval_jacobian(x, c);
+  auto gaussian_gradient_ptr = gaussian_rbf.eval_gradient(x, c);
 
-  std::cout << "GaussianRBF(sigma) Jacobian evaluated at x, c:" << std::endl;
-  for(auto i = 0; i < gaussian_jacobian_ptr.get()->size(); ++i)
-    std::cout << gaussian_jacobian_ptr.get()->at(i) << ", ";
+  std::cout << "GaussianRBF(sigma) gradient evaluated at x, c:" << std::endl;
+  for(auto i = 0; i < gaussian_gradient_ptr.get()->size(); ++i)
+    std::cout << gaussian_gradient_ptr.get()->at(i) << ", ";
   std::cout << std::endl;
 
-  if(gaussian_jacobian_ptr.get()->size() != gaussian_jacobian.size())
+  if(gaussian_gradient_ptr.get()->size() != gaussian_gradient.size())
     return 1;
     
 
-  for(auto i = 0; i < gaussian_jacobian_ptr.get()->size(); ++i)
-    if(std::abs(gaussian_jacobian_ptr.get()->at(i) - gaussian_jacobian.at(i)) > 1e-7 )
+  for(auto i = 0; i < gaussian_gradient_ptr.get()->size(); ++i)
+    if(std::abs(gaussian_gradient_ptr.get()->at(i) - gaussian_gradient.at(i)) > 1e-7 )
       return 1;  
 
   auto gaussian_hessian_ptr = gaussian_rbf.eval_hessian(x, c);
@@ -187,12 +187,12 @@ int main() {
   if(std::abs(gaussian_rbf.eval(x_e, c_e) - gaussian) > 1e-7 )
     return 1;
 
-  auto gaussian_jacobian_ptr_e = gaussian_rbf.eval_jacobian(x_e, c_e);
+  auto gaussian_gradient_ptr_e = gaussian_rbf.eval_gradient(x_e, c_e);
 
-  std::cout << "GaussianRBF(sigma) Jacobian evaluated at x_e, c_e:" << std::endl;
-  std::cout << *gaussian_jacobian_ptr_e << std::endl;
+  std::cout << "GaussianRBF(sigma) gradient evaluated at x_e, c_e:" << std::endl;
+  std::cout << *gaussian_gradient_ptr_e << std::endl;
 
-  if(!gaussian_jacobian_ptr_e->isApprox(gaussian_jacobian_e, 1e-7))
+  if(!gaussian_gradient_ptr_e->isApprox(gaussian_gradient_e, 1e-7))
     return 1;
 
   auto gaussian_hessian_ptr_e = gaussian_rbf.eval_hessian(x_e, c_e);

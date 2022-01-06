@@ -60,6 +60,10 @@ class RBFN : public Regressor<Datum_t, Label_t> {
       return coefficients;
     }
 
+    virtual             Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> gradient(const Datum_t &x) const;
+
+    virtual std::vector< Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> > hessians(const Datum_t &x) const;
+
   protected:
     std::shared_ptr< RBF<typename Label_t::Scalar> > rbf_ptr;
 
@@ -91,6 +95,9 @@ class RBFNPolynomial : public RBFN<Datum_t, Label_t> {
     virtual Label_t eval(const Datum_t &input) const override;
 
     virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> eval(const std::vector<Datum_t> &input_vector) const override;
+
+    virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> gradient(const Datum_t &x) const override;
+
 };
 
 } // namespace tudat_learn

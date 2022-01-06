@@ -12,6 +12,7 @@
 #define TUDAT_LEARN_RBF_HPP
 
 #include <memory>
+#include <type_traits>
 #include <vector>
 
 #include <Eigen/Core>
@@ -59,14 +60,14 @@ struct RBF {
   virtual T eval(const VectorXt &x, const VectorXt &c) const = 0;
   
   /**
-   * @brief Evaluating the jacobian using two vectors.
+   * @brief Evaluating the gradient using two vectors.
    * 
    * @param x input vector
    * @param c center point
-   * @return std::shared_ptr<vector_t> jacobian at point x
+   * @return std::shared_ptr<vector_t> gradient at point x
    */
-  virtual std::shared_ptr<vector_t> eval_jacobian(const vector_t &x, const vector_t &c) const = 0;
-  virtual std::shared_ptr<VectorXt> eval_jacobian(const VectorXt &x, const VectorXt &c) const = 0;
+  virtual std::shared_ptr<vector_t> eval_gradient(const vector_t &x, const vector_t &c) const = 0;
+  virtual std::shared_ptr<VectorXt> eval_gradient(const VectorXt &x, const VectorXt &c) const = 0;
 
   /**
    * @brief Evaluating the hessian using two vectors
@@ -80,9 +81,9 @@ struct RBF {
   
   
   /**
-   * @brief Computes a matrix of RBF partial derivatives so that the Jacobian of the RBFN at the point x
+   * @brief Computes a matrix of RBF partial derivatives so that the gradient of the RBFN at the point x
    * can be computed using:
-   * coefficients.transpose() * jacobian_rbfn(x, center_points)
+   * coefficients.transpose() * gradient_rbfn(x, center_points)
    * 
    * In case of an RBFNPolynomial, one just needs to concatenate a matrix of dimensions 
    * [(dimension_input + 1) x dimension_output] below the output of this function before the multiplication.
@@ -95,14 +96,14 @@ struct RBF {
    * 
    * Done to take advantage of Eigen's vectorization capabilities.
    * 
-   * @param x point at which the Jacobian is to be computed
+   * @param x point at which the gradient is to be computed
    * @param center_points center points with which the RBFN was built. Matrix should be of size 
    * [(#center points) x dimension_input], with the center point vectors being displayed horizontally.
    * @return MatrixXt [(#center points) x dimension_input] matrix that it is multiplied by the 
    * [(#center points) x dimension input].transposed() coefficient matrix yields the 
-   * [dimension_output x dimension_input] Jacobian.
+   * [dimension_output x dimension_input] gradient.
    */
-  virtual             MatrixXt  jacobian_rbfn(const VectorXt &x, const MatrixXt &center_points) const = 0;
+  virtual             MatrixXt  gradient_rbfn(const VectorXt &x, const MatrixXt &center_points) const = 0;
 
   /**
    * @brief Computes a vector of [(#center points) x dimension_input] matrices with part of the second
@@ -116,7 +117,7 @@ struct RBF {
    * 
    * Done to take advantage of Eigen's vectorization capabilities.
    * 
-   * @param x point at which the Jacobian is to be computed
+   * @param x point at which the gradient is to be computed
    * @param center_points center points with which the RBFN was built. Matrix should be of size 
    * [(#center points) x dimension_input], with the center point vectors being displayed horizontally.
    * @return std::vector<MatrixXt> vector of [(#center points) x dimension_input] matrices that when multiplied
@@ -170,14 +171,14 @@ struct CubicRBF : public RBF<T> {
   virtual T eval(const VectorXt &x, const VectorXt &c) const override final;
   
   /**
-   * @brief Evaluating the jacobian using two vectors.
+   * @brief Evaluating the gradient using two vectors.
    * 
    * @param x input vector
    * @param c center point
-   * @return std::shared_ptr<vector_t> jacobian at point x
+   * @return std::shared_ptr<vector_t> gradient at point x
    */
-  virtual std::shared_ptr<vector_t> eval_jacobian(const vector_t &x, const vector_t &c) const override final;
-  virtual std::shared_ptr<VectorXt> eval_jacobian(const VectorXt &x, const VectorXt &c) const override final;
+  virtual std::shared_ptr<vector_t> eval_gradient(const vector_t &x, const vector_t &c) const override final;
+  virtual std::shared_ptr<VectorXt> eval_gradient(const VectorXt &x, const VectorXt &c) const override final;
 
   /**
    * @brief Evaluating the hessian using two vectors
@@ -188,6 +189,51 @@ struct CubicRBF : public RBF<T> {
    */
   virtual std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const override final;
   virtual std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const override final;
+
+  /**
+   * @brief Computes a matrix of RBF partial derivatives so that the gradient of the RBFN at the point x
+   * can be computed using:
+   * coefficients.transpose() * gradient_rbfn(x, center_points)
+   * 
+   * In case of an RBFNPolynomial, one just needs to concatenate a matrix of dimensions 
+   * [(dimension_input + 1) x dimension_output] below the output of this function before the multiplication.
+   * The matrix shall have the form presented below:
+   * 0 0 ... 0
+   * 1 1 ... 1
+   * 1 1 ... 1
+   *   ...
+   * 1 1 ... 1
+   * 
+   * Done to take advantage of Eigen's vectorization capabilities.
+   * 
+   * @param x point at which the gradient is to be computed
+   * @param center_points center points with which the RBFN was built. Matrix should be of size 
+   * [(#center points) x dimension_input], with the center point vectors being displayed horizontally.
+   * @return MatrixXt [(#center points) x dimension_input] matrix that it is multiplied by the 
+   * [(#center points) x dimension input].transposed() coefficient matrix yields the 
+   * [dimension_output x dimension_input] gradient.
+   */
+  virtual             MatrixXt  gradient_rbfn(const VectorXt &x, const MatrixXt &center_points) const override final;
+
+  /**
+   * @brief Computes a vector of [(#center points) x dimension_input] matrices with part of the second
+   * partial derivatives of the RBFN or RBFN polynomial functions. In order to obtain the Hessian of the output 
+   * dimension k, one should transpose and multiply the RBFN coefficients of the k-th dimension, that is,
+   * RBFN::coefficients.col(k).transpose(), by each of the matrices in the vector produced by this function.
+   * Each multiplication will yield a row of the corresponding Hessian. 
+   * 
+   * This multiplication process should be repeated for each set of coefficients (each output dimension)
+   * in order to obtain the Hessian matrices for every output dimension.
+   * 
+   * Done to take advantage of Eigen's vectorization capabilities.
+   * 
+   * @param x point at which the gradient is to be computed
+   * @param center_points center points with which the RBFN was built. Matrix should be of size 
+   * [(#center points) x dimension_input], with the center point vectors being displayed horizontally.
+   * @return std::vector<MatrixXt> vector of [(#center points) x dimension_input] matrices that when multiplied
+   * by the coefficient vectors yield the Hessian matrix associated with the respective output dimensions.
+   */
+  virtual std::vector<MatrixXt>  hessian_rbfn(const VectorXt &x, const MatrixXt &center_points) const override final;
 };
 
 /**
@@ -235,14 +281,14 @@ struct GaussianRBF : public RBF<T> {
   virtual T eval(const VectorXt &x, const VectorXt &c) const override final;
   
   /**
-   * @brief Evaluating the jacobian using two vectors.
+   * @brief Evaluating the gradient using two vectors.
    * 
    * @param x input vector
    * @param c center point
-   * @return std::shared_ptr<vector_t> jacobian at point x
+   * @return std::shared_ptr<vector_t> gradient at point x
    */
-  virtual std::shared_ptr<vector_t> eval_jacobian(const vector_t &x, const vector_t &c) const override final;
-  virtual std::shared_ptr<VectorXt> eval_jacobian(const VectorXt &x, const VectorXt &c) const override final;
+  virtual std::shared_ptr<vector_t> eval_gradient(const vector_t &x, const vector_t &c) const override final;
+  virtual std::shared_ptr<VectorXt> eval_gradient(const VectorXt &x, const VectorXt &c) const override final;
 
   /**
    * @brief Evaluating the hessian using two vectors
@@ -255,6 +301,51 @@ struct GaussianRBF : public RBF<T> {
   virtual std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const override final;
   virtual std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const override final;
 
+
+  /**
+   * @brief Computes a matrix of RBF partial derivatives so that the gradient of the RBFN at the point x
+   * can be computed using:
+   * coefficients.transpose() * gradient_rbfn(x, center_points)
+   * 
+   * In case of an RBFNPolynomial, one just needs to concatenate a matrix of dimensions 
+   * [(dimension_input + 1) x dimension_input] below the output of this function before the multiplication.
+   * The matrix shall have the form presented below:
+   * 0 0 ... 0
+   * 1 1 ... 1
+   * 1 1 ... 1
+   *   ...
+   * 1 1 ... 1
+   * 
+   * Done to take advantage of Eigen's vectorization capabilities.
+   * 
+   * @param x point at which the gradient is to be computed
+   * @param center_points center points with which the RBFN was built. Matrix should be of size 
+   * [(#center points) x dimension_input], with the center point vectors being displayed horizontally.
+   * @return MatrixXt [(#center points) x dimension_input] matrix that it is multiplied by the 
+   * [(#center points) x dimension input].transposed() coefficient matrix yields the 
+   * [dimension_output x dimension_input] gradient.
+   */
+  virtual             MatrixXt  gradient_rbfn(const VectorXt &x, const MatrixXt &center_points) const override final;
+
+  /**
+   * @brief Computes a vector of [(#center points) x dimension_input] matrices with part of the second order
+   * partial derivatives of the RBFN or RBFN polynomial functions. In order to obtain the Hessian of the output 
+   * dimension k, one should transpose and multiply the RBFN coefficients of the k-th dimension, that is,
+   * RBFN::coefficients.col(k).transpose(), by each of the matrices in the vector produced by this function.
+   * Each multiplication will yield a row of the corresponding Hessian. 
+   * 
+   * This multiplication process should be repeated for each set of coefficients (each output dimension)
+   * in order to obtain the Hessian matrices for every output dimension.
+   * 
+   * Done to take advantage of Eigen's vectorization capabilities.
+   * 
+   * @param x point at which the gradient is to be computed
+   * @param center_points center points with which the RBFN was built. Matrix should be of size 
+   * [(#center points) x dimension_input], with the center point vectors being displayed horizontally.
+   * @return std::vector<MatrixXt> vector of [(#center points) x dimension_input] matrices that when multiplied
+   * by the coefficient vectors yield the Hessian matrix associated with the respective output dimensions.
+   */
+  virtual std::vector<MatrixXt>  hessian_rbfn(const VectorXt &x, const MatrixXt &center_points) const override final;
 
 
   private:
