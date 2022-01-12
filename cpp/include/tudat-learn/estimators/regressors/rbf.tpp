@@ -217,10 +217,10 @@ std::vector<typename RBF<T>::MatrixXt> CubicRBF<T>::hessian_rbfn(const VectorXt 
       center_points.rows(), center_points.cols()
     );
 
-    k_th_derivative_matrix = 3 * (
-      difference_input_center_points.array().colwise() * 
-      difference_input_center_points.col(k).array()    * 
-      distance_matrix.array()
+    k_th_derivative_matrix = 3 * ((
+        difference_input_center_points.array().colwise() * 
+        difference_input_center_points.col(k).array()
+      ).colwise() * distance_matrix.array()
     ).matrix();
 
     k_th_derivative_matrix.col(k) = k_th_derivative_matrix.col(k) + 3 * distance_matrix;
@@ -423,10 +423,10 @@ std::vector<typename RBF<T>::MatrixXt>  GaussianRBF<T>::hessian_rbfn(const Vecto
       center_points.rows(), center_points.cols()
     );
 
-    k_th_derivative_matrix = (-2 / sigma_sqrd) * (-2 / sigma_sqrd) * (
-      difference_input_center_points.array().colwise() * 
-      difference_input_center_points.col(k).array()    * 
-      rbf_output_vector.array()
+    k_th_derivative_matrix = (-2 / sigma_sqrd) * (-2 / sigma_sqrd) * ((
+        difference_input_center_points.array().colwise() * 
+        difference_input_center_points.col(k).array()
+      ).colwise() * rbf_output_vector.array()
     ).matrix();
 
     k_th_derivative_matrix.col(k) = k_th_derivative_matrix.col(k) + (-2 / sigma_sqrd) * rbf_output_vector;

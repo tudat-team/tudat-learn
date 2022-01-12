@@ -10,12 +10,47 @@
 
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <vector>
 
 #include <Eigen/Core>
 
+#include "tudat-learn/dataset.hpp"
 #include "tudat-learn/estimators/regressors/rbf.hpp"
 #include "tudat-learn/estimators/regressors/rbfn.hpp"
+
+namespace tudat_learn{ 
+
+template <typename Datum_t, typename Label_t>
+class DerivativeTester : public tudat_learn::RBFN<Datum_t, Label_t> {
+
+  public:
+    DerivativeTester(
+      const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr,
+      const std::shared_ptr< RBF<typename Label_t::Scalar> > &rbf_ptr
+    ) : RBFN<Datum_t, Label_t>(dataset_ptr, rbf_ptr) { 
+      this->coefficients = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>::Ones(
+        dataset_ptr->size(), dataset_ptr->labels_at(0).rows()
+      );
+
+     this->center_points.resize(this->dataset_ptr->size(), this->dataset_ptr->data_at(0).rows());
+
+      for(int i = 0; i < this->dataset_ptr->size(); ++i) {
+        this->center_points.row(i)    = this->dataset_ptr->data_at(i);
+      }
+
+    }
+
+    // virtual void fit( ) override {
+    //   RBFN<Datum_t, Label_t>::fit();
+
+    //   this->coefficients = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>::Ones(
+    //     this->coefficients.rows(), this->coefficients.cols()
+    //     );
+    // }
+};
+
+} // namespace tudat_learn
 
 int main( ) {
   
@@ -284,6 +319,38 @@ int main( ) {
 
   if( !gaussian_coefficients_expected_poly.isApprox(gaussian_rbfn_extra_poly.get_coefficients()) )
     return 1;
+
+  // Testing Derivatives
+  std::vector< Eigen::VectorXf > data_derivatives({
+    (Eigen::VectorXf(3) << 0.25891675, 0.51127472, 0.40493414).finished()
+  });
+  
+  std::vector< Eigen::VectorXf > labels_derivatives({
+    (Eigen::VectorXf(1) << 0.25670216).finished()
+  });
+
+  Eigen::VectorXf x_derivatives = (Eigen::VectorXf(3) << 0.84442185, 0.7579544,  0.42057158).finished();
+
+  auto dataset_ptr_derivatives = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, Eigen::VectorXf> >(tudat_learn::Dataset(data_derivatives, labels_derivatives));
+  auto gaussian_rbf_ptr_derivatives = std::make_shared< tudat_learn::GaussianRBF<float> >(tudat_learn::GaussianRBF<float>(0.78379858));
+  
+  tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_cubic(dataset_ptr_derivatives, cubic_rbf_ptr);
+  tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_gaussian(dataset_ptr_derivatives, gaussian_rbf_ptr_derivatives);
+
+  std::cout << "Gradient of the Cubic RBF:\n" << derivative_tester_cubic.gradient(x_derivatives) << std::endl;
+  std::cout << "Gradient of the Gaussian RBF:\n" << derivative_tester_gaussian.gradient(x_derivatives) << std::endl;
+
+  Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> dif(1, 3);
+  Eigen::Matrix<float, Eigen::Dynamic, 1> dist(1);
+  dif = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>::Random(1,3);
+  dist = Eigen::Matrix<float, Eigen::Dynamic, 1>::Random(1);
+
+  std::cout << dif << "\n\n" << std::endl;
+  std::cout << dist << std::endl;
+  (dif.array().colwise() * dif.col(0).array()).colwise() * dist.array();
+
+  std::cout << "Hessian of the Cubic RBF:\n" << derivative_tester_cubic.hessians(x_derivatives)[0] << std::endl;
+  std::cout << "Hessian of the Gaussian RBF:\n" << derivative_tester_gaussian.hessians(x_derivatives)[0] << std::endl;
 
   return 0;
 }

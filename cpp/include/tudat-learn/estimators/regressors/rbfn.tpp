@@ -162,30 +162,30 @@ Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> RBFN<Dat
 
     MatrixX gradient(
         this->coefficients.cols(), this->center_points.cols()
-    );
-
+    );  
+    
     gradient = this->coefficients.transpose() * this->rbf_ptr->gradient_rbfn(x, this->center_points);
-
+    
     return gradient;
 }
 
 template <typename Datum_t, typename Label_t>
 std::vector< Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> > RBFN<Datum_t, Label_t>::hessians(const Datum_t &x) const {
     using MatrixX = Eigen::Matrix< typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
-
+    
     std::vector<MatrixX> rbf_second_order_derivatives = this->rbf_ptr->hessian_rbfn(x, this->center_points);
     
     std::vector<MatrixX> hessians;
     hessians.reserve(this->coefficients.cols());
-
+    
     for(int i = 0; i < this->coefficients.cols(); ++i) {
         MatrixX hessian(
             this->center_points.cols(), this->center_points.cols()
         );
-
+    
         for(int j = 0; j < this->center_points.cols(); ++j) 
             hessian.row(j) = coefficients.col(i).transpose() * rbf_second_order_derivatives.at(j);
-
+    
         hessians.push_back(hessian);
     }
     
