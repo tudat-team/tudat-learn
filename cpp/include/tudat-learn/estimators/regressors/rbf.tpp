@@ -154,7 +154,8 @@ typename RBF<T>::MatrixXt CubicRBF<T>::gradient_rbfn(const VectorXt &x, const Ma
     center_points.rows(), center_points.cols()
   );
 
-  difference_input_center_points = center_points.rowwise() - x.transpose();
+  // Written in this way since the matrix that invokes the rowwise() method has to be on the left hand side
+  difference_input_center_points = - (center_points.rowwise() - x.transpose());
 
   // This matrix contains the Euclidean distances between the input and every center point as inputs.
   // Dimensions: [#(center points) x 1]
@@ -187,7 +188,10 @@ std::vector<typename RBF<T>::MatrixXt> CubicRBF<T>::hessian_rbfn(const VectorXt 
     center_points.rows(), center_points.cols()
   );
 
-  difference_input_center_points = center_points.rowwise() - x.transpose();
+  // Written in this way since the matrix that invokes the rowwise() method has to be on the left-hand side
+  // However, it could just be center_points.rowwise() - x.transpose, since further ahead two columns are always
+  // multiplied, nulifying the minus sign. The minus sign here is added for comprehension.
+  difference_input_center_points = - (center_points.rowwise() - x.transpose());
 
   // This matrix contains the Euclidean distances between the input and every center point as inputs.
   // Dimensions: [#(center points) x 1]
@@ -359,7 +363,8 @@ typename RBF<T>::MatrixXt GaussianRBF<T>::gradient_rbfn(const VectorXt &x, const
     center_points.rows(), center_points.cols()
   );
 
-  difference_input_center_points = center_points.rowwise() - x.transpose();
+  // Written in this way since the matrix that invokes the rowwise() method has to be on the left-hand side
+  difference_input_center_points = - (center_points.rowwise() - x.transpose());
 
   // This matrix contains the output of the RBF when given the Euclidean distances between the input and every
   // center point as inputs.
@@ -393,7 +398,10 @@ std::vector<typename RBF<T>::MatrixXt>  GaussianRBF<T>::hessian_rbfn(const Vecto
     center_points.rows(), center_points.cols()
   );
 
-  difference_input_center_points = center_points.rowwise() - x.transpose();
+  // Written in this way since the matrix that invokes the rowwise() method has to be on the left-hand side
+  // However, it could just be center_points.rowwise() - x.transpose, since further ahead two columns are always
+  // multiplied, nulifying the minus sign. The minus sign here is added for comprehension.
+  difference_input_center_points = - (center_points.rowwise() - x.transpose());
 
   // This matrix contains the Euclidean distances between the input and every center point as inputs.
   // Dimensions: [#(center points) x 1]

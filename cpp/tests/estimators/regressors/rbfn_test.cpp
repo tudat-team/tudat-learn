@@ -345,10 +345,6 @@ int main( ) {
   dif = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>::Random(1,3);
   dist = Eigen::Matrix<float, Eigen::Dynamic, 1>::Random(1);
 
-  std::cout << dif << "\n\n" << std::endl;
-  std::cout << dist << std::endl;
-  (dif.array().colwise() * dif.col(0).array()).colwise() * dist.array();
-
   std::cout << "Hessian of the Cubic RBF:\n" << derivative_tester_cubic.hessians(x_derivatives)[0] << std::endl;
   std::cout << "Hessian of the Gaussian RBF:\n" << derivative_tester_gaussian.hessians(x_derivatives)[0] << std::endl;
 
