@@ -220,7 +220,7 @@ std::vector<typename RBF<T>::MatrixXt> CubicRBF<T>::hessian_rbfn(const VectorXt 
     k_th_derivative_matrix = 3 * ((
         difference_input_center_points.array().colwise() * 
         difference_input_center_points.col(k).array()
-      ).colwise() * distance_matrix.array()
+      ).colwise() / distance_matrix.array()
     ).matrix();
 
     k_th_derivative_matrix.col(k) = k_th_derivative_matrix.col(k) + 3 * distance_matrix;
