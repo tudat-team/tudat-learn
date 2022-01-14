@@ -21,6 +21,35 @@
 
 namespace tudat_learn{ 
 
+// template <typename Datum_t, typename Label_t>
+// class DerivativeTester : public tudat_learn::RBFN<Datum_t, Label_t> {
+
+//   public:
+//     DerivativeTester(
+//       const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr,
+//       const std::shared_ptr< RBF<typename Label_t::Scalar> > &rbf_ptr
+//     ) : RBFN<Datum_t, Label_t>(dataset_ptr, rbf_ptr) { 
+//       this->coefficients = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>::Ones(
+//         dataset_ptr->size(), dataset_ptr->labels_at(0).rows()
+//       );
+
+//      this->center_points.resize(this->dataset_ptr->size(), this->dataset_ptr->data_at(0).rows());
+
+//       for(int i = 0; i < this->dataset_ptr->size(); ++i) {
+//         this->center_points.row(i)    = this->dataset_ptr->data_at(i);
+//       }
+
+//     }
+
+//     // virtual void fit( ) override {
+//     //   RBFN<Datum_t, Label_t>::fit();
+
+//     //   this->coefficients = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>::Ones(
+//     //     this->coefficients.rows(), this->coefficients.cols()
+//     //     );
+//     // }
+// };
+
 template <typename Datum_t, typename Label_t>
 class DerivativeTester : public tudat_learn::RBFN<Datum_t, Label_t> {
 
@@ -38,17 +67,68 @@ class DerivativeTester : public tudat_learn::RBFN<Datum_t, Label_t> {
       for(int i = 0; i < this->dataset_ptr->size(); ++i) {
         this->center_points.row(i)    = this->dataset_ptr->data_at(i);
       }
-
     }
 
-    // virtual void fit( ) override {
-    //   RBFN<Datum_t, Label_t>::fit();
+    virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> gradient(const Datum_t &x) const override {
+      using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 
-    //   this->coefficients = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>::Ones(
-    //     this->coefficients.rows(), this->coefficients.cols()
-    //     );
-    // }
+      MatrixX gradient = MatrixX::Zero(
+        this->coefficients.cols(), this->center_points.cols()
+      );
+
+      for(int k = 0; k < this->coefficients.cols(); ++k) {
+          MatrixX pd = MatrixX::Zero(
+            this->center_points.rows(), this->center_points.cols()
+          );
+          
+          for(int n = 0; n < this->center_points.rows(); ++n) {
+            pd.row(n) = *(this->rbf_ptr->eval_gradient(x, this->center_points.row(n).transpose()));
+          }
+
+          gradient.row(k) = this->coefficients.col(k).transpose() * pd;
+
+      }
+      
+      return gradient;
+    }
 };
+
+template <typename Datum_t, typename Label_t>
+class DerivativeTesterPolynomial : public tudat_learn::RBFNPolynomial<Datum_t, Label_t> {
+
+  public:
+    DerivativeTesterPolynomial(
+      const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr,
+      const std::shared_ptr< RBF<typename Label_t::Scalar> > &rbf_ptr
+    ) : RBFNPolynomial<Datum_t, Label_t>(dataset_ptr, rbf_ptr) { }
+
+    virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> gradient(const Datum_t &x) const override {
+      using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
+      MatrixX gradient = MatrixX::Zero(
+        this->coefficients.cols(), this->center_points.cols()
+      );
+
+      for(int k = 0; k < this->coefficients.cols(); ++k) {
+          MatrixX pd = MatrixX::Zero(
+            this->center_points.rows(), this->center_points.cols()
+          );
+          
+          for(int n = 0; n < this->center_points.rows(); ++n) {
+            pd.row(n) = *(this->rbf_ptr->eval_gradient(x, this->center_points.row(n).transpose()));
+          }
+
+          gradient.row(k) = this->coefficients.col(k).head(this->center_points.rows()).transpose() * pd;
+
+      }
+
+      gradient += this->coefficients.block(this->center_points.rows() + 1, 0, this->center_points.cols(), this->coefficients.cols()).transpose();
+      
+      return gradient;
+    }
+};
+
+
 
 } // namespace tudat_learn
 
@@ -321,32 +401,51 @@ int main( ) {
     return 1;
 
   // Testing Derivatives
-  std::vector< Eigen::VectorXf > data_derivatives({
-    (Eigen::VectorXf(3) << 0.25891675, 0.51127472, 0.40493414).finished()
-  });
+  // std::vector< Eigen::VectorXf > data_derivatives({
+  //   (Eigen::VectorXf(3) << 0.25891675, 0.51127472, 0.40493414).finished()
+  // });
   
-  std::vector< Eigen::VectorXf > labels_derivatives({
-    (Eigen::VectorXf(1) << 0.25670216).finished()
-  });
+  // std::vector< Eigen::VectorXf > labels_derivatives({
+  //   (Eigen::VectorXf(2) << 0.25670216, 0.25670216).finished()
+  // });
 
-  Eigen::VectorXf x_derivatives = (Eigen::VectorXf(3) << 0.84442185, 0.7579544,  0.42057158).finished();
+  // Eigen::VectorXf x_derivatives = (Eigen::VectorXf(3) << 0.84442185, 0.7579544,  0.42057158).finished();
 
-  auto dataset_ptr_derivatives = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, Eigen::VectorXf> >(tudat_learn::Dataset(data_derivatives, labels_derivatives));
-  auto gaussian_rbf_ptr_derivatives = std::make_shared< tudat_learn::GaussianRBF<float> >(tudat_learn::GaussianRBF<float>(0.78379858));
+  // auto dataset_ptr_derivatives = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, Eigen::VectorXf> >(tudat_learn::Dataset(data_derivatives, labels_derivatives));
+  // auto gaussian_rbf_ptr_derivatives = std::make_shared< tudat_learn::GaussianRBF<float> >(tudat_learn::GaussianRBF<float>(0.78379858));
   
-  tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_cubic(dataset_ptr_derivatives, cubic_rbf_ptr);
-  tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_gaussian(dataset_ptr_derivatives, gaussian_rbf_ptr_derivatives);
+  // tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_cubic(dataset_ptr_derivatives, cubic_rbf_ptr);
+  // tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_gaussian(dataset_ptr_derivatives, gaussian_rbf_ptr_derivatives);
 
-  std::cout << "Gradient of the Cubic RBF:\n" << derivative_tester_cubic.gradient(x_derivatives) << std::endl;
-  std::cout << "Gradient of the Gaussian RBF:\n" << derivative_tester_gaussian.gradient(x_derivatives) << std::endl;
+  // std::cout << "Gradient of the Cubic RBF:\n" << derivative_tester_cubic.gradient(x_derivatives) << std::endl;
+  // std::cout << "Gradient of the Gaussian RBF:\n" << derivative_tester_gaussian.gradient(x_derivatives) << std::endl;
 
-  Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> dif(1, 3);
-  Eigen::Matrix<float, Eigen::Dynamic, 1> dist(1);
-  dif = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>::Random(1,3);
-  dist = Eigen::Matrix<float, Eigen::Dynamic, 1>::Random(1);
+  // Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> dif(1, 3);
+  // Eigen::Matrix<float, Eigen::Dynamic, 1> dist(1);
+  // dif = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>::Random(1,3);
+  // dist = Eigen::Matrix<float, Eigen::Dynamic, 1>::Random(1);
 
-  std::cout << "Hessian of the Cubic RBF:\n" << derivative_tester_cubic.hessians(x_derivatives)[0] << std::endl;
-  std::cout << "Hessian of the Gaussian RBF:\n" << derivative_tester_gaussian.hessians(x_derivatives)[0] << std::endl;
+  // std::cout << "Hessian of the Cubic RBF:\n" << derivative_tester_cubic.hessians(x_derivatives)[0] << std::endl;
+  // std::cout << "Hessian of the Gaussian RBF 0:\n" << derivative_tester_gaussian.hessians(x_derivatives)[0] << std::endl;
+  // std::cout << "Hessian of the Gaussian RBF 1:\n" << derivative_tester_gaussian.hessians(x_derivatives)[1] << std::endl;
+
+  tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_cubic(dataset_ptr, cubic_rbf_ptr);
+  tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_gaussian(dataset_ptr, gaussian_rbf_ptr);
+
+  derivative_tester_cubic.fit();
+  derivative_tester_gaussian.fit();
+
+  std::cout << "Gradient of the Cubic Derivative Tester at input[0]:\n" << derivative_tester_cubic.gradient(inputs.at(0)) << std::endl;
+  std::cout << "Gradient of the Cubic RBFN at input[0]:\n" << cubic_rbfn.gradient(inputs.at(0)) << std::endl;
+
+  tudat_learn::DerivativeTesterPolynomial<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_cubic_poly(dataset_ptr, cubic_rbf_ptr);
+  tudat_learn::DerivativeTesterPolynomial<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_gaussian_poly(dataset_ptr, gaussian_rbf_ptr);
+
+  derivative_tester_cubic_poly.fit();
+  derivative_tester_gaussian_poly.fit();
+
+  std::cout << "Gradient of the Polynomial Cubic Derivative Tester at input[0]:\n" << derivative_tester_cubic_poly.gradient(inputs.at(0)) << std::endl;
+  std::cout << "Gradient of the Polynomial Cubic RBFN at input[0]:\n" << cubic_rbfn_poly.gradient(inputs.at(0)) << std::endl;  
 
   return 0;
 }
