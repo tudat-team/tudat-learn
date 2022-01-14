@@ -400,7 +400,7 @@ Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> RBFNPoly
 
     partial_derivatives_rbf << this->rbf_ptr->gradient_rbfn(x, this->center_points),
                                MatrixX::Zero(1, this->center_points.cols()),
-                               MatrixX::Ones(this->center_points.cols(), this->center_points.cols());
+                               MatrixX::Identity(this->center_points.cols(), this->center_points.cols());
 
     MatrixX gradient(
         this->coefficients.cols(), this->center_points.cols()

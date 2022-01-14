@@ -437,6 +437,13 @@ int main( ) {
 
   std::cout << "Gradient of the Cubic Derivative Tester at input[0]:\n" << derivative_tester_cubic.gradient(inputs.at(0)) << std::endl;
   std::cout << "Gradient of the Cubic RBFN at input[0]:\n" << cubic_rbfn.gradient(inputs.at(0)) << std::endl;
+  for(int i = 0; i < inputs.size(); ++i) {
+    if(!derivative_tester_cubic.gradient(inputs[i]).isApprox(cubic_rbfn.gradient(inputs.at(i))))
+      return 1;
+  }
+
+  std::cout << "Gradient of the Gaussian Derivative Tester at input[0]:\n" << derivative_tester_gaussian.gradient(inputs.at(0)) << std::endl;
+  std::cout << "Gradient of the Gaussian RBFN at input[0]:\n" << gaussian_rbfn.gradient(inputs.at(0)) << std::endl;
 
   tudat_learn::DerivativeTesterPolynomial<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_cubic_poly(dataset_ptr, cubic_rbf_ptr);
   tudat_learn::DerivativeTesterPolynomial<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_gaussian_poly(dataset_ptr, gaussian_rbf_ptr);
@@ -446,6 +453,9 @@ int main( ) {
 
   std::cout << "Gradient of the Polynomial Cubic Derivative Tester at input[0]:\n" << derivative_tester_cubic_poly.gradient(inputs.at(0)) << std::endl;
   std::cout << "Gradient of the Polynomial Cubic RBFN at input[0]:\n" << cubic_rbfn_poly.gradient(inputs.at(0)) << std::endl;  
+  std::cout << "Gradient of the Polynomial Gaussian Derivative Tester at input[0]:\n" << derivative_tester_gaussian_poly.gradient(inputs.at(0)) << std::endl;
+  std::cout << "Gradient of the Polynomial Gaussian RBFN at input[0]:\n" << gaussian_rbfn_poly.gradient(inputs.at(0)) << std::endl;  
+  
 
   return 0;
 }
