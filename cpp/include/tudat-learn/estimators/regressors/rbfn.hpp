@@ -98,6 +98,8 @@ class RBFNPolynomial : public RBFN<Datum_t, Label_t> {
 
     virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> gradient(const Datum_t &x) const override;
 
+    virtual std::vector< Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> > hessians(const Datum_t &x) const override;
+
 };
 
 } // namespace tudat_learn

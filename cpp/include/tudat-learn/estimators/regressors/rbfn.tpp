@@ -411,6 +411,29 @@ Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> RBFNPoly
     return gradient;
 }
 
+template <typename Datum_t, typename Label_t>
+std::vector< Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> > RBFNPolynomial<Datum_t, Label_t>::hessians(const Datum_t &x) const {
+    using MatrixX = Eigen::Matrix< typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+    
+    std::vector<MatrixX> rbf_second_order_derivatives = this->rbf_ptr->hessian_rbfn(x, this->center_points);
+    
+    std::vector<MatrixX> hessians;
+    hessians.reserve(this->coefficients.cols());
+    
+    for(int i = 0; i < this->coefficients.cols(); ++i) {
+        MatrixX hessian(
+            this->center_points.cols(), this->center_points.cols()
+        );
+    
+        for(int j = 0; j < this->center_points.cols(); ++j) 
+            hessian.row(j) = this->coefficients.col(i).head(this->center_points.rows()).transpose() * rbf_second_order_derivatives.at(j);
+    
+        hessians.push_back(hessian);
+    }
+    
+    return hessians;
+}
+
 } // namespace tudat_learn
 
 #endif // TUDAT_LEARN_RBFN_TPP

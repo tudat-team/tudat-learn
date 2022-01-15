@@ -91,6 +91,29 @@ class DerivativeTester : public tudat_learn::RBFN<Datum_t, Label_t> {
       
       return gradient;
     }
+
+    virtual std::vector< Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> > hessians(const Datum_t &x) const override {
+      using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
+      std::vector<MatrixX> hessians(
+        this->coefficients.cols(),
+        MatrixX::Zero(this->center_points.cols(), this->center_points.cols())
+      );
+
+      for(int n = 0; n < this->center_points.rows(); ++n) {
+        MatrixX hessian_rbf(
+          this->center_points.cols(), this->center_points.cols()
+        );
+
+        hessian_rbf = *(this->rbf_ptr->eval_hessian(x, this->center_points.row(n)));
+
+        for(int k = 0; k < this->coefficients.cols(); k++) {
+          hessians.at(k) += hessian_rbf * this->coefficients(n, k);
+        }
+      }
+
+      return hessians;
+    } 
 };
 
 template <typename Datum_t, typename Label_t>
@@ -126,6 +149,29 @@ class DerivativeTesterPolynomial : public tudat_learn::RBFNPolynomial<Datum_t, L
       
       return gradient;
     }
+
+    virtual std::vector< Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> > hessians(const Datum_t &x) const override {
+      using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
+      std::vector<MatrixX> hessians(
+        this->coefficients.cols(),
+        MatrixX::Zero(this->center_points.cols(), this->center_points.cols())
+      );
+
+      for(int n = 0; n < this->center_points.rows(); ++n) {
+        MatrixX hessian_rbf(
+          this->center_points.cols(), this->center_points.cols()
+        );
+
+        hessian_rbf = *(this->rbf_ptr->eval_hessian(x, this->center_points.row(n)));
+
+        for(int k = 0; k < this->coefficients.cols(); k++) {
+          hessians.at(k) += hessian_rbf * this->coefficients(n, k);
+        }
+      }
+
+      return hessians;
+    } 
 };
 
 
@@ -435,15 +481,21 @@ int main( ) {
   derivative_tester_cubic.fit();
   derivative_tester_gaussian.fit();
 
-  std::cout << "Gradient of the Cubic Derivative Tester at input[0]:\n" << derivative_tester_cubic.gradient(inputs.at(0)) << std::endl;
-  std::cout << "Gradient of the Cubic RBFN at input[0]:\n" << cubic_rbfn.gradient(inputs.at(0)) << std::endl;
   for(int i = 0; i < inputs.size(); ++i) {
+    std::cout << "Gradient of the Cubic Derivative Tester at input[" << i << "]:\n" << derivative_tester_cubic.gradient(inputs.at(i)) << std::endl;
+    std::cout << "Gradient of the Cubic RBFN at input[" << i << "]:\n" << cubic_rbfn.gradient(inputs.at(i)) << std::endl;
+
     if(!derivative_tester_cubic.gradient(inputs[i]).isApprox(cubic_rbfn.gradient(inputs.at(i))))
       return 1;
   }
 
-  std::cout << "Gradient of the Gaussian Derivative Tester at input[0]:\n" << derivative_tester_gaussian.gradient(inputs.at(0)) << std::endl;
-  std::cout << "Gradient of the Gaussian RBFN at input[0]:\n" << gaussian_rbfn.gradient(inputs.at(0)) << std::endl;
+  for(int i = 0; i < inputs.size(); ++i) {
+    std::cout << "Gradient of the Gaussian Derivative Tester at input[" << i << "]:\n" << derivative_tester_gaussian.gradient(inputs.at(i)) << std::endl;
+    std::cout << "Gradient of the Gaussian RBFN at input[" << i << "]:\n" << gaussian_rbfn.gradient(inputs.at(i)) << std::endl;
+
+    if(!derivative_tester_gaussian.gradient(inputs[i]).isApprox(gaussian_rbfn.gradient(inputs.at(i))))
+      return 1;
+  }
 
   tudat_learn::DerivativeTesterPolynomial<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_cubic_poly(dataset_ptr, cubic_rbf_ptr);
   tudat_learn::DerivativeTesterPolynomial<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_gaussian_poly(dataset_ptr, gaussian_rbf_ptr);
@@ -451,10 +503,61 @@ int main( ) {
   derivative_tester_cubic_poly.fit();
   derivative_tester_gaussian_poly.fit();
 
-  std::cout << "Gradient of the Polynomial Cubic Derivative Tester at input[0]:\n" << derivative_tester_cubic_poly.gradient(inputs.at(0)) << std::endl;
-  std::cout << "Gradient of the Polynomial Cubic RBFN at input[0]:\n" << cubic_rbfn_poly.gradient(inputs.at(0)) << std::endl;  
-  std::cout << "Gradient of the Polynomial Gaussian Derivative Tester at input[0]:\n" << derivative_tester_gaussian_poly.gradient(inputs.at(0)) << std::endl;
-  std::cout << "Gradient of the Polynomial Gaussian RBFN at input[0]:\n" << gaussian_rbfn_poly.gradient(inputs.at(0)) << std::endl;  
+  for(int i = 0; i < inputs.size(); ++i) {
+    std::cout << "Gradient of the Polynomial Cubic Derivative Tester at input[" << i << "]:\n" << derivative_tester_cubic_poly.gradient(inputs.at(0)) << std::endl;
+    std::cout << "Gradient of the Polynomial Cubic RBFN at input[" << i << "]:\n" << cubic_rbfn_poly.gradient(inputs.at(0)) << std::endl;
+
+    if(!derivative_tester_cubic_poly.gradient(inputs[i]).isApprox(cubic_rbfn_poly.gradient(inputs.at(i))))
+      return 1;
+  }
+
+  for(int i = 0; i < inputs.size(); ++i) {
+    std::cout << "Gradient of the Polynomial Gaussian Derivative Tester at input[" << i << "]:\n" << derivative_tester_gaussian_poly.gradient(inputs.at(i)) << std::endl;
+    std::cout << "Gradient of the Polynomial Gaussian RBFN at input[" << i << "]:\n" << gaussian_rbfn_poly.gradient(inputs.at(i)) << std::endl;  
+
+    if(!derivative_tester_cubic_poly.gradient(inputs[i]).isApprox(cubic_rbfn_poly.gradient(inputs.at(i))))
+      return 1;
+  }
+  
+  for(int i = 0; i < inputs.size(); ++i) {
+    for(int j = 0; j < labels[0].rows(); ++j) {
+      std::cout << "Hessian[" << j << "] of the Cubic Derivative Tester at input[" << i << "]:\n" << derivative_tester_cubic.hessians(inputs.at(i)).at(j) << std::endl;
+      std::cout << "Hessian[" << j << "] of the Cubic RBFN at input[" << i << "]:\n" << cubic_rbfn.hessians(inputs.at(i)).at(j) << std::endl;  
+
+      if(!derivative_tester_cubic.hessians(inputs.at(i)).at(j).isApprox(cubic_rbfn.hessians(inputs.at(i)).at(j)))
+        return 1;
+    }
+  }
+
+  for(int i = 0; i < inputs.size(); ++i) {
+    for(int j = 0; j < labels[0].rows(); ++j) {
+      std::cout << "Hessian[" << j << "] of the Gaussian Derivative Tester at input[" << i << "]:\n" << derivative_tester_gaussian.hessians(inputs.at(i)).at(j) << std::endl;
+      std::cout << "Hessian[" << j << "] of the Gaussian RBFN at input[" << i << "]:\n" << gaussian_rbfn.hessians(inputs.at(i)).at(j) << std::endl;  
+
+      if(!derivative_tester_gaussian.hessians(inputs.at(i)).at(j).isApprox(gaussian_rbfn.hessians(inputs.at(i)).at(j)))
+        return 1;
+    }
+  }
+
+  for(int i = 0; i < inputs.size(); ++i) {
+    for(int j = 0; j < labels[0].rows(); ++j) {
+      std::cout << "Hessian[" << j << "] of the Polynomial Cubic Derivative Tester at input[" << i << "]:\n" << derivative_tester_cubic_poly.hessians(inputs.at(i)).at(j) << std::endl;
+      std::cout << "Hessian[" << j << "] of the Polynomial Cubic RBFN at input[" << i << "]:\n" << cubic_rbfn_poly.hessians(inputs.at(i)).at(j) << std::endl;  
+
+      if(!derivative_tester_cubic_poly.hessians(inputs.at(i)).at(j).isApprox(cubic_rbfn_poly.hessians(inputs.at(i)).at(j)))
+        return 1;
+    }
+  }
+
+  for(int i = 0; i < inputs.size(); ++i) {
+    for(int j = 0; j < labels[0].rows(); ++j) {
+      std::cout << "Hessian[" << j << "] of the Polynomial Gaussian Derivative Tester at input[" << i << "]:\n" << derivative_tester_gaussian_poly.hessians(inputs.at(i)).at(j) << std::endl;
+      std::cout << "Hessian[" << j << "] of the Polynomial Gaussian RBFN at input[" << i << "]:\n" << gaussian_rbfn_poly.hessians(inputs.at(i)).at(j) << std::endl;  
+
+      if(!derivative_tester_gaussian_poly.hessians(inputs.at(i)).at(j).isApprox(gaussian_rbfn_poly.hessians(inputs.at(i)).at(j)))
+        return 1;
+    }
+  }
   
 
   return 0;
