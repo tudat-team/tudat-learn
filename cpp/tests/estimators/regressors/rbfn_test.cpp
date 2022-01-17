@@ -415,7 +415,7 @@ int main( ) {
 
   Eigen::MatrixXf gaussian_output_poly(3,2);
   gaussian_output_poly = gaussian_rbfn_poly.eval(inputs);
-  std::cout << "gaussian RBFNPolynomial output:\n" << gaussian_output_poly << std::endl;
+  std::cout << "Gaussian RBFNPolynomial output:\n" << gaussian_output_poly << std::endl;
 
   Eigen::MatrixXf gaussian_output_expected_poly(3, 2);
   gaussian_output_expected_poly << 0.224686,  0.922516,
@@ -447,34 +447,6 @@ int main( ) {
     return 1;
 
   // Testing Derivatives
-  // std::vector< Eigen::VectorXf > data_derivatives({
-  //   (Eigen::VectorXf(3) << 0.25891675, 0.51127472, 0.40493414).finished()
-  // });
-  
-  // std::vector< Eigen::VectorXf > labels_derivatives({
-  //   (Eigen::VectorXf(2) << 0.25670216, 0.25670216).finished()
-  // });
-
-  // Eigen::VectorXf x_derivatives = (Eigen::VectorXf(3) << 0.84442185, 0.7579544,  0.42057158).finished();
-
-  // auto dataset_ptr_derivatives = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, Eigen::VectorXf> >(tudat_learn::Dataset(data_derivatives, labels_derivatives));
-  // auto gaussian_rbf_ptr_derivatives = std::make_shared< tudat_learn::GaussianRBF<float> >(tudat_learn::GaussianRBF<float>(0.78379858));
-  
-  // tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_cubic(dataset_ptr_derivatives, cubic_rbf_ptr);
-  // tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_gaussian(dataset_ptr_derivatives, gaussian_rbf_ptr_derivatives);
-
-  // std::cout << "Gradient of the Cubic RBF:\n" << derivative_tester_cubic.gradient(x_derivatives) << std::endl;
-  // std::cout << "Gradient of the Gaussian RBF:\n" << derivative_tester_gaussian.gradient(x_derivatives) << std::endl;
-
-  // Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> dif(1, 3);
-  // Eigen::Matrix<float, Eigen::Dynamic, 1> dist(1);
-  // dif = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>::Random(1,3);
-  // dist = Eigen::Matrix<float, Eigen::Dynamic, 1>::Random(1);
-
-  // std::cout << "Hessian of the Cubic RBF:\n" << derivative_tester_cubic.hessians(x_derivatives)[0] << std::endl;
-  // std::cout << "Hessian of the Gaussian RBF 0:\n" << derivative_tester_gaussian.hessians(x_derivatives)[0] << std::endl;
-  // std::cout << "Hessian of the Gaussian RBF 1:\n" << derivative_tester_gaussian.hessians(x_derivatives)[1] << std::endl;
-
   tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_cubic(dataset_ptr, cubic_rbf_ptr);
   tudat_learn::DerivativeTester<Eigen::VectorXf, Eigen::VectorXf> derivative_tester_gaussian(dataset_ptr, gaussian_rbf_ptr);
 

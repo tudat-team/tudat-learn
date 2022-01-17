@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 
 #include "tudat-learn/dataset.hpp"
+#include "tudat-learn/estimators/regressors/rbf.hpp"
 #include "tudat-learn/estimators/regressors/rbfn.hpp"
 #include "tudat-learn/types.hpp"
 
@@ -70,21 +71,196 @@ struct Timer {
   }
 };
 
+namespace tudat_learn {
 
-template <typename U>
-typename std::enable_if< tudat_learn::is_eigen<U>::value, U >::type eval_matrix(const U &distance_matrix) {
-  return distance_matrix;
-}
+template <typename Datum_t, typename Label_t>
+class DerivativeTester : public tudat_learn::RBFN<Datum_t, Label_t> {
+
+  public:
+    DerivativeTester(
+      const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr,
+      const std::shared_ptr< RBF<typename Label_t::Scalar> > &rbf_ptr
+    ) : RBFN<Datum_t, Label_t>(dataset_ptr, rbf_ptr) { 
+      this->coefficients = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>::Ones(
+        dataset_ptr->size(), dataset_ptr->labels_at(0).rows()
+      );
+
+     this->center_points.resize(this->dataset_ptr->size(), this->dataset_ptr->data_at(0).rows());
+
+      for(int i = 0; i < this->dataset_ptr->size(); ++i) {
+        this->center_points.row(i)    = this->dataset_ptr->data_at(i);
+      }
+    }
+
+    virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> gradient(const Datum_t &x) const override {
+      using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
+      MatrixX gradient = MatrixX::Zero(
+        this->coefficients.cols(), this->center_points.cols()
+      );
+
+      for(int k = 0; k < this->coefficients.cols(); ++k) {
+          MatrixX pd = MatrixX::Zero(
+            this->center_points.rows(), this->center_points.cols()
+          );
+          
+          for(int n = 0; n < this->center_points.rows(); ++n) {
+            pd.row(n) = *(this->rbf_ptr->eval_gradient(x, this->center_points.row(n).transpose()));
+          }
+
+          gradient.row(k) = this->coefficients.col(k).transpose() * pd;
+
+      }
+      
+      return gradient;
+    }
+
+    virtual std::vector< Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> > hessians(const Datum_t &x) const override {
+      using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
+      std::vector<MatrixX> hessians(
+        this->coefficients.cols(),
+        MatrixX::Zero(this->center_points.cols(), this->center_points.cols())
+      );
+
+      for(int n = 0; n < this->center_points.rows(); ++n) {
+        MatrixX hessian_rbf(
+          this->center_points.cols(), this->center_points.cols()
+        );
+
+        hessian_rbf = *(this->rbf_ptr->eval_hessian(x, this->center_points.row(n)));
+
+        for(int k = 0; k < this->coefficients.cols(); k++) {
+          hessians.at(k) += hessian_rbf * this->coefficients(n, k);
+        }
+      }
+
+      return hessians;
+    } 
+};
+
+template <typename Datum_t, typename Label_t>
+class DerivativeTesterPolynomial : public tudat_learn::RBFNPolynomial<Datum_t, Label_t> {
+
+  public:
+    DerivativeTesterPolynomial(
+      const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr,
+      const std::shared_ptr< RBF<typename Label_t::Scalar> > &rbf_ptr
+    ) : RBFNPolynomial<Datum_t, Label_t>(dataset_ptr, rbf_ptr) { }
+
+    virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> gradient(const Datum_t &x) const override {
+      using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
+      MatrixX gradient = MatrixX::Zero(
+        this->coefficients.cols(), this->center_points.cols()
+      );
+
+      for(int k = 0; k < this->coefficients.cols(); ++k) {
+          MatrixX pd = MatrixX::Zero(
+            this->center_points.rows(), this->center_points.cols()
+          );
+          
+          for(int n = 0; n < this->center_points.rows(); ++n) {
+            pd.row(n) = *(this->rbf_ptr->eval_gradient(x, this->center_points.row(n).transpose()));
+          }
+
+          gradient.row(k) = this->coefficients.col(k).head(this->center_points.rows()).transpose() * pd;
+
+      }
+
+      gradient += this->coefficients.block(this->center_points.rows() + 1, 0, this->center_points.cols(), this->coefficients.cols()).transpose();
+      
+      return gradient;
+    }
+
+    virtual std::vector< Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> > hessians(const Datum_t &x) const override {
+      using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
+      std::vector<MatrixX> hessians(
+        this->coefficients.cols(),
+        MatrixX::Zero(this->center_points.cols(), this->center_points.cols())
+      );
+
+      for(int n = 0; n < this->center_points.rows(); ++n) {
+        MatrixX hessian_rbf(
+          this->center_points.cols(), this->center_points.cols()
+        );
+
+        hessian_rbf = *(this->rbf_ptr->eval_hessian(x, this->center_points.row(n)));
+
+        for(int k = 0; k < this->coefficients.cols(); k++) {
+          hessians.at(k) += hessian_rbf * this->coefficients(n, k);
+        }
+      }
+
+      return hessians;
+    } 
+};
+
+} // namespace tudat_learn
+
+
 
 int main()
 {
+  using VectorX = Eigen::Matrix<float, Eigen::Dynamic, 1>;
 
-  Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> a;
-  Eigen::Matrix<float, 3, 1> b;
-  Eigen::Array<double, Eigen::Dynamic, 1> c;
-  Eigen::Array<int, 2, Eigen::Dynamic> d;
+  int dataset_size = 100;
+  int input_size = 100;
+  int output_size = 100;
+  int repetitions = 100;
 
-  eval_matrix(c);
+  std::vector<VectorX> data(dataset_size);
+  for(auto &it: data)
+    it = VectorX::Random(input_size);
+
+  std::vector<VectorX> labels(dataset_size);
+  for(auto &it: labels)
+    it = VectorX::Random(output_size);
+
+  auto dataset_ptr = std::make_shared< tudat_learn::Dataset<VectorX, VectorX> >(tudat_learn::Dataset(data, labels));
+  auto rbf_ptr = std::make_shared< tudat_learn::CubicRBF<float> >(tudat_learn::CubicRBF<float>());
+  // auto rbf_ptr = std::make_shared< tudat_learn::GaussianRBF<float> >(tudat_learn::GaussianRBF<float>(sigma));
+
+  tudat_learn::RBFN<VectorX, VectorX> rbfn(dataset_ptr, rbf_ptr);  
+  tudat_learn::DerivativeTester<VectorX, VectorX> tester(dataset_ptr, rbf_ptr);  
+  Timer t;
+
+  t.start();
+  rbfn.fit();
+  t.stop();
+  std::cout << "RBFN Fit takes " << t.seconds() << " seconds." << std::endl;
+
+  tester.fit();
+
+  
+  t.start();
+  for(int i = 0; i < repetitions; ++i) {
+    rbfn.gradient(VectorX::Random(input_size));
+  }
+  t.stop();
+  std::cout << "RBFN Gradient takes " << t.seconds() << " seconds." << std::endl;
+
+  t.start();
+  for(int i = 0; i < repetitions; ++i) {
+    tester.gradient(VectorX::Random(input_size));
+  }
+  t.stop();
+  std::cout << "Tester Gradient takes " << t.seconds() << " seconds." << std::endl;
+
+  t.start();
+  for(int i = 0; i < repetitions; ++i) {
+    rbfn.hessians(VectorX::Random(input_size));
+  }
+  t.stop();
+  std::cout << "RBFN Hessians takes " << t.seconds() << " seconds." << std::endl;
+
+  t.start();
+  for(int i = 0; i < repetitions; ++i) {
+    tester.hessians(VectorX::Random(input_size));
+  }
+  t.stop();
+  std::cout << "Tester Hessians takes " << t.seconds() << " seconds." << std::endl;
 
   // Timer t;
   // t.start();
