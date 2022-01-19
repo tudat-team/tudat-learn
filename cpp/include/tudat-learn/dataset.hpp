@@ -44,8 +44,8 @@ class Dataset {
           Datum_t &data_at(size_t pos)       { return data.at(pos); }
     const Datum_t &data_at(size_t pos) const { return data.at(pos); }
 
-          Datum_t &labels_at(size_t pos)       { return labels.at(pos); }
-    const Datum_t &labels_at(size_t pos) const { return labels.at(pos); }
+          Label_t &labels_at(size_t pos)       { return labels.at(pos); }
+    const Label_t &labels_at(size_t pos) const { return labels.at(pos); }
 
     void push_back(const Datum_t  &datum, const Label_t  &label) {
       data.push_back(datum);
@@ -74,7 +74,7 @@ class Dataset {
     get_closest_data(Datum_tt vector_of_interest, int amount=-1);
 
     template <typename Datum_tt, typename Response_tt>
-    friend Dataset<Datum_tt, Response_tt> get_datset_with_response(Dataset<Datum_tt> &dataset, std::vector<Response_tt> &response);
+    friend Dataset<Datum_tt, Response_tt> get_dataset_with_response(Dataset<Datum_tt> &dataset, std::vector<Response_tt> &response);
 
   private:
     std::vector<Datum_t> data;
@@ -136,7 +136,7 @@ class Dataset<Datum_t, none_t> {
  * @return Dataset<Datum_tt, Response_tt> 
  */
 template <typename Datum_tt, typename Response_tt>
-Dataset<Datum_tt, Response_tt> get_datset_with_response(Dataset<Datum_tt> &dataset, std::vector<Response_tt> &responses) {
+Dataset<Datum_tt, Response_tt> get_dataset_with_response(Dataset<Datum_tt> &dataset, std::vector<Response_tt> &responses) {
   return Dataset<Datum_tt, Response_tt>(dataset.data, std::vector<Response_tt>(), responses);
 }
 

@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 
 #include "tudat-learn/dataset.hpp"
+#include "tudat-learn/estimators/regressors/grnn.hpp"
 #include "tudat-learn/estimators/regressors/rbf.hpp"
 #include "tudat-learn/estimators/regressors/rbfn.hpp"
 #include "tudat-learn/types.hpp"

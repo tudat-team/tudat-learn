@@ -183,7 +183,7 @@ int main( ) {
   // Values generated using /tudat-learn/cpp/tests/python_scripts/estimators/regressors/rbfn_test.py
   std::cout << std::setprecision(6) << std::fixed;
 
-  std::vector< Eigen::VectorXf > data({
+  std::vector< Eigen::VectorXf > center_points({
     (Eigen::VectorXf(7) << 0.548814, 0.715189, 0.602763, 0.544883, 0.423655, 0.645894, 0.437587).finished(),
     (Eigen::VectorXf(7) << 0.891773, 0.963663, 0.383442, 0.791725, 0.528895, 0.568045, 0.925597).finished(),
     (Eigen::VectorXf(7) << 0.071036, 0.087129, 0.020218, 0.832620, 0.778157, 0.870012, 0.978618).finished(),
@@ -212,7 +212,7 @@ int main( ) {
 
   float sigma = 0.318569;
 
-  auto dataset_ptr = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, Eigen::VectorXf> >(tudat_learn::Dataset(data, labels));
+  auto dataset_ptr = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, Eigen::VectorXf> >(tudat_learn::Dataset(center_points, labels));
   auto cubic_rbf_ptr = std::make_shared< tudat_learn::CubicRBF<float> >(tudat_learn::CubicRBF<float>());
   auto gaussian_rbf_ptr = std::make_shared< tudat_learn::GaussianRBF<float> >(tudat_learn::GaussianRBF<float>(sigma));
 
@@ -530,7 +530,6 @@ int main( ) {
         return 1;
     }
   }
-  
 
   return 0;
 }

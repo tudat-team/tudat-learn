@@ -12,7 +12,7 @@ import numpy as np
 
 if __name__ == '__main__':
     np.random.seed(0)
-    precision = 10
+    # precision = 10
 
     center_points = np.around(np.random.rand(10, 7), 6)
     print("Center Points:")

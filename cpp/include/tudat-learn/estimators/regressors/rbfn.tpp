@@ -26,7 +26,7 @@ template <typename Datum_t, typename Label_t>
 void RBFN<Datum_t, Label_t>::fit( ) {
     using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 
-    if(this->dataset_ptr->size() == 0) throw std::runtime_error("Dataset provided for fitting RBFN is empty. Please provide a non-empty dataset.");
+    if(this->dataset_ptr->size() == 0) throw std::runtime_error("Dataset provided for fitting RBFN is empty. Please add some entries to the dataset.");
 
     // center_points matrix: has each center point as a column in the matrix 
     // Reads size of data vectors at runtime in case they are dynamic size matrices.
@@ -69,7 +69,9 @@ template <typename Datum_t, typename Label_t>
 void RBFN<Datum_t, Label_t>::fit(const std::vector<int> &fit_indices) {
     using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 
+    if(this->dataset_ptr->size() == 0) throw std::runtime_error("Dataset provided for fitting RBFNPolynomial is empty. Please add some entries to the dataset.");
     if(fit_indices.size() == 0) throw std::runtime_error("fit_indices vector provided for fitting RBFN is empty. Please provide a non-empty vector.");
+
     // center_points matrix: has each center point as a column in the matrix 
     // Reads size of data vectors at runtime in case they are dynamic size matrices.
     // Assumes all the data vectors in the std::vector have the same size 
@@ -130,20 +132,13 @@ template <typename Datum_t, typename Label_t>
 Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> RBFN<Datum_t, Label_t>::eval(const std::vector<Datum_t> &input_vector) const {
     using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 
-    MatrixX input_eigen(
-        input_vector.size(), input_vector.at(0).rows() // 1 is due to a single vector being processed in this function
-    );
-
-    for(int i = 0; i < input_vector.size(); ++i) 
-        input_eigen.row(i) = input_vector.at(i);
-
     MatrixX distance_matrix_input(
         input_vector.size(), center_points.rows()
     );
 
     for(int i = 0; i < input_vector.size(); ++i) {
         distance_matrix_input.row(i) = rbf_ptr->eval_matrix(
-            (center_points.rowwise() - input_eigen.row(i)).rowwise().norm().transpose()
+            (center_points.rowwise() - input_vector.at(i).transpose()).rowwise().norm().transpose()
         );
     }
 
@@ -197,7 +192,7 @@ template <typename Datum_t, typename Label_t>
 void RBFNPolynomial<Datum_t, Label_t>::fit( ) {
     using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 
-    if(this->dataset_ptr->size() == 0) throw std::runtime_error("Dataset provided for fitting RBFNPolynomial is empty. Please provide a non-empty dataset.");
+    if(this->dataset_ptr->size() == 0) throw std::runtime_error("Dataset provided for fitting RBFNPolynomial is empty. Please add some entries to the dataset.");
 
     int n_cp = this->dataset_ptr->size(); // number of center points
     int in_dim = this->dataset_ptr->data_at(0).rows(); // input dimension
@@ -261,6 +256,7 @@ template <typename Datum_t, typename Label_t>
 void RBFNPolynomial<Datum_t, Label_t>::fit(const std::vector<int> &fit_indices) {
     using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 
+    if(this->dataset_ptr->size() == 0) throw std::runtime_error("Dataset provided for fitting RBFNPolynomial is empty. Please add some entries to the dataset.");
     if(fit_indices.size() == 0) throw std::runtime_error("fit_indices vector provided for fitting RBFNPolynomial is empty. Please provide a non-empty vector.");
 
     int n_cp = fit_indices.size(); // number of center points

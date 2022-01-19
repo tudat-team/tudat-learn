@@ -13,6 +13,7 @@
 
 #include <memory>
 #include <type_traits>
+#include <vector>
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
@@ -27,8 +28,8 @@ namespace tudat_learn
   
 template <typename Datum_t, typename Label_t>
 class RBFN : public Regressor<Datum_t, Label_t> {
+  
   public:
-
     /**
      * @brief Deleting the default constructor to make sure the object is created with settings.
      */
@@ -39,10 +40,11 @@ class RBFN : public Regressor<Datum_t, Label_t> {
                typename = std::enable_if_t< is_floating_point_eigen_vector<Datum_tt>::value &&
                                             is_floating_point_eigen_vector<Label_tt>::value &&
                                             std::is_same<typename Datum_tt::Scalar, typename Label_tt::Scalar>::value
-                                          > 
+                          > 
     >
-    RBFN(const std::shared_ptr< Dataset<Datum_tt, Label_tt> > &dataset_ptr,
-         const std::shared_ptr< RBF<typename Label_tt::Scalar> > &rbf_ptr
+    RBFN(
+      const std::shared_ptr< Dataset<Datum_tt, Label_tt> > &dataset_ptr,
+      const std::shared_ptr< RBF<typename Label_tt::Scalar> > &rbf_ptr
     ) : 
     Regressor<Datum_tt, Label_tt>(dataset_ptr),
     rbf_ptr(rbf_ptr)
@@ -94,7 +96,7 @@ class RBFNPolynomial : public RBFN<Datum_t, Label_t> {
 
     virtual Label_t eval(const Datum_t &input) const override;
 
-    virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> eval(const std::vector<Datum_t> &input_vector) const override;
+    virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> eval(const std::vector<Datum_t> &input_vector) const;
 
     virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> gradient(const Datum_t &x) const override;
 
