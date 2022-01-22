@@ -57,6 +57,11 @@ class Dataset {
       labels.push_back(std::move(label));
     }
 
+    void reserve(size_t new_cap) {
+      data.reserve(new_cap);
+      labels.reserve(new_cap);
+    }
+
     /**
      * @brief Gets the `amount` indices of the closest instances to vector_of_interest in the dataset. Indices are sorted
      * from closest to furthest away if and only if amount < data.size(). Otherwise they are in natural order:

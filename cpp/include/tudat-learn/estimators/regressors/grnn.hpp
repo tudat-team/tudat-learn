@@ -12,6 +12,7 @@
 #define TUDAT_LEARN_GRNN_HPP
 
 #include <memory>
+#include <stdexcept>
 #include <type_traits>
 #include <vector>
 

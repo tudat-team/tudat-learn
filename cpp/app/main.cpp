@@ -9,6 +9,7 @@
 #include "tudat-learn/estimators/regressors/grnn.hpp"
 #include "tudat-learn/estimators/regressors/rbf.hpp"
 #include "tudat-learn/estimators/regressors/rbfn.hpp"
+#include "tudat-learn/processing/scalers/standard_scaler.hpp"
 #include "tudat-learn/types.hpp"
 
 
@@ -204,11 +205,17 @@ class DerivativeTesterPolynomial : public tudat_learn::RBFNPolynomial<Datum_t, L
 
 int main()
 {
+  std::cout << tudat_learn::is_eigen<Eigen::MatrixX2f>::value << std::endl;
+  std::cout << tudat_learn::is_eigen<Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>>::value << std::endl;
+  std::cout << tudat_learn::is_eigen<Eigen::Matrix<double, 1, 2>>::value << std::endl;
+  std::cout << tudat_learn::is_eigen<Eigen::Vector2f>::value << std::endl;
+  std::cout << tudat_learn::is_eigen<Eigen::Array<float, 1, 1>>::value << std::endl;
+
   using VectorX = Eigen::Matrix<float, Eigen::Dynamic, 1>;
 
   int dataset_size = 100;
   int input_size = 100;
-  int output_size = 100;
+  int output_size = 1;
   int repetitions = 100;
 
   std::vector<VectorX> data(dataset_size);

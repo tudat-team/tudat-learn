@@ -116,6 +116,7 @@ class DerivativeTester : public tudat_learn::RBFN<Datum_t, Label_t> {
     } 
 };
 
+
 template <typename Datum_t, typename Label_t>
 class DerivativeTesterPolynomial : public tudat_learn::RBFNPolynomial<Datum_t, Label_t> {
 

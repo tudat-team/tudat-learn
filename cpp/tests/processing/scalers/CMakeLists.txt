@@ -1,0 +1,3 @@
+add_executable(standard_scaler_test standard_scaler_test.cpp)
+target_link_libraries(standard_scaler_test tudat_learn Eigen3::Eigen)
+add_test(NAME standard_scaler_test COMMAND standard_scaler_test)

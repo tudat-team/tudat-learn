@@ -12,6 +12,7 @@
 #define TUDAT_LEARN_RBFN_HPP
 
 #include <memory>
+#include <stdexcept>
 #include <type_traits>
 #include <vector>
 

@@ -4,3 +4,4 @@ To do:
 reinforcement learning techniques, for instance(?).
 - Virtual destructors on base classes! https://stackoverflow.com/questions/461203/when-to-use-virtual-destructors
 - Remove RBF functionality to return pointers, move semantics, duh!
+- Scaler output if integer dataset.
