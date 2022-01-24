@@ -39,6 +39,39 @@ class Dataset {
       if(data.size() != response.size()) throw std::length_error("Vectors with Data and Response must have the same length.\n");
     }
 
+    // Dataset(Dataset<Datum_t, Label_t> &&other) {
+    //   data = std::move(other.data);
+    //   labels = std::move(other.labels);
+    //   response = std::move(other.response);
+    // }
+
+    // Dataset(const Dataset<Datum_t, Label_t> &other) {
+    //   data = other.data;
+    //   labels = other.labels;
+    //   response = other.response;
+    // }
+
+    // Dataset<Datum_t, Label_t>& operator=(Dataset<Datum_t, Label_t> &&other) {
+    //   if(this != &other) {
+    //     data = std::move(other.data);
+    //     labels = std::move(other.labels);
+    //     response = std::move(other.response);
+    //   }
+
+    //   return *this;
+    // }
+
+    // Dataset<Datum_t, Label_t>& operator=(const Dataset<Datum_t, Label_t> &other) {
+    //   if(this != &other) {
+    //     data = other.data;
+    //     labels = other.labels;
+    //     response = other.response;
+    //   }
+
+    //   return *this;
+    // }
+
+
     const size_t size( ) const { return data.size(); }
 
           Datum_t &data_at(size_t pos)       { return data.at(pos); }
@@ -104,10 +137,14 @@ class Dataset<Datum_t, none_t> {
 
     void push_back(const Datum_t  &datum) {
         data.push_back(datum);
-      }
+    }
       
     void push_back(     Datum_t &&datum) {
       data.push_back(std::move(datum));
+    }
+
+    void reserve(size_t new_cap) {
+      data.reserve(new_cap);
     }
 
     /**
