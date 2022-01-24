@@ -84,16 +84,16 @@ Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(Dataset<Da
 }
 
 template <typename Datum_t, typename Label_t>
-Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &fit_indices) const {
+Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &transform_indices) const {
   Dataset<Datum_t, Label_t> out_dataset;
-  out_dataset.reserve(fit_indices.size());
+  out_dataset.reserve(transform_indices.size());
 
-  for(int i = 0; i < fit_indices.size(); ++i) {
+  for(int i = 0; i < transform_indices.size(); ++i) {
     // Issues with eigen compiling the elementwise divide operator function for rvalues make it necessary to have
     // the inputs as lvalues, hence named variables.
     std::cout << "Test" << i << std::endl;
-    Datum_t mean_centered_datum = dataset.data_at(fit_indices.at(i)) - mean; 
-    out_dataset.push_back(this->operator_divide_elementwise(mean_centered_datum, standard_deviation), dataset.labels_at(fit_indices.at(i))); 
+    Datum_t mean_centered_datum = dataset.data_at(transform_indices.at(i)) - mean; 
+    out_dataset.push_back(this->operator_divide_elementwise(mean_centered_datum, standard_deviation), dataset.labels_at(transform_indices.at(i))); 
   }
 
   return out_dataset;
