@@ -17,8 +17,6 @@
 #include <utility>
 #include <vector>
 
-#include <Eigen/Core>
-
 #include "tudat-learn/dataset.hpp"
 #include "tudat-learn/processing/scaler.hpp"
 
@@ -41,6 +39,8 @@ class StandardScaler : Scaler<Datum_t, Label_t> {
     virtual Dataset<Datum_t, Label_t> transform(Dataset<Datum_t, Label_t> dataset) const;
 
     virtual Dataset<Datum_t, Label_t> transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &fit_indices) const;
+
+    virtual Datum_t inverse_transform(Datum_t datum) const;
 
     Datum_t get_mean( )               const { return mean; }
     Datum_t get_standard_deviation( ) const { return standard_deviation; }

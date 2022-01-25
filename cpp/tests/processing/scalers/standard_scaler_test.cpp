@@ -76,6 +76,10 @@ int main() {
       return 1;
   }
 
+  for(int i = 0; i < scaled_dataset.size(); ++i)
+    if( !data_dynamic_vector.at(i).isApprox(scaler_eigen.inverse_transform(scaled_dataset.data_at(i))))
+      return 1;
+
   // Same test with an array of fixed size.
   using Array7f = Eigen::Array<float, 7, 1>;
   std::vector<Array7f> data_static_array({
@@ -131,6 +135,10 @@ int main() {
       return 1;
   }
 
+  for(int i = 0; i < scaled_dataset_static_array.size(); ++i)
+    if( !data_static_array.at(i).isApprox(scaler_static_array.inverse_transform(scaled_dataset_static_array.data_at(i))))
+      return 1;
+
   // Test with scalar values.
   std::vector<float> data_scalar({
     0.976459, 0.468651, 0.976761, 0.604846, 0.739264, 0.039188, 0.282807, 0.120197, 0.296140, 0.118728
@@ -179,19 +187,19 @@ int main() {
 
   auto expected_mean_static_matrix = Eigen::Matrix2f({{0.398082, 0.581319},
                                                       {0.298842, 0.409253}});
-  std::cout << "Mean Static Array:\n" << scaler_static_matrix.get_mean().transpose() << std::endl;
+  std::cout << "Mean Static Matrix:\n" << scaler_static_matrix.get_mean().transpose() << std::endl;
   if( !expected_mean_static_matrix.isApprox(scaler_static_matrix.get_mean()) )
     return 1;
 
   auto expected_std_static_matrix = Eigen::Matrix2f({{0.185309, 0.258377},
                                                      {0.162725, 0.272665}});
-  std::cout << "Standard Deviation Static Array:\n" << scaler_static_matrix.get_standard_deviation().transpose() << std::endl;
+  std::cout << "Standard Deviation Static Matrix:\n" << scaler_static_matrix.get_standard_deviation().transpose() << std::endl;
   if( !expected_std_static_matrix.isApprox(scaler_static_matrix.get_standard_deviation()) )
     return 1;
 
   auto expected_variance_static_matrix = Eigen::Matrix2f({{0.034339, 0.066759},
                                                           {0.026479, 0.074346}});
-  std::cout << "Variance Static Array:\n" << scaler_static_matrix.get_variance().transpose() << std::endl;
+  std::cout << "Variance Static Matrix:\n" << scaler_static_matrix.get_variance().transpose() << std::endl;
   if( !expected_variance_static_matrix.isApprox(scaler_static_matrix.get_variance()) )
     return 1;
 
@@ -206,12 +214,16 @@ int main() {
                      {-0.057987, -0.829083}})
   });
   auto scaled_dataset_static_matrix(scaler_static_matrix.transform(*dataset_ptr_static_matrix));
-  std::cout << "Scaled Dataset Static Array:" << std::endl;
+  std::cout << "Scaled Dataset Static Matrix:" << std::endl;
   for(int i = 0; i < scaled_dataset_static_matrix.size(); ++i) {
     std::cout << scaled_dataset_static_matrix.data_at(i).transpose() << std::endl;
     if( !expected_data_static_matrix.at(i).isApprox(scaled_dataset_static_matrix.data_at(i)))
       return 1;
   }
+
+  for(int i = 0; i < scaled_dataset_static_matrix.size(); ++i)
+    if( !data_static_matrix.at(i).isApprox(scaler_static_matrix.inverse_transform(scaled_dataset_static_matrix.data_at(i))))
+      return 1;
 
   // testing fit(dataset, fit_indices)
   std::vector<Eigen::VectorXf> data_specific_indices({
@@ -238,25 +250,30 @@ int main() {
 
   scaler_eigen.fit(*dataset_ptr_specific_indices, std::vector<int>({1,2,3,4,5,6,7,8,9,10}));
 
-  std::cout << "Mean:\n" << scaler_eigen.get_mean().transpose() << std::endl;
+  std::cout << "Mean Specific Indices:\n" << scaler_eigen.get_mean().transpose() << std::endl;
   if( !expected_mean.isApprox(scaler_eigen.get_mean()) )
     return 1;
 
-  std::cout << "Standard Deviation:\n" << scaler_eigen.get_standard_deviation().transpose() << std::endl;
+  std::cout << "Standard Deviation Specific Indices:\n" << scaler_eigen.get_standard_deviation().transpose() << std::endl;
   if( !expected_std.isApprox(scaler_eigen.get_standard_deviation()) )
     return 1;
 
-  std::cout << "Variance:\n" << scaler_eigen.get_variance().transpose() << std::endl;
+  std::cout << "Variance Specific Indices:\n" << scaler_eigen.get_variance().transpose() << std::endl;
   if( !expected_variance.isApprox(scaler_eigen.get_variance()) )
     return 1;
 
   auto scaled_dataset_specific_indices(scaler_eigen.transform(*dataset_ptr_specific_indices, std::vector<int>({1,2,3,4,5,6,7,8,9,10})));
-  std::cout << "Scaled Dataset:" << std::endl;
+  std::cout << "Scaled Dataset Specific Indices:" << std::endl;
   for(int i = 0; i < scaled_dataset_specific_indices.size(); ++i) {
     std::cout << scaled_dataset_specific_indices.data_at(i).transpose() << std::endl;
     if( !expected_scaled_data.at(i).isApprox(scaled_dataset_specific_indices.data_at(i)))
       return 1;
   }
+
+  for(int i = 0; i < scaled_dataset_specific_indices.size(); ++i)
+    if( !data_dynamic_vector.at(i).isApprox(scaler_eigen.inverse_transform(scaled_dataset_specific_indices.data_at(i))))
+      return 1;
+  
 
   return 0;
 }

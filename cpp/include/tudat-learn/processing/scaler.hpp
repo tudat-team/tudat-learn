@@ -35,7 +35,7 @@ class Scaler {
 
     // virtual void fit_transform(Dataset<Datum_t, Label_t> &dataset) const = 0;
 
-    // virtual Datum_t inverse_transform(Datum_t datum) const = 0;
+    virtual Datum_t inverse_transform(Datum_t datum) const = 0;
 
   protected:
     // implements square root for the eigen type
