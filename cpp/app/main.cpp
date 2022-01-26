@@ -6,10 +6,8 @@
 #include <Eigen/Core>
 
 #include "tudat-learn/dataset.hpp"
-#include "tudat-learn/estimators/regressors/grnn.hpp"
 #include "tudat-learn/estimators/regressors/rbf.hpp"
 #include "tudat-learn/estimators/regressors/rbfn.hpp"
-#include "tudat-learn/processing/scalers/standard_scaler.hpp"
 #include "tudat-learn/types.hpp"
 
 
@@ -205,11 +203,19 @@ class DerivativeTesterPolynomial : public tudat_learn::RBFNPolynomial<Datum_t, L
 
 int main()
 {
-  std::cout << tudat_learn::is_eigen<Eigen::MatrixX2f>::value << std::endl;
-  std::cout << tudat_learn::is_eigen<Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>>::value << std::endl;
-  std::cout << tudat_learn::is_eigen<Eigen::Matrix<double, 1, 2>>::value << std::endl;
-  std::cout << tudat_learn::is_eigen<Eigen::Vector2f>::value << std::endl;
-  std::cout << tudat_learn::is_eigen<Eigen::Array<float, 1, 1>>::value << std::endl;
+  int integer = 1;
+  float f = 2.345;
+  float f2 = integer * f;
+  std::cout << f2 << std::endl;
+  std::cout << integer * f << std::endl;
+
+  Eigen::VectorXf v1 = Eigen::VectorXf::Random(6);
+  Eigen::VectorXf v2 = Eigen::VectorXf::Random(6);
+  std::cout << "v1:\n" << v1.transpose() << std::endl;
+  std::cout << "v2:\n" << v2.transpose() << std::endl;
+  std::cout << "Elementwise max:\n" << v1.array().max(v2.array()).transpose() << std::endl;
+  std::cout << "Elementwise max:\n" << v2.array().max(v1.array()).transpose() << std::endl;
+  std::cout << "Elementwise min:\n" << v2.array().min(v1.array()).transpose() << std::endl;
 
   using VectorX = Eigen::Matrix<float, Eigen::Dynamic, 1>;
 

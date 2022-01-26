@@ -26,7 +26,7 @@ template <typename Datum_t, typename Label_t>
 class MinMaxScaler : Scaler<Datum_t, Label_t> {
   public:
     MinMaxScaler( ) :
-    range(std::pair(0, 1)) 
+    range(std::pair(0, 1)), difference_range(1) 
     { }
 
     MinMaxScaler( 
@@ -34,6 +34,7 @@ class MinMaxScaler : Scaler<Datum_t, Label_t> {
     ) :
     range(range) {
       if(range.first >= range.second) throw std::runtime_error("Minmax range must have the (min, max) form, with min < max. Please choose a valid range.");
+      difference_range = range.second - range.first;
     }
 
     virtual void fit(const Dataset<Datum_t, Label_t> &dataset);
@@ -42,22 +43,28 @@ class MinMaxScaler : Scaler<Datum_t, Label_t> {
 
     virtual Dataset<Datum_t, Label_t> transform(Dataset<Datum_t, Label_t> dataset) const;
 
-    virtual Dataset<Datum_t, Label_t> transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &fit_indices) const;
+    virtual Dataset<Datum_t, Label_t> transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &transform_indices) const;
 
     virtual Datum_t inverse_transform(Datum_t datum) const;
 
     std::pair<int, int> get_range( ) const { return range; }
 
-    Datum_t get_min( ) { return min_in_dataset; }
+                Datum_t   get_min( ) const { return min_in_dataset; }
 
-    Datum_t get_max( ) { return max_in_dataset; }
+                Datum_t   get_max( ) const { return max_in_dataset; }
 
   private:
     std::pair<int, int> range;
 
+    int difference_range;
+
     Datum_t min_in_dataset;
 
     Datum_t max_in_dataset;
+
+    Datum_t difference_dataset;
+
+
 
 };
 

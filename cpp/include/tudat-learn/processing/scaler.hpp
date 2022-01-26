@@ -67,6 +67,46 @@ class Scaler {
     template <typename T>
     typename std::enable_if< std::is_arithmetic<T>::value,
     T>::type operator_divide_elementwise(const T &lhs, const T &rhs) const { return lhs / rhs; }
+
+    // implements an element-wise addition for eigen types
+    template <typename T, typename U>
+    typename std::enable_if<           is_eigen<T>::value && std::is_arithmetic<U>::value, 
+    T>::type operator_add_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs.array() + rhs; }
+
+    // implements a subtraction for arithmetic types
+    template <typename T, typename U>
+    typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
+    T>::type operator_subtract_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs - rhs; }
+
+    // implements an element-wise subtraction for eigen types
+    template <typename T, typename U>
+    typename std::enable_if<           is_eigen<T>::value && std::is_arithmetic<U>::value, 
+    T>::type operator_subtract_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs.array() - rhs; }
+
+    // implements a addition for arithmetic types
+    template <typename T, typename U>
+    typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
+    T>::type operator_add_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs - rhs; }
+
+    // implements an element-wise max for eigen types
+    template <typename T>
+    typename std::enable_if<            is_eigen<T>::value,
+    T>::type max_elementwise(const T &lhs, const T &rhs) const { return lhs.array().max(rhs.array()); }
+
+    // implements an element-wise max for arithmetic types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    T>::type max_elementwise(const T &lhs, const T &rhs) const { return (lhs > rhs) ? lhs : rhs; }
+
+    // implements an element-wise min for eigen types
+    template <typename T>
+    typename std::enable_if<            is_eigen<T>::value,
+    T>::type min_elementwise(const T &lhs, const T &rhs) const { return lhs.array().min(rhs.array()); }
+
+    // implements an element-wise in for arithmetic types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    T>::type min_elementwise(const T &lhs, const T &rhs) const { return (lhs < rhs) ? lhs : rhs; }
 };
 
 } // namespace tudat_learn

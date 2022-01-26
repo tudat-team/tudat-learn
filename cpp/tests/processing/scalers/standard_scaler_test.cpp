@@ -19,6 +19,9 @@
 #include "tudat-learn/processing/scalers/standard_scaler.hpp"
 
 int main() {
+  // Values generated using /tudat-learn/cpp/tests/python_scripts/processing/scalers/standard_scaler_test.py
+  std::cout << std::setprecision(6) << std::fixed;
+
   std::vector<Eigen::VectorXf> data_dynamic_vector({
     (Eigen::VectorXf(7) << 0.548814, 0.715189, 0.602763, 0.544883, 0.423655, 0.645894, 0.437587).finished(),
     (Eigen::VectorXf(7) << 0.891773, 0.963663, 0.383442, 0.791725, 0.528895, 0.568045, 0.925597).finished(),
@@ -164,7 +167,22 @@ int main() {
   if( std::abs(expected_variance_scalar - scaler_scalar.get_variance()) > 1e-6 )
     return 1;
 
-  // Missing a test with matrices.
+  std::vector<float> expected_scaled_data_scalar{
+    1.550219, 0.019137, 1.551130, 0.429776, 0.835057, -1.275729, -0.541198, -1.031480, -0.500998, -1.035910
+  };
+  auto scaled_dataset_scalar(scaler_scalar.transform(*dataset_ptr_scalar));
+  std::cout << "Scaled Dataset Scalar:" << std::endl;
+  for(int i = 0; i < scaled_dataset_scalar.size(); ++i) {
+    std::cout << scaled_dataset_scalar.data_at(i) << std::endl;
+    if( std::abs(expected_scaled_data_scalar.at(i) - scaled_dataset_scalar.data_at(i)) > 1e-5 )
+      return 1;
+  }
+
+  for(int i = 0; i < scaled_dataset_scalar.size(); ++i)
+    if( std::abs(data_scalar.at(i) - scaler_scalar.inverse_transform(scaled_dataset_scalar.data_at(i))) > 1e-6 )
+      return 1;
+
+  // Test with Static Matrices.
   std::vector<Eigen::Matrix2f> data_static_matrix({
     Eigen::Matrix2f({{0.317983, 0.414263},
                      {0.064147, 0.692472}}),
@@ -216,7 +234,7 @@ int main() {
   auto scaled_dataset_static_matrix(scaler_static_matrix.transform(*dataset_ptr_static_matrix));
   std::cout << "Scaled Dataset Static Matrix:" << std::endl;
   for(int i = 0; i < scaled_dataset_static_matrix.size(); ++i) {
-    std::cout << scaled_dataset_static_matrix.data_at(i).transpose() << std::endl;
+    std::cout << scaled_dataset_static_matrix.data_at(i) << std::endl;
     if( !expected_data_static_matrix.at(i).isApprox(scaled_dataset_static_matrix.data_at(i)))
       return 1;
   }
