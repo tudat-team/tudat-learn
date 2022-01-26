@@ -9,10 +9,18 @@
  */
 
 #include <iomanip>
+#include <utility>
+
+#include <Eigen/Core>
 
 #include "tudat-learn/samplers/latin_hypercube_sampler.hpp"
 
 int main() {
+
+  tudat_learn::LatinHypercubeSampler<Eigen::Vector2f> lhs(
+    std::make_pair(Eigen::Vector2f(1,2), Eigen::Vector2f(3,4)),
+    5
+  );
 
   return 0;
 }

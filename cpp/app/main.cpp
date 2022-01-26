@@ -203,19 +203,11 @@ class DerivativeTesterPolynomial : public tudat_learn::RBFNPolynomial<Datum_t, L
 
 int main()
 {
-  int integer = 1;
-  float f = 2.345;
-  float f2 = integer * f;
-  std::cout << f2 << std::endl;
-  std::cout << integer * f << std::endl;
+  Eigen::Vector3i vi(1,2,3);
+  Eigen::Vector3f vf(1.3,2.4,3.5);
+  std::cout << vi.transpose().cast<float>() * vf << std::endl;
+  // std::cout << vi.array() * vf.array() << std::endl;
 
-  Eigen::VectorXf v1 = Eigen::VectorXf::Random(6);
-  Eigen::VectorXf v2 = Eigen::VectorXf::Random(6);
-  std::cout << "v1:\n" << v1.transpose() << std::endl;
-  std::cout << "v2:\n" << v2.transpose() << std::endl;
-  std::cout << "Elementwise max:\n" << v1.array().max(v2.array()).transpose() << std::endl;
-  std::cout << "Elementwise max:\n" << v2.array().max(v1.array()).transpose() << std::endl;
-  std::cout << "Elementwise min:\n" << v2.array().min(v1.array()).transpose() << std::endl;
 
   using VectorX = Eigen::Matrix<float, Eigen::Dynamic, 1>;
 

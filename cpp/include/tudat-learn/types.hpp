@@ -59,8 +59,6 @@ namespace tudat_learn
   struct is_eigen< Eigen::Array < T, RowsAtCompileTime, ColsAtCompileTime> > : std::true_type  { };
 
 
-
-
 } // namespace tudat_learn
 
 #endif // TUDAT_LEARN_TYPES_HPP
