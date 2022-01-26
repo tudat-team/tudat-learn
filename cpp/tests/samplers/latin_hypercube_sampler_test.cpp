@@ -8,19 +8,11 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_SAMPLING_HPP
-#define TUDAT_LEARN_SAMPLING_HPP
+#include <iomanip>
 
-#include <vector>
+#include "tudat-learn/samplers/latin_hypercube_sampler.hpp"
 
-namespace tudat_learn
-{
-  
-template <typename Datum_t>
-class Sampler {
-  virtual std::vector<Datum_t> sample() = 0;
-};
-  
-} // namespace tudat_learn
+int main() {
 
-#endif // TUDAT_LEARN_SAMPLING_HPP
+  return 0;
+}

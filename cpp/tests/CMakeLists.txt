@@ -4,3 +4,4 @@ add_test(NAME dataset_test COMMAND dataset_test)
 
 add_subdirectory(estimators)
 add_subdirectory(processing)
+add_subdirectory(samplers)
