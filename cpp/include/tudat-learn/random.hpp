@@ -12,11 +12,23 @@
 #ifndef TUDAT_LEARN_RANDOM_HPP
 #define TUDAT_LEARN_RANDOM_HPP
 
+#include <random>
+
 namespace tudat_learn 
 {
 
 struct Random {
-  static unsigned int seed;
+  static void set_seed(unsigned int new_seed) {
+    seed = new_seed;
+    rng = std::mt19937(seed);
+  }
+  
+  static int get_seed( ) { return seed; }
+  static std::mt19937 &get_rng( ) { return rng; }
+
+  private:
+    static unsigned int seed;
+    static std::mt19937 rng;
 };
 
 

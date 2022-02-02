@@ -27,8 +27,9 @@ template <typename Datum_t, typename Label_t>
 class StandardScaler : Scaler<Datum_t, Label_t> {
   public:
 
-    template <typename Datum_tt = Datum_t,
-              typename = std::enable_if_t< is_eigen<Datum_tt>::value || std::is_arithmetic<Datum_tt>::value >
+    template <
+      typename Datum_tt = Datum_t,
+      typename = std::enable_if_t< is_eigen<Datum_tt>::value || std::is_arithmetic<Datum_tt>::value>
     >
     StandardScaler( ) { }
 

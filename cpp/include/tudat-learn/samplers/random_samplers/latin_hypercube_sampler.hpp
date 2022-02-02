@@ -12,27 +12,36 @@
 #define TUDAT_LEARN_LATIN_HYPERCUBE_SAMPLER_HPP
 
 #include <numeric>
+#include <random>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
-#include "tudat-learn/samplers/random_sampler.hpp"
+#include "tudat-learn/random.hpp"
+#include "tudat-learn/sampler.hpp"
 #include "tudat-learn/types.hpp"
 
 namespace tudat_learn
 {
 
 template <typename Datum_t>
-class LatinHypercubeSampler : public RandomSampler<Datum_t> {
+class LatinHypercubeSampler : public Sampler<Datum_t> {
   public:
     LatinHypercubeSampler() = delete;
 
+    template <
+      typename Datum_tt = Datum_t,
+      typename = std::enable_if_t< 
+        is_eigen<Datum_tt>::value           || 
+        std::is_arithmetic<Datum_tt>::value ||
+        (is_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_t::value_type>::value)
+      >
+    >
     LatinHypercubeSampler(
-      const std::pair<Datum_t, Datum_t> &range,
-      const int number_samples,
-      const unsigned int seed = Random::seed
+      const std::pair<Datum_tt, Datum_tt> &range,
+      const int number_samples
     ) :
-    RandomSampler<Datum_t>(range, seed) {
+    Sampler<Datum_tt>(range) {
       set_buckets(number_samples);
     }
 
@@ -41,34 +50,60 @@ class LatinHypercubeSampler : public RandomSampler<Datum_t> {
 
     virtual std::vector<Datum_t> sample(const std::pair<Datum_t, Datum_t> &new_range, const int number_samples);
 
-    int test() const { return get_dimensions(this->range); }
+    int test() const { return this->get_dimensions(this->range); }
 
-  private:
+  protected:
     void set_buckets(const int buckets_per_dimension) {
       if(buckets_per_dimension < 1) throw std::runtime_error("LatinHypercubeSampler must have one or more buckets per dimension.");
       
       this->buckets_per_dimension = buckets_per_dimension;
     }
 
-    // implements a method that retrieves the dimension if the Datum_t is of arithmetic types
-    template <typename Datum_tt=Datum_t>
-    typename std::enable_if< std::is_arithmetic<Datum_tt>::value,
-    int>::type get_dimensions(const std::pair<     Datum_tt,        Datum_tt> &range) const
-    { return 1; }
-
-    // implements a method that retrieves the dimension if the Datum_t is of eigen types
-    template <typename Datum_tt=Datum_t>
-    typename std::enable_if<            is_eigen<Datum_tt>::value,
-    int>::type get_dimensions(const std::pair<     Datum_tt,        Datum_tt> &range) const
-    { return range.first.rows() * range.first.cols(); }
-
-    // implements a method that retrieves the dimension if the Datum_t is of arithmetic types
-    template <typename T>
-    typename std::enable_if< std::is_arithmetic<T>::value,
-    int>::type get_dimensions(const std::pair<std::vector<T>, std::vector<T>> &range) const
-    { return range.first.size(); }
-
     
+    // generates a vector of Datum_t with the selected bucket indices for arithmetic types
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if< std::is_arithmetic<Datum_tt>::value,
+    std::vector<Datum_tt> >::type generate_buckets(const std::vector<std::vector<int>> &sampled_indices) const;
+
+    // generates a vector of Datum_t with the selected bucket indices for for eigen types
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if<           is_eigen<Datum_tt>::value,
+    std::vector<Datum_tt> >::type generate_buckets(const std::vector<std::vector<int>> &sampled_indices) const;
+
+    // generates a vector of Datum_t with the selected bucket indices for vector<arithmetic> types
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if<      is_stl_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_tt::value_type>::value,
+    std::vector<Datum_tt> >::type generate_buckets(const std::vector<std::vector<int>> &sampled_indices) const;
+
+    // print a vector of arithmetic types
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if< std::is_arithmetic<Datum_tt>::value,
+    void >::type print_vector_datum_t(const std::vector<Datum_tt> &to_print) const {
+      for(const auto &it: to_print)
+        std::cout << it << ", ";
+
+      std::cout << "\n";
+    }
+
+    // print a vector of eigen types
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if<           is_eigen<Datum_tt>::value,
+    void >::type print_vector_datum_t(const std::vector<Datum_tt> &to_print) const {
+      for(const auto &it: to_print)
+        std::cout << it << "\n" << std::endl;
+    }
+
+    // print a vector of vector<arithmetic> types
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if<      is_stl_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_tt::value_type>::value,
+    void >::type print_vector_datum_t(const std::vector<Datum_tt> &to_print) const {
+      for(const auto &it: to_print) {
+        for(const auto &itt: it)
+          std::cout << itt << ", ";
+
+        std::cout << "\n" << std::endl;
+      }
+    }
 
   protected:
     int buckets_per_dimension;

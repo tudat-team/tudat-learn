@@ -8,11 +8,16 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#include <random>
+
 #include "tudat-learn/random.hpp"
 
 namespace tudat_learn
 {
 
+
 unsigned int Random::seed = 0;
+std::mt19937 Random::rng = std::mt19937(seed);
+
   
 } // namespace tudat_learn

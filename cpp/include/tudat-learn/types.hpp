@@ -58,6 +58,11 @@ namespace tudat_learn
   template <int RowsAtCompileTime, int ColsAtCompileTime, typename T>
   struct is_eigen< Eigen::Array < T, RowsAtCompileTime, ColsAtCompileTime> > : std::true_type  { };
 
+  template <typename T>
+  struct is_stl_vector                          : std::false_type { };
+
+  template <typename ... Args>
+  struct is_stl_vector< std::vector< Args...> > : std::true_type { };
 
 } // namespace tudat_learn
 

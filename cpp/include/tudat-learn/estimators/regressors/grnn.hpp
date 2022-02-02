@@ -46,8 +46,8 @@ class GRNN : public Regressor<Datum_t, Label_t> {
 
     template <typename Datum_tt = Datum_t, typename Label_tt = Label_t,
               typename = std::enable_if_t< is_floating_point_eigen_vector<Datum_tt>::value &&
-                                          is_floating_point_eigen_vector<Label_tt>::value &&
-                                          std::is_same<typename Datum_tt::Scalar, typename Label_tt::Scalar>::value
+                                           is_floating_point_eigen_vector<Label_tt>::value &&
+                                           std::is_same<typename Datum_tt::Scalar, typename Label_tt::Scalar>::value
                           >
     >
     GRNN(

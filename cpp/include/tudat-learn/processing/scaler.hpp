@@ -73,20 +73,20 @@ class Scaler {
     typename std::enable_if<           is_eigen<T>::value && std::is_arithmetic<U>::value, 
     T>::type operator_add_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs.array() + rhs; }
 
-    // implements a subtraction for arithmetic types
+    // implements a addition for arithmetic types
     template <typename T, typename U>
     typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
-    T>::type operator_subtract_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs - rhs; }
+    T>::type operator_add_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs - rhs; }
 
     // implements an element-wise subtraction for eigen types
     template <typename T, typename U>
     typename std::enable_if<           is_eigen<T>::value && std::is_arithmetic<U>::value, 
     T>::type operator_subtract_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs.array() - rhs; }
 
-    // implements a addition for arithmetic types
+    // implements a subtraction for arithmetic types
     template <typename T, typename U>
     typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
-    T>::type operator_add_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs - rhs; }
+    T>::type operator_subtract_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs - rhs; }
 
     // implements an element-wise max for eigen types
     template <typename T>

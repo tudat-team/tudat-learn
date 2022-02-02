@@ -12,11 +12,11 @@
 #define TUDAT_LEARN_MINMAX_SCALER_HPP
 
 #include <stdexcept>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
-
-
+#include "tudat-learn/types.hpp"
 #include "tudat-learn/processing/scaler.hpp"
 
 namespace tudat_learn
@@ -25,10 +25,19 @@ namespace tudat_learn
 template <typename Datum_t, typename Label_t>
 class MinMaxScaler : Scaler<Datum_t, Label_t> {
   public:
+
+    template <
+      typename Datum_tt = Datum_t,
+      typename = std::enable_if_t< is_eigen<Datum_tt>::value || std::is_arithmetic<Datum_tt>::value>
+    >
     MinMaxScaler( ) :
     range(std::pair(0, 1)), difference_range(1) 
     { }
 
+    template <
+      typename Datum_tt = Datum_t,
+      typename = std::enable_if_t< is_eigen<Datum_tt>::value || std::is_arithmetic<Datum_tt>::value>
+    >
     MinMaxScaler( 
       const std::pair<int, int> &range // maybe floating-point?
     ) :
