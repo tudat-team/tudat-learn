@@ -16,39 +16,34 @@
 #include <utility>
 #include <vector>
 
-#include "tudat-learn/sampling.hpp"
+#include "tudat-learn/samplers/random_sampler.hpp"
 #include "tudat-learn/types.hpp"
 
 namespace tudat_learn
 {
 
 template <typename Datum_t>
-class LatinHypercubeSampler : public Sampler<Datum_t> {
+class LatinHypercubeSampler : public RandomSampler<Datum_t> {
   public:
     LatinHypercubeSampler() = delete;
 
     LatinHypercubeSampler(
       const std::pair<Datum_t, Datum_t> &range,
-      const int buckets_per_dimension
-    ) {
-      set_range(range);
-      set_buckets(buckets_per_dimension);
+      const int number_samples,
+      const unsigned int seed = Random::seed
+    ) :
+    RandomSampler<Datum_t>(range, seed) {
+      set_buckets(number_samples);
     }
 
 
     virtual std::vector<Datum_t> sample( ) const override;
 
-    virtual std::vector<Datum_t> sample(const std::pair<Datum_t, Datum_t> &new_range, const int new_buckets_per_dimension);
+    virtual std::vector<Datum_t> sample(const std::pair<Datum_t, Datum_t> &new_range, const int number_samples);
 
+    int test() const { return get_dimensions(this->range); }
 
   private:
-    void set_range(const std::pair<Datum_t, Datum_t> &range) {
-      if(this->operator_leq(range.second, range.first)) throw std::runtime_error("LatinHypercubeSampler range must have the (min, max) form, with every element of min being smaller than the corresponding element of max, for multidimensional types.");
-      
-      this->range = range;
-      range_size = range.second - range.first;
-    }
-
     void set_buckets(const int buckets_per_dimension) {
       if(buckets_per_dimension < 1) throw std::runtime_error("LatinHypercubeSampler must have one or more buckets per dimension.");
       
@@ -73,11 +68,9 @@ class LatinHypercubeSampler : public Sampler<Datum_t> {
     int>::type get_dimensions(const std::pair<std::vector<T>, std::vector<T>> &range) const
     { return range.first.size(); }
 
+    
+
   protected:
-    std::pair<Datum_t, Datum_t> range;
-
-    Datum_t range_size;
-
     int buckets_per_dimension;
 
     Datum_t bucket_size;
@@ -87,6 +80,6 @@ class LatinHypercubeSampler : public Sampler<Datum_t> {
 
 } // namespace tudat_learn
 
-#include "tudat-learn/samplers/latin_hypercube_sampler.tpp"
+#include "tudat-learn/samplers/random_samplers/latin_hypercube_sampler.tpp"
 
 #endif // TUDAT_LEARN_LATIN_HYPERCUBE_SAMPLER_HPP

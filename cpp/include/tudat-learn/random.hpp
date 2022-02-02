@@ -8,19 +8,18 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include <iomanip>
-#include <utility>
 
-#include <Eigen/Core>
+#ifndef TUDAT_LEARN_RANDOM_HPP
+#define TUDAT_LEARN_RANDOM_HPP
 
-#include "tudat-learn/samplers/latin_hypercube_sampler.hpp"
+namespace tudat_learn 
+{
 
-int main() {
+struct Random {
+  static unsigned int seed;
+};
 
-  tudat_learn::LatinHypercubeSampler<Eigen::Vector2f> lhs(
-    std::make_pair(Eigen::Vector2f(1,2), Eigen::Vector2f(3,4)),
-    5
-  );
 
-  return 0;
-}
+} // namespace tudat_learn
+
+#endif // TUDAT_LEARN_RANDOM_HPP

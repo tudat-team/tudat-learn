@@ -23,7 +23,8 @@ set(TUDAT_LEARN_SRC_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/estimator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/function.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/processing.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/sampling.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/random.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/sampler.cpp
 
         ## Estimators ##
         ${CMAKE_CURRENT_SOURCE_DIR}/src/estimators/classifier.cpp

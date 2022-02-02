@@ -8,10 +8,11 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_SAMPLING_HPP
-#define TUDAT_LEARN_SAMPLING_HPP
+#ifndef TUDAT_LEARN_SAMPLER_HPP
+#define TUDAT_LEARN_SAMPLER_HPP
 
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "tudat-learn/types.hpp"
@@ -22,9 +23,19 @@ namespace tudat_learn
 template <typename Datum_t>
 class Sampler {
   public:
+    Sampler(const std::pair<Datum_t, Datum_t> &range) {
+      set_range(range);
+    }
+
     virtual std::vector<Datum_t> sample( ) const = 0;
 
   protected:
+    void set_range(const std::pair<Datum_t, Datum_t> &range) {
+      if(this->operator_leq(range.second, range.first)) throw std::runtime_error("LatinHypercubeSampler range must have the (min, max) form, with every element of min being smaller than the corresponding element of max, for multidimensional types.");
+      
+      this->range = range;
+      range_size = range.second - range.first;
+    }
 
     // implements an operator <= for arithmetic types
     template <typename T>
@@ -46,8 +57,13 @@ class Sampler {
 
       return true;
     }
+
+  protected:
+    std::pair<Datum_t, Datum_t> range;
+
+    Datum_t range_size;
 };
   
 } // namespace tudat_learn
 
-#endif // TUDAT_LEARN_SAMPLING_HPP
+#endif // TUDAT_LEARN_SAMPLER_HPP
