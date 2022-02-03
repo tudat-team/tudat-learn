@@ -18,6 +18,7 @@
 #include "tudat-learn/samplers/random_samplers/latin_hypercube_sampler.hpp"
 
 int main() {
+  std::cout << std::is_floating_point<Eigen::VectorXd::Scalar>::value << std::endl;
 
   for(int i = 0; i < 10; ++i) {
     std::uniform_int_distribution<int> dis(0,10);

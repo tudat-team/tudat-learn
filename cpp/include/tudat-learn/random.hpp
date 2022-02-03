@@ -23,8 +23,8 @@ struct Random {
     rng = std::mt19937(seed);
   }
   
-  static int get_seed( ) { return seed; }
-  static std::mt19937 &get_rng( ) { return rng; }
+  static          int  get_seed( ) { return seed; }
+  static std::mt19937 &get_rng ( ) { return rng; }
 
   private:
     static unsigned int seed;

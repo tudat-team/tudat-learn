@@ -11,6 +11,7 @@
 #ifndef TUDAT_LEARN_LATIN_HYPERCUBE_SAMPLER_HPP
 #define TUDAT_LEARN_LATIN_HYPERCUBE_SAMPLER_HPP
 
+#include <algorithm>
 #include <numeric>
 #include <random>
 #include <type_traits>
@@ -32,9 +33,9 @@ class LatinHypercubeSampler : public Sampler<Datum_t> {
     template <
       typename Datum_tt = Datum_t,
       typename = std::enable_if_t< 
-        is_eigen<Datum_tt>::value           || 
-        std::is_arithmetic<Datum_tt>::value ||
-        (is_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_t::value_type>::value)
+        (is_eigen<Datum_tt>::value &&  std::is_floating_point<typename Datum_tt::value_type>::value) || 
+                                       std::is_floating_point<         Datum_tt           >::value   ||
+        (is_stl_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_tt::value_type>::value) 
       >
     >
     LatinHypercubeSampler(

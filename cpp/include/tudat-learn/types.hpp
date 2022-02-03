@@ -29,8 +29,8 @@ namespace tudat_learn
   typedef struct None_t { } none_t;
 
   // Type trait for std::vector class
-  template <typename T>       struct is_vector :                         std::false_type { };
-  template <typename... Args> struct is_vector< std::vector<Args...> > : std::true_type  { };
+  // template <typename T>       struct is_vector :                         std::false_type { };
+  // template <typename... Args> struct is_vector< std::vector<Args...> > : std::true_type  { };
 
   // Type trait for Eigen::Vector with floating-point type
   template <typename T> 
@@ -58,6 +58,7 @@ namespace tudat_learn
   template <int RowsAtCompileTime, int ColsAtCompileTime, typename T>
   struct is_eigen< Eigen::Array < T, RowsAtCompileTime, ColsAtCompileTime> > : std::true_type  { };
 
+  // Type trait for std::vector class
   template <typename T>
   struct is_stl_vector                          : std::false_type { };
 

@@ -11,10 +11,12 @@
 #ifndef TUDAT_LEARN_SAMPLER_HPP
 #define TUDAT_LEARN_SAMPLER_HPP
 
+#include <random>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
+#include "tudat-learn/random.hpp"
 #include "tudat-learn/types.hpp"
 
 namespace tudat_learn
@@ -105,21 +107,24 @@ class Sampler {
     }
 
     // generates a Datum_t between 0 and 1 for arithmetic types
-    template <typename T>
-    typename std::enable_if< std::is_arithmetic<T>::value,
-    T >::type              sample_zero_one(const std::vector<int> &sampled_indices) const {
-
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if< std::is_arithmetic<Datum_tt>::value,
+    Datum_tt >::type sample_zero_one( ) const {
+      std::uniform_real_distribution<typename Datum_tt::Scalar> uniform(0,1);
+      return uniform(Random::get_rng());
     }
 
-    template <typename T>
-    typename std::enable_if<           is_eigen<T>::value,
-    T >::type              sample_zero_one(const std::vector<int> &sampled_indices) const {
-    
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if<           is_eigen<Datum_tt>::value,
+    Datum_tt >::type sample_zero_one( ) const {
+      std::uniform_real_distribution<typename Datum_tt::Scalar> uniform(0,1);
+      return Datum_tt::NullaryExpr(range.first.rows(), range.first.cols(),
+              [&](){ return uniform(Random::get_rng()); });
     }
 
-    template <typename T>
-    typename std::enable_if< std::is_arithmetic<T>::value,
-    std::vector<T> >::type sample_zero_one(const std::vector<int> &sampled_indices) const {
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if<      is_stl_vector<Datum_tt>::value,
+    Datum_tt >::type sample_zero_one( ) const {
     
     }
 

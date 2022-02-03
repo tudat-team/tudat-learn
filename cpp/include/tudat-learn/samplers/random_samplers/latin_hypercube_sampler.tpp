@@ -17,33 +17,36 @@ std::vector<Datum_t> LatinHypercubeSampler<Datum_t>::sample( ) const {
 
   // contains vectors with buckets_per_dimension elements which are vectors themselves
   // each of those vectors is filled in with 0, ..., buckets_per_dimension - 1
-  std::vector< std::vector<int> > ordered_indices(dimensions, single_indices_vector);
+  // std::vector< std::vector<int> > ordered_indices(dimensions, single_indices_vector);
 
-  // contains the vectors with the bucket indices in order for each sample
-  std::vector< std::vector<int> > sampled_indices(dimensions, std::vector<int>(buckets_per_dimension));
+  // // contains the vectors with the bucket indices in order for each sample
+  // std::vector< std::vector<int> > sampled_indices(dimensions, std::vector<int>(buckets_per_dimension));
 
-  std::cout << "buckets_per_dimension: " << buckets_per_dimension << std::endl;
-  for(int b = 0; b < buckets_per_dimension; ++b) {
-    for(int d = 0; d < dimensions; ++d) {
-      std::uniform_int_distribution<int> uniform(0, buckets_per_dimension - 1 - b);
-      int r = uniform(Random::get_rng()); // choose an index between 0 and #(remaining buckets)
+  // for(int b = 0; b < buckets_per_dimension; ++b) {
+  //   for(int d = 0; d < dimensions; ++d) {
+  //     std::uniform_int_distribution<int> uniform(0, buckets_per_dimension - 1 - b);
+  //     int r = uniform(Random::get_rng()); // choose an index between 0 and #(remaining buckets)
 
-      // putting the sampled index on the corresponding vector
-      sampled_indices.at(d).at(b) = ordered_indices.at(d).at(r);
+  //     // putting the sampled index on the corresponding vector
+  //     sampled_indices.at(d).at(b) = ordered_indices.at(d).at(r);
       
-      // putting the last eligible element in the place of the one that was just sampled.
-      ordered_indices.at(d).at(r) = ordered_indices.at(d).at(buckets_per_dimension - 1 - b);
-    }
-  }
+  //     // putting the last eligible element in the place of the one that was just sampled.
+  //     ordered_indices.at(d).at(r) = ordered_indices.at(d).at(buckets_per_dimension - 1 - b);
+  //   }
+  // }
 
-  for(const auto &it : sampled_indices) {
-      for(const auto &itt: it)
-        std::cout << itt << ", ";
-      std::cout << "\n" << std::endl;
-    }
+  std::vector< std::vector<int> > sampled_indices(dimensions, single_indices_vector);
+  for(int d = 0; d < dimensions; ++d)
+    std::shuffle(sampled_indices.at(d).begin(), sampled_indices.at(d).end(), Random::get_rng());
+
+  // for(const auto &it : sampled_indices) {
+  //     for(const auto &itt: it)
+  //       std::cout << itt << ", ";
+  //     std::cout << "\n" << std::endl;
+  //   }
 
   std::vector<Datum_t> selected_buckets = this->generate_buckets(sampled_indices);
-  this->print_vector_datum_t(selected_buckets);
+  // this->print_vector_datum_t(selected_buckets);
 
   for(int b = 0; b < selected_buckets.size(); ++b) {
     // generate random datum between 0 and 1
