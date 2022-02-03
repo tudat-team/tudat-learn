@@ -58,6 +58,7 @@ class LatinHypercubeSampler : public Sampler<Datum_t> {
       if(buckets_per_dimension < 1) throw std::runtime_error("LatinHypercubeSampler must have one or more buckets per dimension.");
       
       this->buckets_per_dimension = buckets_per_dimension;
+      bucket_size = this->operator_scalar_division(this->range_size, buckets_per_dimension);
     }
 
     
@@ -105,6 +106,30 @@ class LatinHypercubeSampler : public Sampler<Datum_t> {
         std::cout << "\n" << std::endl;
       }
     }
+
+    // print an arithmetic type
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if< std::is_arithmetic<Datum_tt>::value,
+    void >::type print_datum_t(const Datum_tt &to_print) const {
+      std::cout << to_print << std::endl;
+    }
+
+    // print an eigen type
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if<           is_eigen<Datum_tt>::value,
+    void >::type print_datum_t(const Datum_tt &to_print) const {
+      std::cout << to_print << std::endl;
+    }
+
+    // print a vector<arithmetic> type
+    template <typename Datum_tt = Datum_t>
+    typename std::enable_if<      is_stl_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_tt::value_type>::value,
+    void >::type print_datum_t(const Datum_tt &to_print) const {
+      for(const auto &it: to_print)
+        std::cout << it << ", ";
+      std::cout << "\n" << std::endl;
+    }
+    
 
   protected:
     int buckets_per_dimension;

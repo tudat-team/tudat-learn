@@ -39,22 +39,41 @@ std::vector<Datum_t> LatinHypercubeSampler<Datum_t>::sample( ) const {
   for(int d = 0; d < dimensions; ++d)
     std::shuffle(sampled_indices.at(d).begin(), sampled_indices.at(d).end(), Random::get_rng());
 
-  // for(const auto &it : sampled_indices) {
-  //     for(const auto &itt: it)
-  //       std::cout << itt << ", ";
-  //     std::cout << "\n" << std::endl;
-  //   }
+  for(const auto &it : sampled_indices) {
+      for(const auto &itt: it)
+        std::cout << itt << ", ";
+      std::cout << "\n" << std::endl;
+    }
 
   std::vector<Datum_t> selected_buckets = this->generate_buckets(sampled_indices);
-  // this->print_vector_datum_t(selected_buckets);
+  this->print_vector_datum_t(selected_buckets);
 
+  std::vector<Datum_t> samples;
+  samples.reserve(buckets_per_dimension);
   for(int b = 0; b < selected_buckets.size(); ++b) {
     // generate random datum between 0 and 1
+    Datum_t new_sample(this->sample_zero_one());
+
+    new_sample = this->operator_elementwise_multiplication(new_sample, bucket_size);
+
+    selected_buckets.at(b) = this->operator_elementwise_multiplication(selected_buckets.at(b), bucket_size);
+
+    new_sample = this->operator_addition(new_sample, selected_buckets.at(b));
+
+    new_sample = this->operator_addition(new_sample, this->range.first);
+    
+    samples.push_back(new_sample);
+
+
+    
 
     // multiply/add by buckets
   }
+  std::cout << "Bucket size:" << std::endl;
+  this->print_datum_t(bucket_size);
+  this->print_vector_datum_t(samples);
 
-  return std::vector<Datum_t>();
+  return samples;
 }
 
 template <typename Datum_t>
