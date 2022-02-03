@@ -11,12 +11,16 @@
 #ifndef TUDAT_LEARN_OPERATOR_HPP
 #define TUDAT_LEARN_OPERATOR_HPP
 
+#include <algorithm>
+#include <cmath>
+#include <functional>
+#include <iostream>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include <Eigen/Core>
 
-#include "tudat-learn/random.hpp"
 #include "tudat-learn/types.hpp"
 
 namespace tudat_learn
@@ -27,77 +31,293 @@ class Operator {
   protected:
     Operator() { }
 
-    /* BEGIN ARITHMETIC OPERATIONS */
+    /* BEGIN BASIC ARITHMETIC OPERATIONS */
 
-    // implemets an operator difference for arithmetic and eigen types
-    template <typename Datum_tt = Datum_t>
-    typename std::enable_if< std::is_arithmetic<Datum_tt>::value || is_eigen<Datum_tt>::value,
-    Datum_t >::type operator_difference(const Datum_tt &lhs, const Datum_tt &rhs) const { return lhs - rhs; }
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value || is_eigen<T>::value,
+    T >::type              operator_difference(T lhs, const T &rhs) const { return lhs -= rhs; }
 
     // implements an operator difference for vector<arithmetic> types
-    template <typename Datum_tt = Datum_t>
-    typename std::enable_if<      is_stl_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_tt::value_type>::value,
-    Datum_t >::type operator_difference(Datum_tt lhs, const Datum_tt &rhs) const {
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    std::vector<T> >::type operator_difference(std::vector<T> lhs, const std::vector<T> &rhs) const {
       for(int i = 0; i < lhs.size(); ++i)
         lhs.at(i) -= rhs.at(i);
       return lhs;
     }
 
+
     // implements an operator sum for arithmetic and eigen types
-    template <typename Datum_tt = Datum_t>
-    typename std::enable_if< std::is_arithmetic<Datum_tt>::value || is_eigen<Datum_tt>::value,
-    Datum_t >::type operator_addition(const Datum_tt &lhs, const Datum_tt &rhs) const { return lhs + rhs; }
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value || is_eigen<T>::value,
+    T >::type              operator_addition(T lhs, const T &rhs) const { return lhs += rhs; }
 
     // implements an operator sum for vector<arithmetic> types
-    template <typename Datum_tt = Datum_t>
-    typename std::enable_if<      is_stl_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_tt::value_type>::value,
-    Datum_t >::type operator_addition(Datum_tt lhs, const Datum_tt &rhs) const {
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    std::vector<T> >::type operator_addition(std::vector<T> lhs, const std::vector<T> &rhs) const {
       for(int i = 0; i < lhs.size(); ++i)
         lhs.at(i) += rhs.at(i);
       return lhs;
     }
 
+
     // implements a multiplication for arithmetic types
     template <typename T>
     typename std::enable_if< std::is_arithmetic<T>::value,
-    T>::type operator_elementwise_multiplication(const T &lhs, const T &rhs) const { return lhs * rhs; }
+    T>::type               operator_elementwise_multiplication(T lhs, const T &rhs) const { return lhs *= rhs; }
 
     // implements an element-wise multiplication for eigen types
     template <typename T>
     typename std::enable_if<           is_eigen<T>::value,
-    T>::type operator_elementwise_multiplication(const T &lhs, const T &rhs) const { return lhs.array() * rhs.array(); }
+    T>::type               operator_elementwise_multiplication(T lhs, const T &rhs) const { return lhs.array() *= rhs.array(); }
 
     // implements an element-wise multiplication for vector<arithmetic> types
-    template <typename Datum_tt = Datum_t>
-    typename std::enable_if<      is_stl_vector<Datum_tt>::value,
-    Datum_tt>::type operator_elementwise_multiplication(Datum_tt lhs, const Datum_tt &rhs) const { 
-      std::transform(lhs.cbegin(), lhs.cend(), rhs.cbegin(), lhs.begin(), std::multiplies<typename Datum_tt::value_type>()); 
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    std::vector<T> >::type operator_elementwise_multiplication(std::vector<T> lhs, const std::vector<T> &rhs) const { 
+      std::transform(lhs.cbegin(), lhs.cend(), rhs.cbegin(), lhs.begin(), std::multiplies<T>()); 
       return lhs;
     }
+
+
+    // implements a division for arithmetic types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    T>::type               operator_elementwise_division(T lhs, const T &rhs) const { return lhs /= rhs; }
+
+    // implements an element-wise division for eigen types
+    template <typename T>
+    typename std::enable_if<           is_eigen<T>::value,
+    T>::type               operator_elementwise_division(T lhs, const T &rhs) const { return lhs.array() /= rhs.array(); }
+
+    // implements an element-wise division for vector<arithmetic> types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    std::vector<T> >::type operator_elementwise_division(std::vector<T> lhs, const std::vector<T> &rhs) const { 
+      std::transform(lhs.cbegin(), lhs.cend(), rhs.cbegin(), lhs.begin(), std::divides<T>()); 
+      return lhs;
+    }
+
+
+    // implements an addition for arithmetic types
+    template <typename T, typename U>
+    typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
+    T>::type               operator_scalar_addition(T lhs, U rhs) const { return lhs += rhs; }
+
+    // implements an addition of a scalar for eigen types
+    template <typename T, typename U>
+    typename std::enable_if<           is_eigen<T>::value && std::is_arithmetic<U>::value,
+    T>::type               operator_scalar_addition(T lhs, U rhs) const { return lhs.array() += rhs; }
+
+    // implements an addition of a scalar for vector<arithmetic> types
+    template <typename T, typename U>
+    typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
+    std::vector<T> >::type operator_scalar_addition(std::vector<T> lhs, U rhs) const { 
+      for(auto &it : lhs)
+        it += rhs;
+      return lhs;
+    }
+
+    // implements an subtraction for arithmetic types
+    template <typename T, typename U>
+    typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
+    T>::type               operator_scalar_subtraction(T lhs, U rhs) const { return lhs -= rhs; }
+
+    // implements an subtraction of a scalar for eigen types
+    template <typename T, typename U>
+    typename std::enable_if<           is_eigen<T>::value && std::is_arithmetic<U>::value,
+    T>::type               operator_scalar_subtraction(T lhs, U rhs) const { return lhs.array() -= rhs; }
+
+    // implements an subtraction of a scalar for vector<arithmetic> types
+    template <typename T, typename U>
+    typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
+    std::vector<T> >::type operator_scalar_subtraction(std::vector<T> lhs, U rhs) const { 
+      for(auto &it : lhs)
+        it -= rhs;
+      return lhs;
+    }
+
 
     // implements a division for arithmetic types
     template <typename T, typename U>
     typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
-    T>::type operator_scalar_division(const T &lhs, const U &rhs) const { return lhs / rhs; }
+    T>::type               operator_scalar_division(T lhs, U rhs) const { return lhs /= rhs; }
 
-    // implements an element-wise division by a scalar for eigen types
+    // implements a division by a scalar for eigen types
     template <typename T, typename U>
     typename std::enable_if<           is_eigen<T>::value && std::is_arithmetic<U>::value,
-    T>::type operator_scalar_division(const T &lhs, const U &rhs) const { return lhs.array() / rhs; }
+    T>::type               operator_scalar_division(T lhs, U rhs) const { return lhs.array() /= rhs; }
 
-    // implements an element-wise division by a scalar for vector<arithmetic> types
-    template <typename Datum_tt = Datum_t, typename U>
-    typename std::enable_if<      is_stl_vector<Datum_tt>::value  && std::is_arithmetic<U>::value,
-    Datum_tt>::type operator_scalar_division(Datum_tt lhs, const U &rhs) const { 
+    // implements a division by a scalar for vector<arithmetic> types
+    template <typename T, typename U>
+    typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
+    std::vector<T> >::type operator_scalar_division(std::vector<T> lhs, U rhs) const { 
       for(auto &it : lhs)
         it /= rhs;
       return lhs;
     }
 
-    /* END ARITHMETIC OPERATIONS */
+    /* END BASIC ARITHMETIC OPERATIONS */
+
+
+    /* BEGIN OTHER ARITHMETIC OPERATIONS */
+
+    // implements square root for arithmetic types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value, 
+    T>::type             square_root(const T &arg) const { return std::sqrt(arg); }
+
+    // implements element-wise square root for eigen types
+    template <typename T>
+    typename std::enable_if<           is_eigen<T>::value, 
+    T>::type             square_root(const T &arg) const { return Eigen::sqrt(arg.array()); }
+
+    // implements element-wise square root for vector types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value, 
+    std::vector<T>>::type square_root(std::vector<T> arg) const { 
+      for(auto &it: arg)
+        it = std::sqrt(it);
+      return arg; 
+    }
+
+
+
+    /* END OTHER ARITHMETIC OPERATIONS */
 
     /* BEGIN COMPARISONS */
+
+    // implements an operator <= for arithmetic types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    bool>::type operator_leq(const T &lhs, const T &rhs) const { return lhs <= rhs; }
+
+    // implements an operator (lhs <= rhs).any() for eigen types
+    template <typename T>
+    typename std::enable_if<           is_eigen<T>::value,
+    bool>::type operator_leq(const T &lhs, const T &rhs) const { return (lhs.array() <= rhs.array()).any(); }
+
+    // implements an operator (lhs <= rhs).any() for vector<arithmetic> types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    bool>::type operator_leq(const std::vector<T> &lhs, const std::vector<T> &rhs) const { 
+      for(int i = 0; i < lhs.size(); ++i)
+        if(lhs.at(i) >= rhs.at(i))
+          return false;
+
+      return true;
+    }
+
+    // implements an element-wise max for arithmetic types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    T>::type               elementwise_max(const T &lhs, const T &rhs) const { return (lhs > rhs) ? lhs : rhs; }
+
+    // implements an element-wise max for eigen types
+    template <typename T>
+    typename std::enable_if<            is_eigen<T>::value,
+    T>::type               elementwise_max(const T &lhs, const T &rhs) const { return lhs.array().max(rhs.array()); }
+
+    // implements an element-wise max for vector<arithmetic> types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    std::vector<T> >::type elementwise_max(std::vector<T> &lhs, const std::vector<T> &rhs) const { 
+      std::transform(lhs.cbegin(), lhs.cend(), rhs.cbegin(), lhs.begin(),
+        [](const T lhs_element, const T rhs_element){ return (lhs_element > rhs_element) ? lhs_element : rhs_element; } );
+      return lhs;
+    }
+
+    // implements an element-wise min for arithmetic types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    T>::type               elementwise_min(const T &lhs, const T &rhs) const { return (lhs < rhs) ? lhs : rhs; }
+
+    // implements an element-wise min for eigen types
+    template <typename T>
+    typename std::enable_if<            is_eigen<T>::value,
+    T>::type               elementwise_min(const T &lhs, const T &rhs) const { return lhs.array().min(rhs.array()); }
+
+    // implements an element-wise min for vector<arithmetic> types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    std::vector<T> >::type elementwise_min(std::vector<T> &lhs, const std::vector<T> &rhs) const { 
+      std::transform(lhs.cbegin(), lhs.cend(), rhs.cbegin(), lhs.begin(),
+        [](const T lhs_element, const T rhs_element){ return (lhs_element < rhs_element) ? lhs_element : rhs_element; } );
+      return lhs;
+    }
+
     /* END COMPARISONS */
+
+    /* BEGIN PRINTING OPERATIONS */
+
+    // prints an arithmetic or eigen type
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value || is_eigen<T>::value,
+    void >::type print_datum_t(const T &to_print) const { std::cout << to_print << std::endl; }
+
+    // prints a vector<arithmetic> type
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    void >::type print_datum_t(const std::vector<T> &to_print) const {
+      for(const auto &it: to_print)
+        std::cout << it << ", ";
+      std::cout << "\n" << std::endl;
+    }
+
+
+    // prints a vector of arithmetic types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    void >::type print_vector_datum_t(const std::vector<T> &to_print) const {
+      for(const auto &it: to_print)
+        std::cout << it << ", ";
+      std::cout << "\n";
+    }
+
+    // prints a vector of eigen types
+    template <typename T>
+    typename std::enable_if<           is_eigen<T>::value,
+    void >::type print_vector_datum_t(const std::vector<T> &to_print) const {
+      for(const auto &it: to_print)
+        std::cout << it << "\n" << std::endl;
+    }
+
+    // prints a vector of vector<arithmetic> types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    void >::type print_vector_datum_t(const std::vector<std::vector<T>> &to_print) const {
+      for(const auto &it: to_print) {
+        for(const auto &itt: it)
+          std::cout << itt << ", ";
+
+        std::cout << "\n" << std::endl;
+      }
+    }
+
+    /* END PRINTING OPERATIONS */
+
+    /* BEGIN OTHER OPERATIONS */
+
+    // implements a method that retrieves the dimension if the Datum_t is of arithmetic type
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    int>::type get_dimensions(const std::pair<T, T> &range) const
+    { return 1; }
+
+    // implements a method that retrieves the dimension if the Datum_t is of eigen type
+    template <typename T>
+    typename std::enable_if<            is_eigen<T>::value,
+    int>::type get_dimensions(const std::pair<T, T> &range) const
+    { return range.first.rows() * range.first.cols(); }
+
+    // implements a method that retrieves the dimension if the Datum_t is of arithmetic type
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    int>::type get_dimensions(const std::pair<std::vector<T>, std::vector<T>> &range) const
+    { return range.first.size(); }
+
+    /* END OTHER OPERATIONS */
 };
 
 } // namespace tudat_learn

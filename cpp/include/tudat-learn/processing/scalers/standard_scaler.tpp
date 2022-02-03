@@ -67,7 +67,7 @@ void >::type StandardScaler<Datum_t, Label_t>::welford_iteration(int &count, T &
   T delta = new_value - mean;
   mean += delta / count;
   T delta2 = new_value - mean;
-  m2 += this->operator_multiply_elementwise(delta, delta2);
+  m2 += this->operator_elementwise_multiplication(delta, delta2);
 }
 
 
@@ -77,7 +77,7 @@ Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(Dataset<Da
     // Issues with eigen compiling the elementwise divide operator function for rvalues make it necessary to have
     // the inputs as lvalues, hence named variables.
     Datum_t mean_centered_datum = dataset.data_at(i) - mean; 
-    dataset.data_at(i) = this->operator_divide_elementwise(mean_centered_datum, standard_deviation); 
+    dataset.data_at(i) = this->operator_elementwise_division(mean_centered_datum, standard_deviation); 
   }
 
   return dataset;
@@ -93,7 +93,7 @@ Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(const Data
     // the inputs as lvalues, hence named variables.
     
     Datum_t mean_centered_datum = dataset.data_at(transform_indices.at(i)) - mean; 
-    out_dataset.push_back(this->operator_divide_elementwise(mean_centered_datum, standard_deviation), dataset.labels_at(transform_indices.at(i))); 
+    out_dataset.push_back(this->operator_elementwise_division(mean_centered_datum, standard_deviation), dataset.labels_at(transform_indices.at(i))); 
   }
 
   return out_dataset;
@@ -101,7 +101,7 @@ Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(const Data
 
 template <typename Datum_t, typename Label_t>
 Datum_t StandardScaler<Datum_t, Label_t>::inverse_transform(Datum_t datum) const {
-  return this->operator_multiply_elementwise(datum, standard_deviation) + mean;
+  return this->operator_elementwise_multiplication(datum, standard_deviation) + mean;
 }
 
 } // namespace tudat_learn

@@ -17,13 +17,17 @@
 #include <Eigen/Core>
 
 #include "tudat-learn/dataset.hpp"
+#include "tudat-learn/operator.hpp"
 #include "tudat-learn/processing.hpp"
 
 namespace tudat_learn
 {
 
 template <typename Datum_t, typename Label_t>
-class Scaler {
+class Scaler : public Operator<Datum_t>{
+  protected:
+    Scaler() : Operator<Datum_t>() { }
+  
   public:  
     virtual void fit(const Dataset<Datum_t, Label_t> &dataset) = 0;
 
@@ -38,75 +42,7 @@ class Scaler {
     virtual Datum_t inverse_transform(Datum_t datum) const = 0;
 
   protected:
-    // implements square root for the eigen type
-    template <typename T>
-    typename std::enable_if<          is_eigen<T>::value, 
-    T>::type square_root(const T &arg) const { return Eigen::sqrt(arg.array()); }
-
-    // implements square root for arithmetic types
-    template <typename T>
-    typename std::enable_if< std::is_arithmetic<T>::value, 
-    T>::type square_root(const T &arg) const { return std::sqrt(arg); }
-
-    // implements an element-wise multiplication for eigen types
-    template <typename T>
-    typename std::enable_if<           is_eigen<T>::value,
-    T>::type operator_multiply_elementwise(const T &lhs, const T &rhs) const { return lhs.array() * rhs.array(); }
-
-    // implements a multiplication for arithmetic types
-    template <typename T>
-    typename std::enable_if< std::is_arithmetic<T>::value,
-    T>::type operator_multiply_elementwise(const T &lhs, const T &rhs) const { return lhs * rhs; }
-
-    // implements an element-wise division for eigen types
-    template <typename T>
-    typename std::enable_if<           is_eigen<T>::value,
-    T>::type operator_divide_elementwise(const T &lhs, const T &rhs) const { return lhs.array() / rhs.array(); }
-
-    // implements a division for arithmetic types
-    template <typename T>
-    typename std::enable_if< std::is_arithmetic<T>::value,
-    T>::type operator_divide_elementwise(const T &lhs, const T &rhs) const { return lhs / rhs; }
-
-    // implements an element-wise addition for eigen types
-    template <typename T, typename U>
-    typename std::enable_if<           is_eigen<T>::value && std::is_arithmetic<U>::value, 
-    T>::type operator_add_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs.array() + rhs; }
-
-    // implements a addition for arithmetic types
-    template <typename T, typename U>
-    typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
-    T>::type operator_add_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs - rhs; }
-
-    // implements an element-wise subtraction for eigen types
-    template <typename T, typename U>
-    typename std::enable_if<           is_eigen<T>::value && std::is_arithmetic<U>::value, 
-    T>::type operator_subtract_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs.array() - rhs; }
-
-    // implements a subtraction for arithmetic types
-    template <typename T, typename U>
-    typename std::enable_if< std::is_arithmetic<T>::value && std::is_arithmetic<U>::value,
-    T>::type operator_subtract_scalar_elementwise(const T &lhs, const U &rhs) const { return lhs - rhs; }
-
-    // implements an element-wise max for eigen types
-    template <typename T>
-    typename std::enable_if<            is_eigen<T>::value,
-    T>::type max_elementwise(const T &lhs, const T &rhs) const { return lhs.array().max(rhs.array()); }
-
-    // implements an element-wise max for arithmetic types
-    template <typename T>
-    typename std::enable_if< std::is_arithmetic<T>::value,
-    T>::type max_elementwise(const T &lhs, const T &rhs) const { return (lhs > rhs) ? lhs : rhs; }
-
-    // implements an element-wise min for eigen types
-    template <typename T>
-    typename std::enable_if<            is_eigen<T>::value,
-    T>::type min_elementwise(const T &lhs, const T &rhs) const { return lhs.array().min(rhs.array()); }
-
-    // implements an element-wise in for arithmetic types
-    template <typename T>
-    typename std::enable_if< std::is_arithmetic<T>::value,
-    T>::type min_elementwise(const T &lhs, const T &rhs) const { return (lhs < rhs) ? lhs : rhs; }
+    
 };
 
 } // namespace tudat_learn

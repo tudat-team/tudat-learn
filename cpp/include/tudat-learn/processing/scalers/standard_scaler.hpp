@@ -31,7 +31,7 @@ class StandardScaler : Scaler<Datum_t, Label_t> {
       typename Datum_tt = Datum_t,
       typename = std::enable_if_t< is_eigen<Datum_tt>::value || std::is_arithmetic<Datum_tt>::value>
     >
-    StandardScaler( ) { }
+    StandardScaler( ) : Scaler<Datum_t, Label_t>() { }
 
     virtual void fit(const Dataset<Datum_t, Label_t> &dataset);
 

@@ -31,7 +31,7 @@ class MinMaxScaler : Scaler<Datum_t, Label_t> {
       typename = std::enable_if_t< is_eigen<Datum_tt>::value || std::is_arithmetic<Datum_tt>::value>
     >
     MinMaxScaler( ) :
-    range(std::pair(0, 1)), difference_range(1) 
+    Scaler<Datum_t, Label_t>(), range(std::pair(0, 1)), difference_range(1) 
     { }
 
     template <
@@ -41,7 +41,7 @@ class MinMaxScaler : Scaler<Datum_t, Label_t> {
     MinMaxScaler( 
       const std::pair<int, int> &range // maybe floating-point?
     ) :
-    range(range) {
+    Scaler<Datum_t, Label_t>(), range(range) {
       if(range.first >= range.second) throw std::runtime_error("Minmax range must have the (min, max) form, with min < max. Please choose a valid range.");
       difference_range = range.second - range.first;
     }
