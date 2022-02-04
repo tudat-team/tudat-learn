@@ -74,6 +74,12 @@ struct Timer {
 int main()
 {
 
+  for(int i = 0; i < 10; ++i) {
+    std::uniform_int_distribution<int> dis(0,10);
+    std::mt19937 rng(0);
+    std::cout << dis(rng) << std::endl;
+  }
+
   int repetitions = 100000;
 
   tudat_learn::LatinHypercubeSampler<Eigen::Vector4f> lhs(

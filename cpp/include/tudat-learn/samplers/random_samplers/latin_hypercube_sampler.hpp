@@ -25,17 +25,41 @@
 namespace tudat_learn
 {
 
+template <typename T>
+constexpr bool is_floating_point_eigen(){
+  if constexpr(is_eigen<T>::value)
+    return std::is_floating_point<typename T::Scalar>::value;
+  else
+    return false;
+}
+
+template <typename T>
+constexpr bool is_floating_point_stl_vector(){
+  if constexpr(is_stl_vector<T>::value)
+    return std::is_floating_point<typename T::value_type>::value;
+  else
+    return false;
+}
+
 template <typename Datum_t>
 class LatinHypercubeSampler : public Sampler<Datum_t> {
   public:
     LatinHypercubeSampler() = delete;
 
+    // template <
+    //   typename Datum_tt = Datum_t,
+    //   typename = std::enable_if_t< 
+    //     (is_eigen<Datum_tt>::value &&  std::is_floating_point<typename Datum_tt::value_type>::value) || 
+    //                                    std::is_floating_point<         Datum_tt           >::value   ||
+    //     (is_stl_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_tt::value_type>::value) 
+    //   >
+    // >
     template <
       typename Datum_tt = Datum_t,
       typename = std::enable_if_t< 
-        (is_eigen<Datum_tt>::value &&  std::is_floating_point<typename Datum_tt::value_type>::value) || 
-                                       std::is_floating_point<         Datum_tt           >::value   ||
-        (is_stl_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_tt::value_type>::value) 
+        is_floating_point_eigen<Datum_tt>()        || 
+        std::is_floating_point<Datum_tt>::value   ||
+        is_floating_point_stl_vector<Datum_tt>()
       >
     >
     LatinHypercubeSampler(
@@ -51,7 +75,9 @@ class LatinHypercubeSampler : public Sampler<Datum_t> {
 
     virtual std::vector<Datum_t> sample(const std::pair<Datum_t, Datum_t> &new_range, const int number_samples);
 
-    int test() const { return this->get_dimensions(this->range); }
+    virtual std::vector<Datum_t> sample(const std::pair<Datum_t, Datum_t> &new_range                          );
+
+    virtual std::vector<Datum_t> sample(                                              const int number_samples);
 
   protected:
     void set_buckets(const int buckets_per_dimension) {

@@ -47,7 +47,7 @@ class Sampler : public Operator<Datum_t> {
     template <typename Datum_tt = Datum_t>
     typename std::enable_if< std::is_arithmetic<Datum_tt>::value,
     Datum_tt >::type sample_zero_one( ) const {
-      std::uniform_real_distribution<typename Datum_tt::Scalar> uniform(0,1);
+      std::uniform_real_distribution<Datum_tt> uniform(0,1);
       return uniform(Random::get_rng());
     }
 

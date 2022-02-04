@@ -299,23 +299,23 @@ class Operator {
 
     /* BEGIN OTHER OPERATIONS */
 
-    // implements a method that retrieves the dimension if the Datum_t is of arithmetic type
+    // implements a method that retrieves the dimension if the datum is of arithmetic type
     template <typename T>
     typename std::enable_if< std::is_arithmetic<T>::value,
-    int>::type get_dimensions(const std::pair<T, T> &range) const
+    int>::type get_dimensions(const T &datum) const
     { return 1; }
 
-    // implements a method that retrieves the dimension if the Datum_t is of eigen type
+    // implements a method that retrieves the dimension if the datum is of eigen type
     template <typename T>
     typename std::enable_if<            is_eigen<T>::value,
-    int>::type get_dimensions(const std::pair<T, T> &range) const
-    { return range.first.rows() * range.first.cols(); }
+    int>::type get_dimensions(const T &datum) const
+    { return datum.rows() * datum.cols(); }
 
-    // implements a method that retrieves the dimension if the Datum_t is of arithmetic type
+    // implements a method that retrieves the dimension if the datum is of arithmetic type
     template <typename T>
     typename std::enable_if< std::is_arithmetic<T>::value,
-    int>::type get_dimensions(const std::pair<std::vector<T>, std::vector<T>> &range) const
-    { return range.first.size(); }
+    int>::type get_dimensions(const std::vector<T> &datum) const
+    { return datum.size(); }
 
     /* END OTHER OPERATIONS */
 };

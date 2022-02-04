@@ -13,7 +13,7 @@ std::vector<Datum_t> LatinHypercubeSampler<Datum_t>::sample( ) const {
   std::vector<int> single_indices_vector(buckets_per_dimension);
   std::iota(single_indices_vector.begin(), single_indices_vector.end(), 0);
 
-  int dimensions = this->get_dimensions(this->range);
+  int dimensions = this->get_dimensions(this->range.first);
 
   // contains vectors with buckets_per_dimension elements which are vectors themselves
   // each of those vectors is filled in with 0, ..., buckets_per_dimension - 1
@@ -39,14 +39,14 @@ std::vector<Datum_t> LatinHypercubeSampler<Datum_t>::sample( ) const {
   for(int d = 0; d < dimensions; ++d)
     std::shuffle(sampled_indices.at(d).begin(), sampled_indices.at(d).end(), Random::get_rng());
 
-  for(const auto &it : sampled_indices) {
-      for(const auto &itt: it)
-        std::cout << itt << ", ";
-      std::cout << "\n" << std::endl;
-    }
+  // for(const auto &it : sampled_indices) {
+  //     for(const auto &itt: it)
+  //       std::cout << itt << ", ";
+  //     std::cout << "\n" << std::endl;
+  //   }
 
   std::vector<Datum_t> selected_buckets = this->generate_buckets(sampled_indices);
-  this->print_vector_datum_t(selected_buckets);
+  // this->print_vector_datum_t(selected_buckets);
 
   std::vector<Datum_t> samples;
   samples.reserve(buckets_per_dimension);
@@ -69,9 +69,9 @@ std::vector<Datum_t> LatinHypercubeSampler<Datum_t>::sample( ) const {
 
     // multiply/add by buckets
   }
-  std::cout << "Bucket size:" << std::endl;
-  this->print_datum_t(bucket_size);
-  this->print_vector_datum_t(samples);
+  // std::cout << "Bucket size:" << std::endl;
+  // this->print_datum_t(bucket_size);
+  // this->print_vector_datum_t(samples);
 
   return samples;
 }
@@ -84,10 +84,25 @@ std::vector<Datum_t> LatinHypercubeSampler<Datum_t>::sample(const std::pair<Datu
   return sample();
 }
 
+template <typename Datum_t>
+std::vector<Datum_t> LatinHypercubeSampler<Datum_t>::sample(const std::pair<Datum_t, Datum_t> &new_range) {
+  this->set_range(new_range);
+  set_buckets(buckets_per_dimension);
+
+  return sample();
+}
+
+template <typename Datum_t>
+std::vector<Datum_t> LatinHypercubeSampler<Datum_t>::sample(const int number_samples) {
+  set_buckets(number_samples);
+
+  return sample();
+}
+
 template <typename Datum_t> template <typename Datum_tt>
 typename std::enable_if< std::is_arithmetic<Datum_tt>::value,
 std::vector<Datum_tt> >::type LatinHypercubeSampler<Datum_t>::generate_buckets(const std::vector<std::vector<int>> &sampled_indices) const {
-  return sampled_indices.at(0);
+  return std::vector<Datum_tt>(sampled_indices.at(0).begin(), sampled_indices.at(0).end());
 }
 
 
