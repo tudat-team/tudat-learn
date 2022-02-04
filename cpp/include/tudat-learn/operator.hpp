@@ -247,6 +247,23 @@ class Operator {
       return lhs;
     }
 
+    // check whether two elements have the same dimensions for arithmetic types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    bool>::type check_dimensions(const T &lhs, const T &rhs) const { return true; }
+
+    // check whether two elements have the same dimensions for eigen types
+    template <typename T>
+    typename std::enable_if<            is_eigen<T>::value,
+    bool>::type check_dimensions(const T &lhs, const T &rhs) const { return (lhs.rows() == rhs.rows() && lhs.cols() == rhs.cols()); }
+
+    // check whether two elements have the same dimensions for vector<arithmetic> types
+    template <typename T>
+    typename std::enable_if< std::is_arithmetic<T>::value,
+    bool>::type check_dimensions(const std::vector<T> &lhs, const std::vector<T> &rhs) const { return (lhs.size() == rhs.size()); }
+
+
+
     /* END COMPARISONS */
 
     /* BEGIN PRINTING OPERATIONS */

@@ -63,7 +63,7 @@ struct VerifyLHS : public Operator<T> {
     void>::type get_bucket_index_from_sample(U sample, std::vector<std::vector<int>> &all_possible_indices) const { 
       for(int d = 0; d < all_possible_indices.size(); ++d) { // should only yield a single iteration
         sample = (sample - range.first) / bucket_size;
-        all_possible_indices.at(d).at(sample) = -1;
+        all_possible_indices.at(d).at(static_cast<int>(sample)) = -1;
       }
     }
 
@@ -74,7 +74,7 @@ struct VerifyLHS : public Operator<T> {
       for(int d = 0; d < all_possible_indices.size(); ++d) {
         int r = d / sample.cols();
         int c = d % sample.cols();
-        all_possible_indices.at(d).at(sample.row(r).col(c).value()) = -1;
+        all_possible_indices.at(d).at(static_cast<int>(sample.row(r).col(c).value())) = -1;
       }
     }
 
@@ -82,8 +82,8 @@ struct VerifyLHS : public Operator<T> {
     typename std::enable_if< std::is_arithmetic<U>::value,
     void>::type get_bucket_index_from_sample(std::vector<U> sample, std::vector<std::vector<int>> &all_possible_indices) const {        
       for(int d = 0; d < all_possible_indices.size(); ++d) {
-        sample.at(d) = sample.at(d) - range.first.at(d) / bucket_size.at(d);
-        all_possible_indices.at(d).at(sample.at(d)) = -1;
+        sample.at(d) = (sample.at(d) - range.first.at(d)) / bucket_size.at(d);
+        all_possible_indices.at(d).at(static_cast<int>(sample.at(d))) = -1;
       }
     }
 
@@ -99,6 +99,7 @@ struct VerifyLHS : public Operator<T> {
 } // namespace tudat_learn
 
 int main() {
+  std::cout << std::setprecision(6) << std::fixed;
 
   tudat_learn::Random::set_seed(1);
 
@@ -121,7 +122,7 @@ int main() {
   );
   tudat_learn::LatinHypercubeSampler<Eigen::ArrayXXf> lhs_dynamic_eigen_array(range_dynamic_eigen_array, 10);
   auto samples_dynamic_eigen_array = lhs_dynamic_eigen_array.sample();
-  std::cout << "\nSamples Static Eigen Vector:" << std::endl;
+  std::cout << "\nSamples Dyanamic Eigen Array (2D):" << std::endl;
   for(const auto &it : samples_dynamic_eigen_array)
     std::cout << it << "\n" << std::endl;
 
@@ -133,7 +134,7 @@ int main() {
   auto range_scalar = std::make_pair(1.0, 2.0);
   tudat_learn::LatinHypercubeSampler<double> lhs_scalar(range_scalar, 10);
   auto samples_scalar = lhs_scalar.sample();
-  std::cout << "\nSamples Static Eigen Vector:" << std::endl;
+  std::cout << "\nSamples Scalar:" << std::endl;
   for(const auto &it : samples_scalar)
     std::cout << it << "\n" << std::endl;
 
@@ -141,41 +142,56 @@ int main() {
   if(!verify_scalar.verify_lhs(samples_scalar,range_scalar))
     return 1;
 
+  // STL Vector
+  auto range_stl_vector = std::make_pair(
+    std::vector<float>({0, 0}), 
+    std::vector<float>({5,10})
+  );
+  tudat_learn::LatinHypercubeSampler<std::vector<float>> lhs_stl_vector(range_stl_vector, 5);
+  auto samples_stl_vector = lhs_stl_vector.sample();
+  std::cout << "\nSamples STL Vector:" << std::endl;
+  for(const auto &it : samples_stl_vector) {
+    for(const auto &itt : it)
+      std::cout << itt << " ";
+    std::cout << "\n";
+  }
 
-  // tudat_learn::LatinHypercubeSampler<Eigen::Vector2f> lhs(
-  //   std::make_pair(Eigen::Vector2f(0,0), Eigen::Vector2f(5,10)),
-  //   5
-  // );
-  
-  // std::cout << "Test1:" << std::endl;
-  // auto samples = lhs.sample();
-  // std::cout << "And now testing the samples, the result is: " << verify.verify_lhs(samples, std::make_pair(Eigen::Vector2f(0,0), Eigen::Vector2f(5,10))) << std::endl;
-  // samples.at(0).row(0) = (Eigen::MatrixXf(1,1) << 0.5).finished();
-  // std::cout << "And now testing the samples, the result is: " << verify.verify_lhs(samples, std::make_pair(Eigen::Vector2f(0,0), Eigen::Vector2f(5,10))) << std::endl;
+  tudat_learn::VerifyLHS<std::vector<float>> verify_stl_vector;
+  if(!verify_stl_vector.verify_lhs(samples_stl_vector,range_stl_vector))
+    return 1;
 
-  // tudat_learn::LatinHypercubeSampler<Eigen::Matrix2f> lhsm(
-  //   std::make_pair(Eigen::Matrix2f({{1,2},{3,4}}), Eigen::Matrix2f({{3,4},{5,6}})),
-  //   5
-  // );
-  
-  // std::cout << "Another Test:" << std::endl;
-  // auto intervals = lhsm.sample();
-  // std::cout << "Aaaand:" << std::endl;
-  // for(const auto &it: intervals)
-  //   std::cout << it << "\n" << std::endl;
+  samples_stl_vector = lhs_stl_vector.sample();
+  int repetitions = 100;
+  for(int i = 0; i < repetitions; ++i) {
+    samples_static_eigen_vector = lhs_static_eigen_vector.sample(i/10 + 1);
+    samples_dynamic_eigen_array = lhs_dynamic_eigen_array.sample(i/10 + 1);
+    samples_scalar = lhs_scalar.sample(i/10 + 1);
+    samples_stl_vector = lhs_stl_vector.sample(i/10 + 1);
 
+    if(!verify_static_eigen_vector.verify_lhs(samples_static_eigen_vector,range_static_eigen_vector))
+      return 1;
+    if(!verify_dynamic_eigen_array.verify_lhs(samples_dynamic_eigen_array,range_dynamic_eigen_array))
+      return 1;
+    if(!verify_scalar.verify_lhs(samples_scalar,range_scalar))
+      return 1;
+    if(!verify_stl_vector.verify_lhs(samples_stl_vector,range_stl_vector))
+      return 1;
+  }
 
-  // // for vectors!!!!s
-  // tudat_learn::LatinHypercubeSampler<std::vector<float>> lhsv(
-  //   std::make_pair(std::vector<float>({1,2}), std::vector<float>({3,5})), 
-  //   5
-  // );
-  
-  // std::cout << "Vector Test:" << std::endl;
-  // auto intervals_vec = lhsv.sample();
-  // std::cout << "Aaaand:" << std::endl;
-  // // for(const auto &it: intervals_vec)
-  // //   std::cout << it << "\n" << std::endl;
+  // generating data for plots.
+  std::cout << "\nGenerating Plot Data:" << std::endl;
+  std::vector<int> number_samples_vector({3,5,10});
+  for(const auto &n : number_samples_vector) {
+    for(int j = 0; j < 3; ++j) {
+      samples_static_eigen_vector = lhs_static_eigen_vector.sample(
+        std::make_pair(Eigen::Vector2f(-5, 0), Eigen::Vector2f(5,5)),
+        n
+      );
+      std::cout << "Run " << j << " with " << n << " samples:" << std::endl;
+      for(const auto &it : samples_static_eigen_vector)
+        std::cout << it.transpose() << std::endl;
+    }
+  }
 
   return 0;
 }

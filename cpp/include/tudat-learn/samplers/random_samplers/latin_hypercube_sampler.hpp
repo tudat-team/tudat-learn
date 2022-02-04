@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <numeric>
 #include <random>
+#include <stdexcept>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -46,14 +47,6 @@ class LatinHypercubeSampler : public Sampler<Datum_t> {
   public:
     LatinHypercubeSampler() = delete;
 
-    // template <
-    //   typename Datum_tt = Datum_t,
-    //   typename = std::enable_if_t< 
-    //     (is_eigen<Datum_tt>::value &&  std::is_floating_point<typename Datum_tt::value_type>::value) || 
-    //                                    std::is_floating_point<         Datum_tt           >::value   ||
-    //     (is_stl_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_tt::value_type>::value) 
-    //   >
-    // >
     template <
       typename Datum_tt = Datum_t,
       typename = std::enable_if_t< 
@@ -67,6 +60,8 @@ class LatinHypercubeSampler : public Sampler<Datum_t> {
       const int number_samples
     ) :
     Sampler<Datum_tt>(range) {
+      if(!this->check_dimensions(range.first, range.second)) throw std::runtime_error("The lower and upper bounds of the range in the LatinHypercubeSampler must have the same dimensions.");
+
       set_buckets(number_samples);
     }
 
