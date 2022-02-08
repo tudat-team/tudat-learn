@@ -31,8 +31,13 @@
 *.out
 *.app
 
-# Build directories
+# Build Directories
 build*
+_build*
+
+# Install Directories
+install*
+_install*
 
 # Editor Settings
 .vscode/*
