@@ -68,13 +68,13 @@ int main() {
   };
   auto scaled_dataset(scaler_eigen.transform(*dataset_ptr));
   std::cout << "Scaled Dataset:" << std::endl;
-  for(int i = 0; i < scaled_dataset.size(); ++i) {
+  for(std::size_t i = 0; i < scaled_dataset.size(); ++i) {
     std::cout << scaled_dataset.data_at(i).transpose() << std::endl;
     if( !expected_scaled_data.at(i).isApprox(scaled_dataset.data_at(i)))
       return 1;
   }
 
-  for(int i = 0; i < scaled_dataset.size(); ++i)
+  for(std::size_t i = 0; i < scaled_dataset.size(); ++i)
     if( !data_dynamic_vector.at(i).isApprox(scaler_eigen.inverse_transform(scaled_dataset.data_at(i))))
       return 1;
 
@@ -122,13 +122,13 @@ int main() {
   };
   auto scaled_dataset_static_array(scaler_static_array.transform(*dataset_ptr_static_array));
   std::cout << "Scaled Dataset Static Array:" << std::endl;
-  for(int i = 0; i < scaled_dataset_static_array.size(); ++i) {
+  for(std::size_t i = 0; i < scaled_dataset_static_array.size(); ++i) {
     std::cout << scaled_dataset_static_array.data_at(i).transpose() << std::endl;
     if( !expected_scaled_data_static_array.at(i).isApprox(scaled_dataset_static_array.data_at(i)))
       return 1;
   }
 
-  for(int i = 0; i < scaled_dataset_static_array.size(); ++i)
+  for(std::size_t i = 0; i < scaled_dataset_static_array.size(); ++i)
     if( !data_static_array.at(i).isApprox(scaler_static_array.inverse_transform(scaled_dataset_static_array.data_at(i))))
       return 1;
 
@@ -157,13 +157,13 @@ int main() {
   };
   auto scaled_dataset_scalar(scaler_scalar.transform(*dataset_ptr_scalar));
   std::cout << "Scaled Dataset Scalar:" << std::endl;
-  for(int i = 0; i < scaled_dataset_scalar.size(); ++i) {
+  for(std::size_t i = 0; i < scaled_dataset_scalar.size(); ++i) {
     std::cout << scaled_dataset_scalar.data_at(i) << std::endl;
     if( std::abs(expected_scaled_data_scalar.at(i) - scaled_dataset_scalar.data_at(i)) > 1e-6 )
       return 1;
   }
 
-  for(int i = 0; i < scaled_dataset_scalar.size(); ++i)
+  for(std::size_t i = 0; i < scaled_dataset_scalar.size(); ++i)
     if( std::abs(data_scalar.at(i) - scaler_scalar.inverse_transform(scaled_dataset_scalar.data_at(i))) > 1e-6 )
       return 1;  
 
@@ -212,13 +212,13 @@ int main() {
   });
   auto scaled_dataset_static_matrix(scaler_static_matrix.transform(*dataset_ptr_static_matrix));
   std::cout << "Scaled Dataset Static Matrix:" << std::endl;
-  for(int i = 0; i < scaled_dataset_static_matrix.size(); ++i) {
+  for(std::size_t i = 0; i < scaled_dataset_static_matrix.size(); ++i) {
     std::cout << scaled_dataset_static_matrix.data_at(i) << std::endl;
     if( !expected_data_static_matrix.at(i).isApprox(scaled_dataset_static_matrix.data_at(i)))
       return 1;
   }
 
-  for(int i = 0; i < scaled_dataset_static_matrix.size(); ++i)
+  for(std::size_t i = 0; i < scaled_dataset_static_matrix.size(); ++i)
     if( !data_static_matrix.at(i).isApprox(scaler_static_matrix.inverse_transform(scaled_dataset_static_matrix.data_at(i))))
       return 1;  
 
@@ -257,13 +257,13 @@ int main() {
 
   auto scaled_dataset_specific_indices(scaler_eigen.transform(*dataset_ptr_specific_indices, std::vector<int>({1,2,3,4,5,6,7,8,9,10})));
   std::cout << "Scaled Dataset Specific Indices:" << std::endl;
-  for(int i = 0; i < scaled_dataset_specific_indices.size(); ++i) {
+  for(std::size_t i = 0; i < scaled_dataset_specific_indices.size(); ++i) {
     std::cout << scaled_dataset_specific_indices.data_at(i).transpose() << std::endl;
     if( !expected_scaled_data.at(i).isApprox(scaled_dataset_specific_indices.data_at(i)))
       return 1;
   }
 
-  for(int i = 0; i < scaled_dataset_specific_indices.size(); ++i)
+  for(std::size_t i = 0; i < scaled_dataset_specific_indices.size(); ++i)
     if( !data_dynamic_vector.at(i).isApprox(scaler_eigen.inverse_transform(scaled_dataset_specific_indices.data_at(i))))
       return 1;
 
@@ -295,13 +295,13 @@ int main() {
   };
   auto scaled_dataset_range(scalar_range.transform(*dataset_ptr));
   std::cout << "Scaled Dataset Range:" << std::endl;
-  for(int i = 0; i < scaled_dataset_range.size(); ++i) {
+  for(std::size_t i = 0; i < scaled_dataset_range.size(); ++i) {
     std::cout << scaled_dataset_range.data_at(i).transpose() << std::endl;
     if( !expected_scaled_data_range.at(i).isApprox(scaled_dataset_range.data_at(i)))
       return 1;
   }
 
-  for(int i = 0; i < scaled_dataset_range.size(); ++i)
+  for(std::size_t i = 0; i < scaled_dataset_range.size(); ++i)
     if( !data_dynamic_vector.at(i).isApprox(scalar_range.inverse_transform(scaled_dataset_range.data_at(i))))
       return 1;
 

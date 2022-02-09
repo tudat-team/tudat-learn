@@ -17,14 +17,15 @@
 
 namespace tudat_learn
 {
-  template <typename Datum_t, typename Label_t>
+
+template <typename Datum_t, typename Label_t>
 template <typename Datum_tt>
 typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, std::vector<int> >::type
 Dataset<Datum_t, Label_t>::get_closest_data(Datum_tt vector_of_interest, int amount) { 
 
   std::vector<int> all_indices(data.size());
   std::iota(all_indices.begin(), all_indices.end(), 0); // fills each element with the respective index: v[i] = i
-  if(amount == -1 || amount >= data.size())
+  if(amount == -1 || static_cast<std::size_t>(amount) >= data.size())
     return all_indices;
 
   // Creates a vector of the same scalar type held by the Eigen::Matrix in Datum_tt

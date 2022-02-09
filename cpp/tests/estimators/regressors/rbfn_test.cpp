@@ -64,7 +64,7 @@ class DerivativeTester : public tudat_learn::RBFN<Datum_t, Label_t> {
 
      this->center_points.resize(this->dataset_ptr->size(), this->dataset_ptr->data_at(0).rows());
 
-      for(int i = 0; i < this->dataset_ptr->size(); ++i) {
+      for(std::size_t i = 0; i < this->dataset_ptr->size(); ++i) {
         this->center_points.row(i)    = this->dataset_ptr->data_at(i);
       }
     }
@@ -273,7 +273,7 @@ int main( ) {
   if( !cubic_output_expected.isApprox(cubic_output) )
     return 1;
 
-  for(int i = 0; i < inputs.size(); ++i)
+  for(std::size_t i = 0; i < inputs.size(); ++i)
     if( !cubic_rbfn.eval(inputs[i]).isApprox(cubic_output_expected.row(i).transpose()) )
       return 1;
 
@@ -289,7 +289,7 @@ int main( ) {
   if( !gaussian_output_expected.isApprox(gaussian_output) )
     return 1;
 
-  for(int i = 0; i < inputs.size(); ++i)
+  for(std::size_t i = 0; i < inputs.size(); ++i)
     if( !gaussian_rbfn.eval(inputs[i]).isApprox(gaussian_output_expected.row(i).transpose()) )
       return 1;
 
@@ -409,7 +409,7 @@ int main( ) {
   if( !cubic_output_expected_poly.isApprox(cubic_output_poly) )
     return 1;
 
-  for(int i = 0; i < inputs.size(); ++i) {
+  for(std::size_t i = 0; i < inputs.size(); ++i) {
     if( !cubic_rbfn_poly.eval(inputs[i]).isApprox(cubic_output_expected_poly.row(i).transpose()) )
       return 1;
   }
@@ -426,7 +426,7 @@ int main( ) {
   if( !gaussian_output_expected_poly.isApprox(gaussian_output_poly) )
     return 1;
 
-  for(int i = 0; i < inputs.size(); ++i) {
+  for(std::size_t i = 0; i < inputs.size(); ++i) {
     if( !gaussian_rbfn_poly.eval(inputs[i]).isApprox(gaussian_output_expected_poly.row(i).transpose()) )
       return 1;
   }
@@ -454,7 +454,7 @@ int main( ) {
   derivative_tester_cubic.fit();
   derivative_tester_gaussian.fit();
 
-  for(int i = 0; i < inputs.size(); ++i) {
+  for(std::size_t i = 0; i < inputs.size(); ++i) {
     std::cout << "Gradient of the Cubic Derivative Tester at input[" << i << "]:\n" << derivative_tester_cubic.gradient(inputs.at(i)) << std::endl;
     std::cout << "Gradient of the Cubic RBFN at input[" << i << "]:\n" << cubic_rbfn.gradient(inputs.at(i)) << std::endl;
 
@@ -462,7 +462,7 @@ int main( ) {
       return 1;
   }
 
-  for(int i = 0; i < inputs.size(); ++i) {
+  for(std::size_t i = 0; i < inputs.size(); ++i) {
     std::cout << "Gradient of the Gaussian Derivative Tester at input[" << i << "]:\n" << derivative_tester_gaussian.gradient(inputs.at(i)) << std::endl;
     std::cout << "Gradient of the Gaussian RBFN at input[" << i << "]:\n" << gaussian_rbfn.gradient(inputs.at(i)) << std::endl;
 
@@ -476,7 +476,7 @@ int main( ) {
   derivative_tester_cubic_poly.fit();
   derivative_tester_gaussian_poly.fit();
 
-  for(int i = 0; i < inputs.size(); ++i) {
+  for(std::size_t i = 0; i < inputs.size(); ++i) {
     std::cout << "Gradient of the Polynomial Cubic Derivative Tester at input[" << i << "]:\n" << derivative_tester_cubic_poly.gradient(inputs.at(0)) << std::endl;
     std::cout << "Gradient of the Polynomial Cubic RBFN at input[" << i << "]:\n" << cubic_rbfn_poly.gradient(inputs.at(0)) << std::endl;
 
@@ -484,7 +484,7 @@ int main( ) {
       return 1;
   }
 
-  for(int i = 0; i < inputs.size(); ++i) {
+  for(std::size_t i = 0; i < inputs.size(); ++i) {
     std::cout << "Gradient of the Polynomial Gaussian Derivative Tester at input[" << i << "]:\n" << derivative_tester_gaussian_poly.gradient(inputs.at(i)) << std::endl;
     std::cout << "Gradient of the Polynomial Gaussian RBFN at input[" << i << "]:\n" << gaussian_rbfn_poly.gradient(inputs.at(i)) << std::endl;  
 
@@ -492,7 +492,7 @@ int main( ) {
       return 1;
   }
   
-  for(int i = 0; i < inputs.size(); ++i) {
+  for(std::size_t i = 0; i < inputs.size(); ++i) {
     for(int j = 0; j < labels[0].rows(); ++j) {
       std::cout << "Hessian[" << j << "] of the Cubic Derivative Tester at input[" << i << "]:\n" << derivative_tester_cubic.hessians(inputs.at(i)).at(j) << std::endl;
       std::cout << "Hessian[" << j << "] of the Cubic RBFN at input[" << i << "]:\n" << cubic_rbfn.hessians(inputs.at(i)).at(j) << std::endl;  
@@ -502,7 +502,7 @@ int main( ) {
     }
   }
 
-  for(int i = 0; i < inputs.size(); ++i) {
+  for(std::size_t i = 0; i < inputs.size(); ++i) {
     for(int j = 0; j < labels[0].rows(); ++j) {
       std::cout << "Hessian[" << j << "] of the Gaussian Derivative Tester at input[" << i << "]:\n" << derivative_tester_gaussian.hessians(inputs.at(i)).at(j) << std::endl;
       std::cout << "Hessian[" << j << "] of the Gaussian RBFN at input[" << i << "]:\n" << gaussian_rbfn.hessians(inputs.at(i)).at(j) << std::endl;  
@@ -512,7 +512,7 @@ int main( ) {
     }
   }
 
-  for(int i = 0; i < inputs.size(); ++i) {
+  for(std::size_t i = 0; i < inputs.size(); ++i) {
     for(int j = 0; j < labels[0].rows(); ++j) {
       std::cout << "Hessian[" << j << "] of the Polynomial Cubic Derivative Tester at input[" << i << "]:\n" << derivative_tester_cubic_poly.hessians(inputs.at(i)).at(j) << std::endl;
       std::cout << "Hessian[" << j << "] of the Polynomial Cubic RBFN at input[" << i << "]:\n" << cubic_rbfn_poly.hessians(inputs.at(i)).at(j) << std::endl;  
@@ -522,7 +522,7 @@ int main( ) {
     }
   }
 
-  for(int i = 0; i < inputs.size(); ++i) {
+  for(std::size_t i = 0; i < inputs.size(); ++i) {
     for(int j = 0; j < labels[0].rows(); ++j) {
       std::cout << "Hessian[" << j << "] of the Polynomial Gaussian Derivative Tester at input[" << i << "]:\n" << derivative_tester_gaussian_poly.hessians(inputs.at(i)).at(j) << std::endl;
       std::cout << "Hessian[" << j << "] of the Polynomial Gaussian RBFN at input[" << i << "]:\n" << gaussian_rbfn_poly.hessians(inputs.at(i)).at(j) << std::endl;  

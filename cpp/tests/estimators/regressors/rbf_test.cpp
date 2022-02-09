@@ -88,14 +88,14 @@ int main() {
   auto cubic_gradient_ptr = cubic_rbf.eval_gradient(x, c);
 
   std::cout << "CubicRBF gradient evaluated at x, c:" << std::endl;
-  for(auto i = 0; i < cubic_gradient_ptr.get()->size(); ++i)
+  for(std::size_t i = 0; i < cubic_gradient_ptr.get()->size(); ++i)
     std::cout << cubic_gradient_ptr.get()->at(i) << ", ";
   std::cout << std::endl;
 
   if(cubic_gradient_ptr.get()->size() != cubic_gradient.size())
     return 1;
 
-  for(auto i = 0; i < cubic_gradient_ptr.get()->size(); ++i)
+  for(std::size_t i = 0; i < cubic_gradient_ptr.get()->size(); ++i)
     if(std::abs(cubic_gradient_ptr.get()->at(i) - cubic_gradient.at(i)) > 1e-7 )
       return 1;  
 
@@ -103,14 +103,14 @@ int main() {
   auto cubic_hessian_ptr = cubic_rbf.eval_hessian(x, c);
 
   std::cout << "CubicRBF Hessian evaluated at x, c:" << std::endl;
-  for(auto i = 0; i < cubic_hessian_ptr.get()->size(); ++i)
+  for(std::size_t i = 0; i < cubic_hessian_ptr.get()->size(); ++i)
     std::cout << cubic_hessian_ptr.get()->at(i) << ", ";
   std::cout << std::endl;
 
   if(cubic_hessian_ptr.get()->size() != cubic_hessian.size())
     return 1;
 
-  for(auto i = 0; i < cubic_hessian_ptr.get()->size(); ++i)
+  for(std::size_t i = 0; i < cubic_hessian_ptr.get()->size(); ++i)
     if(std::abs(cubic_hessian_ptr.get()->at(i) - cubic_hessian.at(i)) > 1e-7 )
       return 1;
 
@@ -153,7 +153,7 @@ int main() {
   auto gaussian_gradient_ptr = gaussian_rbf.eval_gradient(x, c);
 
   std::cout << "GaussianRBF(sigma) gradient evaluated at x, c:" << std::endl;
-  for(auto i = 0; i < gaussian_gradient_ptr.get()->size(); ++i)
+  for(std::size_t i = 0; i < gaussian_gradient_ptr.get()->size(); ++i)
     std::cout << gaussian_gradient_ptr.get()->at(i) << ", ";
   std::cout << std::endl;
 
@@ -161,21 +161,21 @@ int main() {
     return 1;
     
 
-  for(auto i = 0; i < gaussian_gradient_ptr.get()->size(); ++i)
+  for(std::size_t i = 0; i < gaussian_gradient_ptr.get()->size(); ++i)
     if(std::abs(gaussian_gradient_ptr.get()->at(i) - gaussian_gradient.at(i)) > 1e-7 )
       return 1;  
 
   auto gaussian_hessian_ptr = gaussian_rbf.eval_hessian(x, c);
 
   std::cout << "GaussianRBF(sigma) Hessian evaluated at x, c:" << std::endl;
-  for(auto i = 0; i < gaussian_hessian_ptr.get()->size(); ++i)
+  for(std::size_t i = 0; i < gaussian_hessian_ptr.get()->size(); ++i)
     std::cout << gaussian_hessian_ptr.get()->at(i) << ", ";
   std::cout << std::endl;
 
   if(gaussian_hessian_ptr.get()->size() != gaussian_hessian.size())
     return 1;
 
-  for(auto i = 0; i < gaussian_hessian_ptr.get()->size(); ++i)
+  for(std::size_t i = 0; i < gaussian_hessian_ptr.get()->size(); ++i)
     if(std::abs(gaussian_hessian_ptr.get()->at(i) - gaussian_hessian.at(i)) > 1e-7 )
       return 1;
 

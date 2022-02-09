@@ -32,7 +32,7 @@ void StandardScaler<Datum_t, Label_t>::fit(const Dataset<Datum_t, Label_t> &data
       Datum_t running_mean = dataset.data_at(0);
       Datum_t m2 = dataset.data_at(0) - dataset.data_at(0);
       
-      for(int i = 1; i < dataset.size(); ++i) 
+      for(std::size_t i = 1; i < dataset.size(); ++i) 
         welford_iteration(count, running_mean, m2, dataset.data_at(i));
       mean = running_mean;
       variance = m2 / count;
@@ -53,7 +53,7 @@ void StandardScaler<Datum_t, Label_t>::fit(const Dataset<Datum_t, Label_t> &data
       Datum_t running_mean = dataset.data_at(fit_indices.at(0));
       Datum_t m2 = dataset.data_at(fit_indices.at(0)) - dataset.data_at(fit_indices.at(0));
       
-      for(int i = 1; i < fit_indices.size(); ++i) 
+      for(std::size_t i = 1; i < fit_indices.size(); ++i) 
         welford_iteration(count, running_mean, m2, dataset.data_at(fit_indices.at(i)));
       mean = running_mean;
       variance = m2 / count;
@@ -73,7 +73,7 @@ void >::type StandardScaler<Datum_t, Label_t>::welford_iteration(int &count, T &
 
 template <typename Datum_t, typename Label_t>
 Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(Dataset<Datum_t, Label_t> dataset) const {
-  for(int i = 0; i < dataset.size(); ++i) {
+  for(std::size_t i = 0; i < dataset.size(); ++i) {
     // Issues with eigen compiling the elementwise divide operator function for rvalues make it necessary to have
     // the inputs as lvalues, hence named variables.
     Datum_t mean_centered_datum = dataset.data_at(i) - mean; 
@@ -88,7 +88,7 @@ Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(const Data
   Dataset<Datum_t, Label_t> out_dataset;
   out_dataset.reserve(transform_indices.size());
 
-  for(int i = 0; i < transform_indices.size(); ++i) {
+  for(std::size_t i = 0; i < transform_indices.size(); ++i) {
     // Issues with eigen compiling the elementwise divide operator function for rvalues make it necessary to have
     // the inputs as lvalues, hence named variables.
     

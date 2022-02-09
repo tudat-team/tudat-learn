@@ -74,7 +74,7 @@ int main() {
   if( !expected_output.isApprox(outputs) )
     return 1;
 
-  for(int i = 0; i < inputs.size(); ++i)
+  for(std::size_t i = 0; i < inputs.size(); ++i)
     if( !grnn.eval(inputs[i]).isApprox(expected_output.row(i).transpose()) )
       return 1;
 
@@ -124,7 +124,7 @@ int main() {
   if( !expected_output.isApprox(outputs_fixed) )
     return 1;
 
-  for(int i = 0; i < inputs.size(); ++i)
+  for(std::size_t i = 0; i < inputs.size(); ++i)
     if( !grnn_fixed.eval(inputs[i]).isApprox(outputs_fixed.row(i).transpose()) )
       return 1;
 
@@ -171,7 +171,7 @@ int main() {
   if( !expected_output.isApprox(outputs_extra) )
     return 1;
 
-  for(int i = 0; i < inputs.size(); ++i)
+  for(std::size_t i = 0; i < inputs.size(); ++i)
     if( !grnn_extra.eval(inputs[i]).isApprox(outputs_extra.row(i).transpose()) )
       return 1;
 

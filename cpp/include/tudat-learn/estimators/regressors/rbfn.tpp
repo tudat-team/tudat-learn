@@ -40,7 +40,7 @@ void RBFN<Datum_t, Label_t>::fit( ) {
         this->dataset_ptr->size(), this->dataset_ptr->labels_at(0).rows()
     );
 
-    for(int i = 0; i < this->dataset_ptr->size(); ++i) {
+    for(std::size_t i = 0; i < this->dataset_ptr->size(); ++i) {
         center_points.row(i)    = this->dataset_ptr->data_at(i);
         output_at_center.row(i) = this->dataset_ptr->labels_at(i);
     }
@@ -51,7 +51,7 @@ void RBFN<Datum_t, Label_t>::fit( ) {
         this->dataset_ptr->size(), this->dataset_ptr->size()
     );
 
-    for(int i = 0; i < this->dataset_ptr->size(); ++i) 
+    for(std::size_t i = 0; i < this->dataset_ptr->size(); ++i) 
         distance_matrix.col(i) = (center_points.rowwise() - center_points.row(i)).rowwise().norm();
 
     distance_matrix = rbf_ptr->eval_matrix(distance_matrix);
@@ -85,7 +85,7 @@ void RBFN<Datum_t, Label_t>::fit(const std::vector<int> &fit_indices) {
         fit_indices.size(), this->dataset_ptr->labels_at(0).rows()
     );
 
-    for(int i = 0; i < fit_indices.size(); ++i) {
+    for(std::size_t i = 0; i < fit_indices.size(); ++i) {
         center_points.row(i)    = this->dataset_ptr->data_at(fit_indices.at(i));
         output_at_center.row(i) = this->dataset_ptr->labels_at(fit_indices.at(i));
     }
@@ -96,7 +96,7 @@ void RBFN<Datum_t, Label_t>::fit(const std::vector<int> &fit_indices) {
         fit_indices.size(), fit_indices.size()
     );
 
-    for(int i = 0; i < fit_indices.size(); ++i) 
+    for(std::size_t i = 0; i < fit_indices.size(); ++i) 
         distance_matrix.col(i) = (center_points.rowwise() - center_points.row(i)).rowwise().norm();
 
     distance_matrix = rbf_ptr->eval_matrix(distance_matrix);
@@ -136,7 +136,7 @@ Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> RBFN<Dat
         input_vector.size(), center_points.rows()
     );
 
-    for(int i = 0; i < input_vector.size(); ++i) {
+    for(std::size_t i = 0; i < input_vector.size(); ++i) {
         distance_matrix_input.row(i) = rbf_ptr->eval_matrix(
             (center_points.rowwise() - input_vector.at(i).transpose()).rowwise().norm().transpose()
         );
@@ -350,14 +350,14 @@ Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> RBFNPoly
         input_vector.size(), input_vector.at(0).rows() // 1 is due to a single vector being processed in this function
     );
 
-    for(int i = 0; i < input_vector.size(); ++i) 
+    for(std::size_t i = 0; i < input_vector.size(); ++i) 
         input_eigen.row(i) = input_vector.at(i);
 
     MatrixX distance_matrix_input(
         input_vector.size(), this->center_points.rows()
     );
 
-    for(int i = 0; i < input_vector.size(); ++i) {
+    for(std::size_t i = 0; i < input_vector.size(); ++i) {
         distance_matrix_input.row(i) = this->rbf_ptr->eval_matrix(
             (this->center_points.rowwise() - input_eigen.row(i)).rowwise().norm().transpose()
         );

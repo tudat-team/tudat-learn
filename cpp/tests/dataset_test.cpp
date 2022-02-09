@@ -55,7 +55,7 @@ int test_get_closest_data( ) {
     if(expected.size() != predicted.size())
       return 1;
 
-    for(int i = 0; i < expected.size(); ++i) {
+    for(std::size_t i = 0; i < expected.size(); ++i) {
       if(expected[i] != predicted[i])
         return 1;
       
@@ -75,7 +75,7 @@ int test_get_closest_data( ) {
       if(expected.size() != predicted.size())
         return 1;
 
-      for(int i = 0; i < expected.size(); ++i) {
+      for(std::size_t i = 0; i < expected.size(); ++i) {
         if(expected[i] != predicted[i])
           return 1;
       
@@ -96,7 +96,7 @@ int test_get_closest_data( ) {
       if(expected.size() != predicted.size())
         return 1;
 
-      for(int i = 0; i < expected.size(); ++i) {
+      for(std::size_t i = 0; i < expected.size(); ++i) {
         if(expected[i] != predicted[i])
           return 1;
       
@@ -118,7 +118,7 @@ int test_get_closest_data( ) {
       if(expected.size() != predicted.size())
         return 1;
 
-      for(int i = 0; i < expected.size(); ++i) {
+      for(std::size_t i = 0; i < expected.size(); ++i) {
         if(expected[i] != predicted[i] && expected_other[i] != predicted[i])
           return 1;
       

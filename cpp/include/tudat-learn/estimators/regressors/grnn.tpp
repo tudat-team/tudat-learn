@@ -26,7 +26,7 @@ void GRNN<Datum_t, Label_t>::fit( ) {
 
   this->output_center_points.resize(this->dataset_ptr->size(), this->dataset_ptr->labels_at(0).rows());
 
-  for(int i = 0; i < this->dataset_ptr->size(); ++i) {
+  for(std::size_t i = 0; i < this->dataset_ptr->size(); ++i) {
     this->center_points.row(i) = this->dataset_ptr->data_at(i);
     this->output_center_points.row(i) = this->dataset_ptr->labels_at(i);
   }
@@ -41,7 +41,7 @@ void GRNN<Datum_t, Label_t>::fit(const std::vector<int> &fit_indices) {
 
   this->output_center_points.resize(fit_indices.size(), this->dataset_ptr->labels_at(0).rows());
 
-  for(int i = 0; i < fit_indices.size(); ++i) {
+  for(std::size_t i = 0; i < fit_indices.size(); ++i) {
     this->center_points.row(i) = this->dataset_ptr->data_at(fit_indices.at(i));
     this->output_center_points.row(i) = this->dataset_ptr->labels_at(fit_indices.at(i));
   }
@@ -72,7 +72,7 @@ Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> GRNN<Dat
     input_vector.size(), center_points.rows()
   );
 
-  for(int i = 0; i < input_vector.size(); ++i) {
+  for(std::size_t i = 0; i < input_vector.size(); ++i) {
     rbf_output_matrix.row(i) = rbf_ptr->eval_matrix(
       (center_points.rowwise() - input_vector.at(i).transpose()).rowwise().norm()
     ).transpose(); 

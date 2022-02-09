@@ -41,7 +41,7 @@ class Operator {
     template <typename T>
     typename std::enable_if< std::is_arithmetic<T>::value,
     std::vector<T> >::type operator_difference(std::vector<T> lhs, const std::vector<T> &rhs) const {
-      for(int i = 0; i < lhs.size(); ++i)
+      for(std::size_t i = 0; i < lhs.size(); ++i)
         lhs.at(i) -= rhs.at(i);
       return lhs;
     }
@@ -56,7 +56,7 @@ class Operator {
     template <typename T>
     typename std::enable_if< std::is_arithmetic<T>::value,
     std::vector<T> >::type operator_addition(std::vector<T> lhs, const std::vector<T> &rhs) const {
-      for(int i = 0; i < lhs.size(); ++i)
+      for(decltype(lhs.size()) i = 0; i < lhs.size(); ++i)
         lhs.at(i) += rhs.at(i);
       return lhs;
     }
@@ -202,7 +202,7 @@ class Operator {
     template <typename T>
     typename std::enable_if< std::is_arithmetic<T>::value,
     bool>::type operator_leq(const std::vector<T> &lhs, const std::vector<T> &rhs) const { 
-      for(int i = 0; i < lhs.size(); ++i)
+      for(std::size_t i = 0; i < lhs.size(); ++i)
         if(lhs.at(i) >= rhs.at(i))
           return false;
 

@@ -37,7 +37,7 @@ T CubicRBF<T>::eval(const vector_t &x, const vector_t &c) const {
 
   T result = 0;
 
-  for(auto j = 0; j < x.size(); ++j)
+  for(std::size_t j = 0; j < x.size(); ++j)
     result += (x[j] - c[j]) * (x[j] - c[j]);
 
   result = std::sqrt(result);
@@ -68,12 +68,12 @@ std::shared_ptr< typename RBF<T>::vector_t > CubicRBF<T>::eval_gradient(const ve
   
   T radius = 0;
 
-  for(auto j = 0; j < x.size(); ++j)
+  for(std::size_t j = 0; j < x.size(); ++j)
     radius += (x[j] - c[j]) * (x[j] - c[j]);
 
   radius = std::sqrt(radius);
 
-  for(auto j = 0; j < x.size(); ++j)
+  for(std::size_t j = 0; j < x.size(); ++j)
     gradient_at_x.get()->push_back(3 * (x[j] - c[j]) * radius);
 
   return gradient_at_x;
@@ -102,13 +102,13 @@ std::shared_ptr< typename RBF<T>::vector_t > CubicRBF<T>::eval_hessian(const vec
 
   T radius = 0;
 
-  for(auto j = 0; j < x.size(); ++j)
+  for(std::size_t j = 0; j < x.size(); ++j)
     radius += (x[j] - c[j]) * (x[j] - c[j]);
 
   radius = std::sqrt(radius);
 
-  for(auto j = 0; j < x.size(); ++j) {
-    for(auto k = j; k < x.size(); ++k) {
+  for(std::size_t j = 0; j < x.size(); ++j) {
+    for(std::size_t k = j; k < x.size(); ++k) {
       hessian_at_x.get()->at(j * x.size() + k) = 3 * (x[k] - c[k]) * (x[j] - c[j]) / radius;
 
       // adding term to the diagonal
@@ -254,7 +254,7 @@ T GaussianRBF<T>::eval(const vector_t &x, const vector_t &c) const {
 
   T result = 0;
 
-  for(auto j = 0; j < x.size(); ++j)
+  for(std::size_t j = 0; j < x.size(); ++j)
     result += (x[j] - c[j]) * (x[j] - c[j]);
 
   result = std::exp( - result / (sigma_sqrd));
@@ -284,7 +284,7 @@ std::shared_ptr< typename RBF<T>::vector_t > GaussianRBF<T>::eval_gradient(const
   
   T gaussian_at_x = eval(x, c);
 
-  for(auto j = 0; j < x.size(); ++j)
+  for(std::size_t j = 0; j < x.size(); ++j)
     gradient_at_x.get()->push_back(gaussian_at_x * (-2 * (x[j] - c[j]) / (sigma_sqrd)));
 
   return gradient_at_x;
@@ -314,8 +314,8 @@ std::shared_ptr< typename RBF<T>::vector_t > GaussianRBF<T>::eval_hessian(const 
   T gaussian_at_x = eval(x, c);
 
   // above the diagonal and diagonal
-  for(auto j = 0; j < x.size(); ++j) {
-    for(auto k = j; k < x.size(); ++k) {
+  for(std::size_t j = 0; j < x.size(); ++j) {
+    for(std::size_t k = j; k < x.size(); ++k) {
       hessian_at_x.get()->at(j * x.size() + k) = gaussian_at_x * (-2 * (x[j] - c[j]) / sigma_sqrd) * (-2 * (x[k] - c[k]) / sigma_sqrd);
 
       // adding term to the diagonal

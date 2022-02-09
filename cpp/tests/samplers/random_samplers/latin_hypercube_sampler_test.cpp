@@ -61,7 +61,7 @@ struct VerifyLHS : public Operator<T> {
     template <typename U>
     typename std::enable_if< std::is_arithmetic<U>::value,
     void>::type get_bucket_index_from_sample(U sample, std::vector<std::vector<int>> &all_possible_indices) const { 
-      for(int d = 0; d < all_possible_indices.size(); ++d) { // should only yield a single iteration
+      for(std::size_t d = 0; d < all_possible_indices.size(); ++d) { // should only yield a single iteration
         sample = (sample - range.first) / bucket_size;
         all_possible_indices.at(d).at(static_cast<int>(sample)) = -1;
       }
@@ -71,7 +71,7 @@ struct VerifyLHS : public Operator<T> {
     typename std::enable_if<           is_eigen<U>::value,
     void>::type get_bucket_index_from_sample(U sample, std::vector<std::vector<int>> &all_possible_indices) const { 
       sample = (sample - range.first).array() / bucket_size.array();
-      for(int d = 0; d < all_possible_indices.size(); ++d) {
+      for(std::size_t d = 0; d < all_possible_indices.size(); ++d) {
         int r = d / sample.cols();
         int c = d % sample.cols();
         all_possible_indices.at(d).at(static_cast<int>(sample.row(r).col(c).value())) = -1;
@@ -81,7 +81,7 @@ struct VerifyLHS : public Operator<T> {
     template <typename U>
     typename std::enable_if< std::is_arithmetic<U>::value,
     void>::type get_bucket_index_from_sample(std::vector<U> sample, std::vector<std::vector<int>> &all_possible_indices) const {        
-      for(int d = 0; d < all_possible_indices.size(); ++d) {
+      for(std::size_t d = 0; d < all_possible_indices.size(); ++d) {
         sample.at(d) = (sample.at(d) - range.first.at(d)) / bucket_size.at(d);
         all_possible_indices.at(d).at(static_cast<int>(sample.at(d))) = -1;
       }
