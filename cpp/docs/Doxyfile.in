@@ -3,3 +3,4 @@ INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/include/ @CMAKE_CURRENT_SOUR
 EXTRACT_ALL            = YES
 FILE_PATTERNS          = *.cpp *.hpp *.tpp
 RECURSIVE              = YES
+GENERATE_LATEX         = YES
