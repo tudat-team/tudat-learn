@@ -78,6 +78,8 @@ set(HEADERS_PRIVATE
 
 include(${PROJECT_SOURCE_DIR}/cmake/LibraryConfig.cmake)
 
+include(${PROJECT_SOURCE_DIR}/docs/DoxygenConfig.cmake)
+
 
 add_subdirectory(app)
 add_subdirectory(tests)
