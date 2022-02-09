@@ -8,9 +8,15 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#include "tudat-learn/function.hpp"
+#ifndef TUDAT_LEARN_FUNCTION_HPP 
+#define TUDAT_LEARN_FUNCTION_HPP 
 
 namespace tudat_learn
 {
   
+class Function {};
+  
 } // namespace tudat_learn
+
+
+#endif // TUDAT_LEARN_FUNCTION_HPP

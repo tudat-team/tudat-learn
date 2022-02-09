@@ -6,19 +6,27 @@ add_library(${LIBRARY_NAME}
   )
 
 # Alias:
-#   - Foo::foo alias of foo
+#   - tudat-learn::tudat-learn alias of tudat-learn
 add_library(${PROJECT_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
 
-# C++11
-target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_11)
+# C++17
+target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_17)
 
-# Add definitions for targets
-# Values:
-#   - Debug  : -DFOO_DEBUG=1
-#   - Release: -DFOO_DEBUG=0
-#   - others : -DFOO_DEBUG=0
+# # Add definitions for targets
+# # Values:
+# #   - Debug  : -DFOO_DEBUG=1
+# #   - Release: -DFOO_DEBUG=0
+# #   - others : -DFOO_DEBUG=0
 target_compile_definitions(${LIBRARY_NAME} PUBLIC
   "${PROJECT_NAME_UPPERCASE}_DEBUG=$<CONFIG:Debug>")
+
+set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU>")
+set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
+target_compile_options(${LIBRARY_NAME} INTERFACE
+  "$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Wall;-pedantic>>" # "$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Wall;-Wextra;-Wshadow;-Wformat=2;-Wunused>>"
+  "$<${msvc_cxx}:$<BUILD_INTERFACE:-W3>>"
+)
+
 
 # Global includes. Used by all targets
 # Note:
@@ -26,7 +34,7 @@ target_compile_definitions(${LIBRARY_NAME} PUBLIC
 #   - header location in project: ${CMAKE_CURRENT_BINARY_DIR}/generated_headers
 target_include_directories(
   ${LIBRARY_NAME} PUBLIC
-  "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/tudat-learn/include>"
+  "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
   "$<BUILD_INTERFACE:${GENERATED_HEADERS_DIR}>"
   "$<INSTALL_INTERFACE:.>"
   ${EIGEN3_INCLUDE_DIRS}
@@ -47,9 +55,17 @@ install(
 
 # Headers:
 #   - foo/*.h -> <prefix>/include/foo/*.h
+# install(
+#     FILES ${HEADERS_PUBLIC}
+#     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_FOLDER}"
+# )
+
 install(
-    FILES ${HEADERS_PUBLIC}
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_FOLDER}"
+    DIRECTORY "${CMAKE_SOURCE_DIR}/include/" # source directory
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" # target directory
+    FILES_MATCHING # install only matched files
+    PATTERN "*.hpp" # select header files
+    PATTERN "*.tpp" # select template implementation files
 )
 
 # Headers:

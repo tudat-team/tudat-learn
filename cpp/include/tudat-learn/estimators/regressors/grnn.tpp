@@ -20,8 +20,6 @@ namespace tudat_learn
 
 template <typename Datum_t, typename Label_t>
 void GRNN<Datum_t, Label_t>::fit( ) {
-  using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
-
   if(this->dataset_ptr->size() == 0) throw std::runtime_error("Dataset provided for fitting GRNN is empty. Please add some entries to the dataset.");
 
   this->center_points.resize(this->dataset_ptr->size(), this->dataset_ptr->data_at(0).rows());
@@ -36,8 +34,6 @@ void GRNN<Datum_t, Label_t>::fit( ) {
 
 template <typename Datum_t, typename Label_t>
 void GRNN<Datum_t, Label_t>::fit(const std::vector<int> &fit_indices) {
-  using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
-
   if(this->dataset_ptr->size() == 0) throw std::runtime_error("Dataset provided for fitting GRNN is empty. Please add some entries to the dataset.");
   if(fit_indices.size() == 0) throw std::runtime_error("fit_indices vector provided for fitting RBFN is empty. Please provide a non-empty vector.");
 

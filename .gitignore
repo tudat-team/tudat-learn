@@ -34,6 +34,10 @@
 # Build Directories
 build*
 _build*
+debug*
+_debug*
+release*
+_release*
 
 # Install Directories
 install*

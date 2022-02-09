@@ -54,7 +54,7 @@ set(GENERATED_HEADERS_DIR
 
 # Create 'version.h'
 configure_file(
-  "${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/version.h.in"
+  "${PROJECT_SOURCE_DIR}/version.h.in"
   "${GENERATED_HEADERS_DIR}/${LIBRARY_FOLDER}/version.h"
   @ONLY
 )

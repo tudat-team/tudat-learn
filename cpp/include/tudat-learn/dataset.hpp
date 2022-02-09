@@ -8,8 +8,8 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_DATASET_HPP
-#define TUDAT_LEARN_DATASET_HPP
+#ifndef TUDAT_LEARN_DATASET_HPP 
+#define TUDAT_LEARN_DATASET_HPP 
 
 #include <algorithm>
 #include <numeric>
