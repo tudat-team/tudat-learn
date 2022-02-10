@@ -14,6 +14,11 @@ cmake -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" -DCMAKE_INSTALL_PREFIX=../_install ..
 cmake --build . --target install
 ```
 
+To build documentation:
+```bash
+cmake -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" -DCMAKE_INSTALL_PREFIX=../_install -DBUILD_DOC=ON ..
+```
+
 # Example project:
 
 (Hierarchy of project)
