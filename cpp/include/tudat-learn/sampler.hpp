@@ -24,18 +24,56 @@
 
 namespace tudat_learn
 {
-  
+
+/**
+ * @brief Base Sampler class. \n
+ * Provides a base class implementation for all the samplers in tudat-learn. Inherits from Operator as it needs the operations
+ * to be uniform across different Datum_t types.
+ * 
+ * @tparam Datum_t The type of a single feature vector. Can be a simple scalar, an std::vector<T>, an Eigen::Matrix, ...
+ */
 template <typename Datum_t>
 class Sampler : public Operator<Datum_t> {
   public:
+
+    /**
+     * @brief Deleted default constructor, to force a range selection.
+     * 
+     */
+    Sampler( ) = delete;
+
+    /**
+     * @brief Constructor with the range from which the elements are sampled.
+     * 
+     * @param range Constant reference to a pair of Datum_t types, where the first one must be element-wise smaller than the second one.
+     */
     Sampler(const std::pair<Datum_t, Datum_t> &range) 
     : Operator<Datum_t>() {
       set_range(range);
     }
 
+    /**
+     * @brief Virtual destructor, as the class has virtual methods.
+     * 
+     */
+    virtual ~Sampler( ) { }
+
+    /**
+     * @brief Pure virtual method to sample feature vectors of Datum_t types. The amount, along with the definitions, are expected to be
+     * given by the constructors of the classes that are derivded from Sampler.
+     * 
+     * @return std::vector<Datum_t> Vector with the sampled feature vectors.
+     */
     virtual std::vector<Datum_t> sample( ) const = 0;
 
   protected:
+    /**
+     * @brief Sets the range from which the elements are sampled. \n
+     * Can be used by the derived classes. Verifies if each new element of range.first is smaller than the corresponding
+     * element of range.second. Computes the range_size, that is, the difference between range.second and range.first.
+     * 
+     * @param range Constant reference to the new range.
+     */
     void set_range(const std::pair<Datum_t, Datum_t> &range) {
       if(this->operator_leq(range.second, range.first)) throw std::runtime_error("LatinHypercubeSampler range must have the (min, max) form, with every element of min being smaller than the corresponding element of max, for multidimensional types.");
       
@@ -43,7 +81,14 @@ class Sampler : public Operator<Datum_t> {
       range_size = this->operator_difference(range.second, range.first);
     }
 
-    // randomly generates a Datum_t between 0 and 1 for arithmetic types
+    /**
+     * @brief Generates a random number of an arithmetic type between 0 and 1, drawn from an uniform distribution. 
+     * Was not necessarily tested for integer types.
+     * 
+     * @tparam Datum_tt Type of the value being sampled.
+     * @return std::enable_if< std::is_arithmetic<Datum_tt>::value,
+     * Datum_tt >::type Random arithmetic type between 0 and 1.
+     */
     template <typename Datum_tt = Datum_t>
     typename std::enable_if< std::is_arithmetic<Datum_tt>::value,
     Datum_tt >::type sample_zero_one( ) const {
@@ -51,7 +96,15 @@ class Sampler : public Operator<Datum_t> {
       return uniform(Random::get_rng());
     }
 
-    // randomly generates a Datum_t of eigen type with all elements between 0 and 1
+
+    /**
+     * @brief Generates an Eigen structure with each element being randomly sampled between 0 and 1, drawn from an uniform
+     * distribution. Was not necessarily tested for integer types.
+     * 
+     * @tparam Datum_tt Type of the value being sampled.
+     * @return std::enable_if<           is_eigen<Datum_tt>::value,
+     * Datum_tt >::type Eigen type with each element between 0 and 1.
+     */
     template <typename Datum_tt = Datum_t>
     typename std::enable_if<           is_eigen<Datum_tt>::value,
     Datum_tt >::type sample_zero_one( ) const {
@@ -60,7 +113,14 @@ class Sampler : public Operator<Datum_t> {
               [&](){ return uniform(Random::get_rng()); });
     }
 
-    // randomly generates a Datum_t of vector<arithmetic> type with all elements between 0 and 1
+    /**
+     * @brief Generates an std::vector<arithmetic> with each element being randomly sampled between 0 and 1, drawn from an
+     * uniform distribution. Was not necessarily tested for integer types. 
+     * 
+     * @tparam Datum_tt Type of the value being sampled.
+     * @return std::enable_if<      is_stl_vector<Datum_tt>::value,
+     * Datum_tt >::type std::vector<arithmetic> type with each element between 0 and 1.
+     */
     template <typename Datum_tt = Datum_t>
     typename std::enable_if<      is_stl_vector<Datum_tt>::value,
     Datum_tt >::type sample_zero_one( ) const {
@@ -75,9 +135,9 @@ class Sampler : public Operator<Datum_t> {
     }
 
   protected:
-    std::pair<Datum_t, Datum_t> range;
+    std::pair<Datum_t, Datum_t> range; /**< Range from which the elements are sampled. */
 
-    Datum_t range_size;
+    Datum_t range_size;                /**< Range size, difference between range.second and range.first. */
 };
   
 } // namespace tudat_learn

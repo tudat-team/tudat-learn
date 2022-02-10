@@ -24,9 +24,9 @@ namespace tudat_learn
 {
 
 template <typename Datum_t, typename Label_t>
-class Scaler : public Operator<Datum_t>{
+class Scaler : public Processing<Datum_t, Label_t>, public Operator<Datum_t>{
   protected:
-    Scaler() : Operator<Datum_t>() { }
+    Scaler() : Processing<Datum_t,Label_t>(), Operator<Datum_t>() { }
   
   public:  
     virtual void fit(const Dataset<Datum_t, Label_t> &dataset) = 0;

@@ -13,10 +13,29 @@
 
 namespace tudat_learn
 {
-  
+
+/**
+ * @brief Base Processing class. \n 
+ * Currently has no functionality, but serves as the base class for classes with processing purposes, such as samplers.
+ * 
+ * @tparam Datum_t The type of a single feature vector. Can be a simple scalar, an std::vector<T>, an Eigen::Matrix, ...
+ * @tparam Label_t The type of a single label. Like the Datum_t, can be a simple scalar, an std::vector<T>, an Eigen::Matrix, ...
+ */
 template <typename Datum_t, typename Label_t>
 class Processing {
+  protected:
+    /**
+     * @brief Protected default constructor, ensuring it is only called from classes that derive from it.
+     * 
+     */
+    Processing( ) = default;
 
+  public:
+    /**
+     * @brief Virtual destructor, as the class will likely have virtual methods.
+     * 
+     */
+    virtual ~Processing( ) { }
 };
   
 } // namespace tudat_learn
