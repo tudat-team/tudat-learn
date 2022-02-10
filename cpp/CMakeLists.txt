@@ -36,7 +36,6 @@ set(HEADERS_PUBLIC
         include/tudat-learn/estimator.hpp
         include/tudat-learn/function.hpp
         include/tudat-learn/io.hpp
-        include/tudat-learn/learn.hpp
         include/tudat-learn/operator.hpp
         include/tudat-learn/processing.hpp
         include/tudat-learn/random.hpp

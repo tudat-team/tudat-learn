@@ -313,16 +313,19 @@ class Dataset<Datum_t, none_t> {
 
 
 /**
- * @brief Creates a labelled dataset from an unlabelled dataset and a Response object. Vector is created with empty labels!
+ * @brief Creates a labelled dataset from an unlabelled dataset and a vector of responses. \n
+ * The dataset is created with an empty response objects, the vector of responses and dataset.data must have the same
+ * length.
  * 
- * @tparam Datum_tt 
- * @tparam Response_tt 
- * @param dataset 
- * @param response 
- * @return Dataset<Datum_tt, Response_tt> 
+ * 
+ * @tparam Datum_t The type of a single feature vector. Can be a simple scalar, an std::vector<T>, an Eigen::Matrix, ...
+ * @tparam Label_t The type of a single label. Like the Datum_t, can be a simple scalar, an std::vector<T>, an Eigen::Matrix, ...
+ * @param dataset Unlabelled dataset.
+ * @param responses Vector with resonses.
+ * @return Dataset<Datum_tt, Response_tt> Labelled dataset with empty labels, and a filled vector of responses.
  */
 template <typename Datum_tt, typename Response_tt>
-Dataset<Datum_tt, Response_tt> get_dataset_with_response(Dataset<Datum_tt> &dataset, std::vector<Response_tt> &responses) {
+Dataset<Datum_tt, Response_tt> get_dataset_with_response(const Dataset<Datum_tt> &dataset, std::vector<Response_tt> &responses) {
   return Dataset<Datum_tt, Response_tt>(dataset.data, std::vector<Response_tt>(), responses);
 }
 
