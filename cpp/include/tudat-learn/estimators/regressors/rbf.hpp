@@ -28,6 +28,12 @@ template <typename T>
 struct RBF {
 
   /**
+     * @brief Virtual destructor, as the class has virtual methods.
+     * 
+     */
+  virtual ~RBF( ) { }
+
+  /**
    * @brief Types used in the RBFs
    * 
    * @param vector_t STL vector of type T 
@@ -35,10 +41,16 @@ struct RBF {
    * @param MatrixXt Eigen::Matrix of type T, Dynamic number of rows amd columns
    * 
    */
-  using vector_t = std::vector< T >;
-  using VectorXt = Eigen::Matrix< T, Eigen::Dynamic, 1 >;
-  using MatrixXt = Eigen::Matrix< T, Eigen::Dynamic, Eigen::Dynamic >;
+  using vector_t = std::vector< T >; /**<  STL vector of type T. */
+  using VectorXt = Eigen::Matrix< T, Eigen::Dynamic, 1 >; /**< Eigen::Vector of type T, Dynamic number of rows, single column. */
+  using MatrixXt = Eigen::Matrix< T, Eigen::Dynamic, Eigen::Dynamic >; /**< Eigen::Matrix of type T, Dynamic number of rows amd columns. */
 
+  /**
+   * @brief Evaluation using the radius.
+   * 
+   * @param radius: Euclidean norm of the radius vector.
+   * @return T 
+   */
   virtual T eval(const T radius) const = 0;
 
   /**
@@ -50,33 +62,59 @@ struct RBF {
   virtual MatrixXt eval_matrix(const MatrixXt &distance_matrix) const = 0;
 
   /**
-   * @brief Evaluation using two vectors.
+   * @brief Evaluation using two std::vector<T>.
    * 
    * @param x input vector
    * @param c center point
-   * @return double 
+   * @return T
    */
   virtual T eval(const vector_t &x, const vector_t &c) const = 0;
+
+  /**
+   * @brief Evaluation using two VectorXt.
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return T 
+   */
   virtual T eval(const VectorXt &x, const VectorXt &c) const = 0;
   
   /**
-   * @brief Evaluating the gradient using two vectors.
+   * @brief Evaluating the gradient using two std::vector<T>.
    * 
    * @param x input vector
    * @param c center point
    * @return std::shared_ptr<vector_t> gradient at point x
    */
   virtual std::shared_ptr<vector_t> eval_gradient(const vector_t &x, const vector_t &c) const = 0;
+
+  /**
+   * @brief Evaluating the gradient using two VectorXt.
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return std::shared_ptr<vector_t> gradient at point x
+   */
   virtual std::shared_ptr<VectorXt> eval_gradient(const VectorXt &x, const VectorXt &c) const = 0;
 
   /**
-   * @brief Evaluating the hessian using two vectors
+   * @brief Evaluating the hessian using two std::vector<T>.
    * 
    * @param x input vector
    * @param c center point
    * @return std::shared_ptr<vector_t> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   * @return std::shared_ptr<MatrixXt> hessian with indexing (i,j) yields (d^2 f) / (dxi dxj) derivative
    */
   virtual std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const = 0;
+
+  /**
+   * @brief Evaluating the hessian using two VectorXt.
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return std::shared_ptr<vector_t> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   * @return std::shared_ptr<MatrixXt> hessian with indexing (i,j) yields (d^2 f) / (dxi dxj) derivative
+   */
   virtual std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const = 0;
   
   
@@ -125,6 +163,7 @@ struct RBF {
    */
   virtual std::vector<MatrixXt>  hessian_rbfn(const VectorXt &x, const MatrixXt &center_points) const = 0;
 
+  
 };
 
 
@@ -145,10 +184,16 @@ struct CubicRBF : public RBF<T> {
   CubicRBF() : RBF< T >() {}
 
   /**
+     * @brief Virtual destructor, as the class has virtual methods.
+     * 
+     */
+  virtual ~CubicRBF( ) { }
+
+  /**
    * @brief Evaluation using the radius.
    * 
    * @param radius: Euclidean norm of the radius vector.
-   * @return double 
+   * @return T Output of the RBF 
    */
   virtual T eval(const T radius) const override final;
 
@@ -161,33 +206,59 @@ struct CubicRBF : public RBF<T> {
   virtual MatrixXt eval_matrix(const MatrixXt &distance_matrix) const override final;
   
   /**
-   * @brief Evaluation using two vectors.
+   * @brief Evaluation using two std::vector<T>.
    * 
    * @param x input vector
    * @param c center point
-   * @return double 
+   * @return T Output of the RBF
    */
   virtual T eval(const vector_t &x, const vector_t &c) const override final;
+
+  /**
+   * @brief Evaluation using two VectorXt.
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return T Output of the RBF
+   */
   virtual T eval(const VectorXt &x, const VectorXt &c) const override final;
   
   /**
-   * @brief Evaluating the gradient using two vectors.
+   * @brief Evaluating the gradient using two std::vector<T>.
    * 
    * @param x input vector
    * @param c center point
    * @return std::shared_ptr<vector_t> gradient at point x
    */
   virtual std::shared_ptr<vector_t> eval_gradient(const vector_t &x, const vector_t &c) const override final;
+
+  /**
+   * @brief Evaluating the gradient using two VectorXt.
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return std::shared_ptr<vector_t> gradient at point x
+   */
   virtual std::shared_ptr<VectorXt> eval_gradient(const VectorXt &x, const VectorXt &c) const override final;
 
   /**
-   * @brief Evaluating the hessian using two vectors
+   * @brief Evaluating the hessian using two std::vector<T>.
    * 
    * @param x input vector
    * @param c center point
    * @return std::shared_ptr<vector_t> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   * @return std::shared_ptr<MatrixXt> hessian with indexing (i,j) yields (d^2 f) / (dxi dxj) derivative
    */
   virtual std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const override final;
+
+  /**
+   * @brief Evaluating the hessian using two VectorXt.
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return std::shared_ptr<vector_t> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   * @return std::shared_ptr<MatrixXt> hessian with indexing (i,j) yields (d^2 f) / (dxi dxj) derivative
+   */
   virtual std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const override final;
 
   /**
@@ -247,6 +318,12 @@ struct GaussianRBF : public RBF<T> {
   using typename RBF<T>::MatrixXt;
   
   /**
+   * @brief Deleted default constructor, ensuring the objects are constructed with settings.
+   * 
+   */
+  GaussianRBF() = delete;
+
+  /**
    * @brief Construct a new GaussianRBF object
    * 
    * @param sigma eval(x) = e(-x^2 / 2 * sigma^2)
@@ -255,10 +332,16 @@ struct GaussianRBF : public RBF<T> {
   : RBF< T >(), sigma_sqrd(sigma * sigma) {}
 
   /**
+     * @brief Virtual destructor, as the class has virtual methods.
+     * 
+     */
+  virtual ~GaussianRBF( ) { }
+
+  /**
    * @brief Evaluation using the radius.
    * 
    * @param radius: Euclidean norm of the radius vector.
-   * @return double 
+   * @return T Output of the RBF
    */
   virtual T eval(const T radius) const override final;
 
@@ -271,27 +354,43 @@ struct GaussianRBF : public RBF<T> {
   virtual MatrixXt eval_matrix(const MatrixXt &distance_matrix) const override final;
 
   /**
-   * @brief Evaluation using two vectors.
+   * @brief Evaluation using two std::vector<T>.
    * 
    * @param x input vector
    * @param c center point
-   * @return double 
+   * @return T Output of the RBF
    */
   virtual T eval(const vector_t &x, const vector_t &c) const override final;
+
+  /**
+   * @brief Evaluation using two VectorXt.
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return T Output of the RBF
+   */
   virtual T eval(const VectorXt &x, const VectorXt &c) const override final;
   
   /**
-   * @brief Evaluating the gradient using two vectors.
+   * @brief Evaluating the gradient using two std::vector<T>.
    * 
    * @param x input vector
    * @param c center point
    * @return std::shared_ptr<vector_t> gradient at point x
    */
   virtual std::shared_ptr<vector_t> eval_gradient(const vector_t &x, const vector_t &c) const override final;
+
+  /**
+   * @brief Evaluating the gradient using two VectorXt.
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return std::shared_ptr<vector_t> gradient at point x
+   */
   virtual std::shared_ptr<VectorXt> eval_gradient(const VectorXt &x, const VectorXt &c) const override final;
 
   /**
-   * @brief Evaluating the hessian using two vectors
+   * @brief Evaluating the hessian using two std::vector<T>.
    * 
    * @param x input vector
    * @param c center point
@@ -299,22 +398,31 @@ struct GaussianRBF : public RBF<T> {
    * @return std::shared_ptr<MatrixXt> hessian with indexing (i,j) yields (d^2 f) / (dxi dxj) derivative
    */
   virtual std::shared_ptr<vector_t> eval_hessian(const vector_t &x, const vector_t &c) const override final;
+
+  /**
+   * @brief Evaluating the hessian using two VectorXt.
+   * 
+   * @param x input vector
+   * @param c center point
+   * @return std::shared_ptr<vector_t> hessian with indexing j * x.size() + i yields (d^2 f) / (dxi dxj) derivative
+   * @return std::shared_ptr<MatrixXt> hessian with indexing (i,j) yields (d^2 f) / (dxi dxj) derivative
+   */
   virtual std::shared_ptr<MatrixXt> eval_hessian(const VectorXt &x, const VectorXt &c) const override final;
 
 
   /**
    * @brief Computes a matrix of RBF partial derivatives so that the gradient of the RBFN at the point x
    * can be computed using:
-   * coefficients.transpose() * gradient_rbfn(x, center_points)
+   * coefficients.transpose() * gradient_rbfn(x, center_points) \n
    * 
    * In case of an RBFNPolynomial, one just needs to concatenate a matrix of dimensions 
    * [(dimension_input + 1) x dimension_input] below the output of this function before the multiplication.
-   * The matrix shall have the form presented below:
-   * 0 0 ... 0
-   * 1 1 ... 1
-   * 1 1 ... 1
-   *   ...
-   * 1 1 ... 1
+   * The matrix shall have the form presented below: \n
+   * 0 0 ... 0 \n
+   * 1 1 ... 1 \n
+   * 1 1 ... 1 \n
+   *   ...     \n
+   * 1 1 ... 1 \n
    * 
    * Done to take advantage of Eigen's vectorization capabilities.
    * 
@@ -349,7 +457,7 @@ struct GaussianRBF : public RBF<T> {
 
 
   private:
-    const T sigma_sqrd;
+    const T sigma_sqrd; /**< Square of the sigma value provided as input. */
 };
   
 } // namespace tudat_learn

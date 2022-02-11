@@ -19,20 +19,10 @@
 
 namespace tudat_learn
 {
-  /// Alias for an std::vector of type double
-  using vector_double = std::vector<double>;
-
-  // Alias for an std::vector of type int
-  using vector_int = std::vector<int>;
-
-  // None type to be used in unlabelled datasets
+  /// None type to be used in classes that work with unlabelled data, such as an unlabelled dataset.
   typedef struct None_t { } none_t;
 
-  // Type trait for std::vector class
-  // template <typename T>       struct is_vector :                         std::false_type { };
-  // template <typename... Args> struct is_vector< std::vector<Args...> > : std::true_type  { };
-
-  // Type trait for Eigen::Vector with floating-point type
+  /// Helper type trait for is_floating_point_eigen_vector.
   template <typename T> 
   struct __is_floating_point_eigen_vector_helper                                                     : std::false_type { };
   
@@ -45,10 +35,11 @@ namespace tudat_learn
   template <int RowsAtCompileTime> 
   struct __is_floating_point_eigen_vector_helper< Eigen::Matrix<long double, RowsAtCompileTime, 1> > : std::true_type { };
 
+  /// Type trait for Eigen::Vector with floating-point type.
   template <typename F>
   struct is_floating_point_eigen_vector : __is_floating_point_eigen_vector_helper<typename std::remove_cv< F >::type>::type { };
 
-  // Type trait for either Eigen::Matrix or Eigen::Array (compile or runtime)
+  /// Type trait for either Eigen::Matrix or Eigen::Array types.
   template <typename T> 
   struct is_eigen                                                            : std::false_type { };
 
@@ -58,7 +49,7 @@ namespace tudat_learn
   template <int RowsAtCompileTime, int ColsAtCompileTime, typename T>
   struct is_eigen< Eigen::Array < T, RowsAtCompileTime, ColsAtCompileTime> > : std::true_type  { };
 
-  // Type trait for std::vector class
+  /// Type trait for std::vector class.
   template <typename T>
   struct is_stl_vector                          : std::false_type { };
 

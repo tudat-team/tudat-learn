@@ -12,6 +12,7 @@
 #define TUDAT_LEARN_ESTIMATOR_HPP
 
 #include <memory>
+#include <vector>
 
 #include "tudat-learn/dataset.hpp"
 
@@ -29,6 +30,12 @@ namespace tudat_learn
 template <typename Datum_t, typename Label_t = none_t>
 class Estimator {
   protected:
+    /**
+     * @brief Deleted default constructor, to make sure a shared_ptr to the dataset is provided.
+     * 
+     */
+    Estimator( ) = delete;
+
     /**
      * @brief Protected Constructor for the Estimator class, preventing it from being called outside of the classes that are
      * derived from it. \n
@@ -48,10 +55,18 @@ class Estimator {
     virtual void fit( ) = 0;
 
     /**
+     * @brief Similar to the fit() method. Pure virtual method to fit the estimator to feature vectors at certain
+     * indices in the Dataset.
+     * 
+     * @param fit_indices Vector with the indices to which the Estimator is going to be fitted.
+     */
+    virtual void fit(const std::vector<int> &fit_indices) = 0;
+
+    /**
      * @brief Virtual destructor, as the class has virtual methods.
      * 
      */
-    virtual ~Estimator( ) { };
+    virtual ~Estimator( ) { }
 
   protected:
     std::shared_ptr< Dataset<Datum_t, Label_t> > dataset_ptr; /**< shared_ptr to the dataset. */
