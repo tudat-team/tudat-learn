@@ -28,7 +28,7 @@ namespace tudat_learn
 /**
  * @brief Base Sampler class. \n
  * Provides a base class implementation for all the samplers in tudat-learn. Inherits from Operator as it needs the operations
- * to be uniform across different Datum_t types.
+ * to be uniform across different Datum_t types. Inherits from Operator.
  * 
  * @tparam Datum_t The type of a single feature vector. Can be a simple scalar, an std::vector<T>, an Eigen::Matrix, ...
  */

@@ -56,6 +56,38 @@ namespace tudat_learn
   template <typename ... Args>
   struct is_stl_vector< std::vector< Args...> > : std::true_type { };
 
+  /**
+ * @brief Constexpr to evaluate if a type is a floating_point Eigen type. \n 
+ * Used when scalars may also be compared, as well as std::vectors.
+ * 
+ * @tparam T Type.
+ * @return true If T is a floating-point Eigen type
+ * @return false Otherwise.
+ */
+template <typename T>
+constexpr bool is_floating_point_eigen(){
+  if constexpr(is_eigen<T>::value)
+    return std::is_floating_point<typename T::Scalar>::value;
+  else
+    return false;
+}
+
+/**
+ * @brief Constexpr to evaluate if a type is a floating_point std::vector type. \n 
+ * Used when scalars may also be compared, as well as Eigen types.
+ * 
+ * @tparam T Type.
+ * @return true If T is a floating-point std::vector type
+ * @return false Otherwise.
+ */
+template <typename T>
+constexpr bool is_floating_point_stl_vector(){
+  if constexpr(is_stl_vector<T>::value)
+    return std::is_floating_point<typename T::value_type>::value;
+  else
+    return false;
+}
+
 } // namespace tudat_learn
 
 #endif // TUDAT_LEARN_TYPES_HPP

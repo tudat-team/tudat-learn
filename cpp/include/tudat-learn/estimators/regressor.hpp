@@ -19,7 +19,7 @@ namespace tudat_learn
   
 /**
  * @brief Base Regressor class. \n
- * Provides a base class implementation for all the regressor in tudat-learn. Receives both a Datum_t and a Label_t template
+ * Provides a base class implementation for all the regressors in tudat-learn. Receives both a Datum_t and a Label_t template
  * parameters, with the latter being defaulted to none_t, in case one is using an unlabelled Dataset.
  * 
  * @tparam Datum_t The type of a single feature vector. Can be a simple scalar, an std::vector<T>, an Eigen::Matrix, ...
