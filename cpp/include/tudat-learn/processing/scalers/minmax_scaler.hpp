@@ -144,7 +144,7 @@ class MinMaxScaler : Scaler<Datum_t, Label_t> {
      */
                 Datum_t   get_max( ) const { return max_in_dataset; }
 
-  private:
+  protected:
     std::pair<int, int> range;  /**< Range to which each feature gets scaled. */
 
     int difference_range;       /**< Amplitude of the range. range.second - range.first. */

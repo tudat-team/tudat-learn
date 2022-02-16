@@ -67,7 +67,7 @@ class GRNN : public Regressor<Datum_t, Label_t> {
     >
     GRNN(
       const std::shared_ptr< Dataset<Datum_tt, Label_tt> > &dataset_ptr,
-      const std::shared_ptr< RBF<typename Label_tt::Scalar> > &rbf_ptr
+      const std::shared_ptr< RBF<typename Datum_tt::Scalar> > &rbf_ptr
     ) :
     Regressor<Datum_tt, Label_tt>(dataset_ptr),
     rbf_ptr(rbf_ptr)
@@ -114,7 +114,7 @@ class GRNN : public Regressor<Datum_t, Label_t> {
     virtual Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic> eval(const std::vector<Datum_t> &input_vector) const;    
 
   protected:
-    std::shared_ptr< RBF<typename Label_t::Scalar> > rbf_ptr; /**< Shared pointer to the RBF. */
+    std::shared_ptr< RBF<typename Datum_t::Scalar> > rbf_ptr; /**< Shared pointer to the RBF. */
 
     /**
      * @brief Matrix with the center points to which the GRNN is fitted.

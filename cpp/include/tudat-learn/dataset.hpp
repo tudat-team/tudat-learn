@@ -196,8 +196,8 @@ class Dataset {
      * std::vector<int> >::type 
      */
     template <typename Datum_tt = Datum_t>
-    typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, std::vector<int> >::type
-    get_closest_data(Datum_tt vector_of_interest, int amount=-1);
+    typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, 
+    std::vector<int> >::type get_closest_data(Datum_tt vector_of_interest, int amount=-1);
 
     template <typename Datum_tt, typename Response_tt>
     friend Dataset<Datum_tt, Response_tt> get_dataset_with_response(Dataset<Datum_tt> &dataset, std::vector<Response_tt> &response);

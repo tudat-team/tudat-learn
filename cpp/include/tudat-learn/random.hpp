@@ -53,7 +53,6 @@ struct Random {
     static std::mt19937 rng;  /**< Mersenne-Twister RNG, initialized with the 0 seed by default, in random.cpp. */
 };
 
-
 } // namespace tudat_learn
 
 #endif // TUDAT_LEARN_RANDOM_HPP
