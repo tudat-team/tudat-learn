@@ -1,6 +1,11 @@
 # Set PROJECT_NAME_UPPERCASE and PROJECT_NAME_LOWERCASE variables
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPERCASE)
+# Change the - to _ in TUDAT_LEARN so that there do not raise the warning
+# <command-line>: warning: ISO C++11 requires whitespace after the macro name
+# If there are any cmake related errors, this should be a place to check.
+string(REPLACE "-" "_" PROJECT_NAME_UPPERCASE ${PROJECT_NAME_UPPERCASE})
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)
+
 
 # Library name (by default is the project name)
 if(NOT LIBRARY_NAME)
