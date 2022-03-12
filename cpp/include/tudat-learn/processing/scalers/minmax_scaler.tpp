@@ -85,6 +85,15 @@ Dataset<Datum_t, Label_t> MinMaxScaler<Datum_t, Label_t>::transform(const Datase
 }
 
 template <typename Datum_t, typename Label_t>
+Datum_t MinMaxScaler<Datum_t, Label_t>::transform(Datum_t datum) const {
+  datum = datum - min_in_dataset;
+  datum = this->operator_elementwise_division(scaled_datum, difference_dataset) * difference_range;
+  datum = this->operator_scalar_addition(scaled_datum, range.first);
+
+  return datum;
+}
+
+template <typename Datum_t, typename Label_t>
 Datum_t MinMaxScaler<Datum_t, Label_t>::inverse_transform(Datum_t datum) const {
   // Issues with eigen compiling the operator functions for rvalues make it necessary to have
   // the inputs as lvalues, hence named variables.

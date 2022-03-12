@@ -85,6 +85,15 @@ class Scaler : public Processing<Datum_t, Label_t>, public Operator<Datum_t>{
      */
     virtual Dataset<Datum_t, Label_t> transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &fit_indices) const = 0;
 
+    /**
+     * @brief Scales a datum according to the information obtained with the fit method, outputting the scaled datum.
+     * Essentially, new_datum = (datum - min_in_dataset) / (difference_dataset) * (difference_range) + range.first;
+     * 
+     * @param datum Copy of the input datum, not scaled.
+     * @return Datum_t Scaled datum.
+     */
+    virtual Datum_t transform(Datum_t datum) const = 0;
+
     // virtual void fit_transform(Dataset<Datum_t, Label_t> &dataset) const = 0;
 
     /**

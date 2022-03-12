@@ -84,6 +84,13 @@ Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(Dataset<Da
 }
 
 template <typename Datum_t, typename Label_t>
+Datum_t MinMaxScaler<Datum_t, Label_t>::transform(Datum_t datum) const {
+  datum = datum - mean;
+  datum = this->operator_elementwise_division(datum, standard_deviation);
+  return datum;
+}
+
+template <typename Datum_t, typename Label_t>
 Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &transform_indices) const {
   Dataset<Datum_t, Label_t> out_dataset;
   out_dataset.reserve(transform_indices.size());

@@ -3,6 +3,6 @@ To do:
 - Maybe Estimator shouldn't have fit(), only regressors, classifiers and clustering. This way we can introduce
 reinforcement learning techniques, for instance(?).
 - Virtual destructors on base classes! https://stackoverflow.com/questions/461203/when-to-use-virtual-destructors
-- Remove RBF functionality to return pointers, move semantics, duh!
 - Scaler output if integer dataset.
 - Make tudat-learn header only?
+- Scaler::transform(Datum) needs to be included in tests.

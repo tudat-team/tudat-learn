@@ -115,6 +115,15 @@ class MinMaxScaler : Scaler<Datum_t, Label_t> {
     virtual Dataset<Datum_t, Label_t> transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &transform_indices) const override;
 
     /**
+     * @brief Scales a datum according to the information obtained with the fit method, outputting the scaled datum.
+     * Essentially, new_datum = (datum - min_in_dataset) / (difference_dataset) * (difference_range) + range.first;
+     * 
+     * @param datum Copy of the input datum, not scaled.
+     * @return Datum_t Scaled datum.
+     */
+    virtual Datum_t transform(Datum_t datum) const override;
+
+    /**
      * @brief Applies the transformation inverse to scaling, obtained with transform.
      * Essentially, new_datum = (datum - range.first) / (difference_range) * (difference_dataset) + min_in_dataset;
      * 
