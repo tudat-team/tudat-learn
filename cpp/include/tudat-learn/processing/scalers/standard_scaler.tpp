@@ -84,7 +84,7 @@ Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(Dataset<Da
 }
 
 template <typename Datum_t, typename Label_t>
-Datum_t MinMaxScaler<Datum_t, Label_t>::transform(Datum_t datum) const {
+Datum_t StandardScaler<Datum_t, Label_t>::transform(Datum_t datum) const {
   datum = datum - mean;
   datum = this->operator_elementwise_division(datum, standard_deviation);
   return datum;

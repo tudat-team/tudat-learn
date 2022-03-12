@@ -87,8 +87,8 @@ Dataset<Datum_t, Label_t> MinMaxScaler<Datum_t, Label_t>::transform(const Datase
 template <typename Datum_t, typename Label_t>
 Datum_t MinMaxScaler<Datum_t, Label_t>::transform(Datum_t datum) const {
   datum = datum - min_in_dataset;
-  datum = this->operator_elementwise_division(scaled_datum, difference_dataset) * difference_range;
-  datum = this->operator_scalar_addition(scaled_datum, range.first);
+  datum = this->operator_elementwise_division(datum, difference_dataset) * difference_range;
+  datum = this->operator_scalar_addition(datum, range.first);
 
   return datum;
 }
