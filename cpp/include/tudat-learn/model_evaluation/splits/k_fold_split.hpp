@@ -8,19 +8,15 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
-#ifndef TUDAT_LEARN_CROSS_VALIDATION_TPP 
-#define TUDAT_LEARN_CROSS_VALIDATION_TPP 
-
-#ifndef TUDAT_LEARN_CROSS_VALIDATION_HPP
-#ERROR __FILE__ should only be included from /model_evaluation/cross_validation.hpp
-#endif
+#ifndef TUDAT_LEARN_K_FOLD_SPLIT_HPP 
+#define TUDAT_LEARN_K_FOLD_SPLIT_HPP 
 
 namespace tudat_learn
 {
 
-
-
 } // namespace tudat_learn
 
 
-#endif // TUDAT_LEARN_CROSS_VALIDATION_TPP 
+#include "model_evaluation/splits/k_fold_split.tpp"
+
+#endif // TUDAT_LEARN_K_FOLD_SPLIT_HPP 
