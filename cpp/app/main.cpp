@@ -6,6 +6,8 @@
 #include <Eigen/Core>
 
 #include <tudat-learn/samplers/random_samplers/latin_hypercube_sampler.hpp>
+#include <tudat-learn/model_evaluation/splits/k_fold_split.hpp>
+#include <tudat-learn/model_evaluation/cross_validation.hpp>
 
 
   

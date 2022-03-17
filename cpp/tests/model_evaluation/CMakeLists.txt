@@ -1,0 +1,5 @@
+add_executable(cross_validation_test cross_validation_test.cpp)
+target_link_libraries(cross_validation_test tudat-learn Eigen3::Eigen)
+add_test(NAME cross_validation_test COMMAND cross_validation_test)
+
+add_subdirectory(splits)

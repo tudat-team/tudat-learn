@@ -6,3 +6,5 @@ reinforcement learning techniques, for instance(?).
 - Scaler output if integer dataset.
 - Make tudat-learn header only?
 - Scaler::transform(Datum) needs to be included in tests.
+- shared_ptr< T > might need to be changed to shared_ptr< const T > in some situations, to prevent classes from altering datasets.
+- change indices vectors from vector<int> to vector<size_t>

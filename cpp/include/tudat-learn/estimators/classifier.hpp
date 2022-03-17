@@ -64,16 +64,6 @@ class Classifier : public Estimator<Datum_t, Label_t> {
      */
     virtual void fit(const std::vector<int> &fit_indices) = 0;
 
-    /**
-     * @brief Pure virtual method to evaluate an input of type Datum_t, producing an output of type Label_t.
-     * 
-     * @param input Constant reference to the input.
-     * @return Label_t Predicted label.
-     */
-    virtual Label_t eval(const Datum_t &input) const = 0;
-
-
-
 };
   
 } // namespace tudat_learn

@@ -21,35 +21,6 @@
 
 namespace tudat_learn{ 
 
-// template <typename Datum_t, typename Label_t>
-// class DerivativeTester : public tudat_learn::RBFN<Datum_t, Label_t> {
-
-//   public:
-//     DerivativeTester(
-//       const std::shared_ptr< Dataset<Datum_t, Label_t> > &dataset_ptr,
-//       const std::shared_ptr< RBF<typename Label_t::Scalar> > &rbf_ptr
-//     ) : RBFN<Datum_t, Label_t>(dataset_ptr, rbf_ptr) { 
-//       this->coefficients = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>::Ones(
-//         dataset_ptr->size(), dataset_ptr->labels_at(0).rows()
-//       );
-
-//      this->center_points.resize(this->dataset_ptr->size(), this->dataset_ptr->data_at(0).rows());
-
-//       for(int i = 0; i < this->dataset_ptr->size(); ++i) {
-//         this->center_points.row(i)    = this->dataset_ptr->data_at(i);
-//       }
-
-//     }
-
-//     // virtual void fit( ) override {
-//     //   RBFN<Datum_t, Label_t>::fit();
-
-//     //   this->coefficients = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>::Ones(
-//     //     this->coefficients.rows(), this->coefficients.cols()
-//     //     );
-//     // }
-// };
-
 template <typename Datum_t, typename Label_t>
 class DerivativeTester : public tudat_learn::RBFN<Datum_t, Label_t> {
 

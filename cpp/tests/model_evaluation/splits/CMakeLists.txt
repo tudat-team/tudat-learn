@@ -1,0 +1,3 @@
+add_executable(k_fold_split_test k_fold_split_test.cpp)
+target_link_libraries(k_fold_split_test tudat-learn Eigen3::Eigen)
+add_test(NAME k_fold_split_test COMMAND k_fold_split_test)
