@@ -40,7 +40,7 @@ void StandardScaler<Datum_t, Label_t>::fit(const Dataset<Datum_t, Label_t> &data
 }
 
 template <typename Datum_t, typename Label_t>
-void StandardScaler<Datum_t, Label_t>::fit(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &fit_indices) {
+void StandardScaler<Datum_t, Label_t>::fit(const Dataset<Datum_t, Label_t> &dataset, const std::vector<size_t> &fit_indices) {
       if(    dataset.size() < 2) throw std::runtime_error("Dataset needs to be of size 2 or greater for the StandardScaler use to be possible.");
       if(fit_indices.size() < 2) throw std::runtime_error("Fit_indices needs to be of size 2 or greater for it to be possible to fit StandardScaler.");
       
@@ -91,7 +91,7 @@ Datum_t StandardScaler<Datum_t, Label_t>::transform(Datum_t datum) const {
 }
 
 template <typename Datum_t, typename Label_t>
-Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &transform_indices) const {
+Dataset<Datum_t, Label_t> StandardScaler<Datum_t, Label_t>::transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<size_t> &transform_indices) const {
   Dataset<Datum_t, Label_t> out_dataset;
   out_dataset.reserve(transform_indices.size());
 

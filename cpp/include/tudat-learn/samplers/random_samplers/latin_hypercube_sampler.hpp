@@ -141,7 +141,7 @@ class LatinHypercubeSampler : public Sampler<Datum_t> {
      */
     template <typename Datum_tt = Datum_t>
     typename std::enable_if< std::is_arithmetic<Datum_tt>::value,
-    std::vector<Datum_tt> >::type generate_buckets(const std::vector<std::vector<int>> &sampled_indices) const;
+    std::vector<Datum_tt> >::type generate_buckets(const std::vector<std::vector<size_t>> &sampled_indices) const;
 
     /**
      * @brief Implements a function that generates a vector of Eigen types. The vector contains a number of elements equal
@@ -158,7 +158,7 @@ class LatinHypercubeSampler : public Sampler<Datum_t> {
      */
     template <typename Datum_tt = Datum_t>
     typename std::enable_if<           is_eigen<Datum_tt>::value,
-    std::vector<Datum_tt> >::type generate_buckets(const std::vector<std::vector<int>> &sampled_indices) const;
+    std::vector<Datum_tt> >::type generate_buckets(const std::vector<std::vector<size_t>> &sampled_indices) const;
 
     /**
      * @brief Implements a function that generates a vector of vector<arithmetic> types. The vector contains a number of elements equal
@@ -175,7 +175,7 @@ class LatinHypercubeSampler : public Sampler<Datum_t> {
      */
     template <typename Datum_tt = Datum_t>
     typename std::enable_if<      is_stl_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_tt::value_type>::value,
-    std::vector<Datum_tt> >::type generate_buckets(const std::vector<std::vector<int>> &sampled_indices) const;
+    std::vector<Datum_tt> >::type generate_buckets(const std::vector<std::vector<size_t>> &sampled_indices) const;
 
 
   protected:

@@ -264,7 +264,7 @@ int main( ) {
     if( !gaussian_rbfn.eval(inputs[i]).isApprox(gaussian_output_expected.row(i).transpose()) )
       return 1;
 
-  // Testing fit(const std::vector<int> &fit_indices)
+  // Testing fit(const std::vector<size_t> &fit_indices)
   std::vector< Eigen::VectorXf > data_extra({
     (Eigen::VectorXf(7) << 1, 1, 2, 0, 0, 0, 0).finished(),
     (Eigen::VectorXf(7) << 0.548814, 0.715189, 0.602763, 0.544883, 0.423655, 0.645894, 0.437587).finished(),
@@ -298,7 +298,7 @@ int main( ) {
   auto dataset_extra_ptr = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, Eigen::VectorXf> >(tudat_learn::Dataset(data_extra, labels_extra));
 
   tudat_learn::RBFN<Eigen::VectorXf, Eigen::VectorXf> cubic_rbfn_extra(dataset_extra_ptr, cubic_rbf_ptr);
-  cubic_rbfn_extra.fit(std::vector<int>({1,2,3,4,5,6,7,8,9,10}));
+  cubic_rbfn_extra.fit(std::vector<size_t>({1,2,3,4,5,6,7,8,9,10}));
   std::cout << "Coefficients of the Cubic RBFN when fitting to specific indices:\n" 
             << cubic_rbfn_extra.get_coefficients() << std::endl;
 
@@ -306,7 +306,7 @@ int main( ) {
     return 1;
 
   tudat_learn::RBFN<Eigen::VectorXf, Eigen::VectorXf> gaussian_rbfn_extra(dataset_extra_ptr, gaussian_rbf_ptr);
-  gaussian_rbfn_extra.fit(std::vector<int>({1,2,3,4,5,6,7,8,9,10}));
+  gaussian_rbfn_extra.fit(std::vector<size_t>({1,2,3,4,5,6,7,8,9,10}));
   std::cout << "Coefficients of the Gaussian RBFN when fitting to specific indices:\n" 
             << gaussian_rbfn_extra.get_coefficients() << std::endl;
 
@@ -403,7 +403,7 @@ int main( ) {
   }
 
   tudat_learn::RBFNPolynomial<Eigen::VectorXf, Eigen::VectorXf> cubic_rbfn_extra_poly(dataset_extra_ptr, cubic_rbf_ptr);
-  cubic_rbfn_extra_poly.fit(std::vector<int>({1,2,3,4,5,6,7,8,9,10}));
+  cubic_rbfn_extra_poly.fit(std::vector<size_t>({1,2,3,4,5,6,7,8,9,10}));
   std::cout << "Coefficients of the Cubic RBFNPolynomial when fitting to specific indices:\n" 
             << cubic_rbfn_extra_poly.get_coefficients() << std::endl;
 
@@ -411,7 +411,7 @@ int main( ) {
     return 1;
 
   tudat_learn::RBFNPolynomial<Eigen::VectorXf, Eigen::VectorXf> gaussian_rbfn_extra_poly(dataset_extra_ptr, gaussian_rbf_ptr);
-  gaussian_rbfn_extra_poly.fit(std::vector<int>({1,2,3,4,5,6,7,8,9,10}));
+  gaussian_rbfn_extra_poly.fit(std::vector<size_t>({1,2,3,4,5,6,7,8,9,10}));
   std::cout << "Coefficients of the Gaussian RBFNPolynomial when fitting to specific indices:\n" 
             << gaussian_rbfn_extra_poly.get_coefficients() << std::endl;
 

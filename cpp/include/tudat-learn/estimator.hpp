@@ -60,7 +60,7 @@ class Estimator {
      * 
      * @param fit_indices Vector with the indices to which the Estimator is going to be fitted.
      */
-    virtual void fit(const std::vector<int> &fit_indices) = 0;
+    virtual void fit(const std::vector<size_t> &fit_indices) = 0;
 
     /**
      * @brief Pure virtual method to evaluate an input of type Datum_t, producing an output of type Label_t.

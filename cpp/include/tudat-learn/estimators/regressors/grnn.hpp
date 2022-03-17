@@ -92,7 +92,7 @@ class GRNN : public Regressor<Datum_t, Label_t> {
      * 
      * @param fit_indices Vector with the indices of the feature vectors to which the GRNN is going to be fitted.
      */
-    virtual void fit(const std::vector<int> &fit_indices) override;
+    virtual void fit(const std::vector<size_t> &fit_indices) override;
 
     /**
      * @brief Override of the Regressor's eval() virtual member function. \n

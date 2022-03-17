@@ -20,10 +20,10 @@ namespace tudat_learn
 
 template <typename Datum_t, typename Label_t>
 template <typename Datum_tt>
-typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, std::vector<int> >::type
+typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, std::vector<size_t> >::type
 Dataset<Datum_t, Label_t>::get_closest_data(Datum_tt vector_of_interest, int amount) { 
 
-  std::vector<int> all_indices(data.size());
+  std::vector<size_t> all_indices(data.size());
   std::iota(all_indices.begin(), all_indices.end(), 0); // fills each element with the respective index: v[i] = i
   if(amount == -1 || static_cast<std::size_t>(amount) >= data.size())
     return all_indices;
@@ -41,17 +41,17 @@ Dataset<Datum_t, Label_t>::get_closest_data(Datum_tt vector_of_interest, int amo
                     [&] (int i, int j) { return radii[i] < radii[j]; } 
   );
 
-  std::vector<int> return_indices(all_indices.begin(), all_indices.begin() + amount);
+  std::vector<size_t> return_indices(all_indices.begin(), all_indices.begin() + amount);
 
   return return_indices;  
 }
 
 template <typename Datum_t>
 template <typename Datum_tt>
-typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, std::vector<int> >::type
+typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, std::vector<size_t> >::type
 Dataset<Datum_t>::get_closest_data(Datum_tt vector_of_interest, int amount) { 
 
-  std::vector<int> all_indices(data.size());
+  std::vector<size_t> all_indices(data.size());
   std::iota(all_indices.begin(), all_indices.end(), 0); // fills each element with the respective index: v[i] = i
   if(amount == -1 || amount >= data.size())
     return all_indices;
@@ -69,7 +69,7 @@ Dataset<Datum_t>::get_closest_data(Datum_tt vector_of_interest, int amount) {
                     [&] (int i, int j) { return radii[i] < radii[j]; } 
   );
 
-  std::vector<int> return_indices(all_indices.begin(), all_indices.begin() + amount);
+  std::vector<size_t> return_indices(all_indices.begin(), all_indices.begin() + amount);
 
   return return_indices;  
 }

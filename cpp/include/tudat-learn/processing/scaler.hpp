@@ -65,7 +65,7 @@ class Scaler : public Processing<Datum_t, Label_t>, public Operator<Datum_t>{
      * @param dataset Constant reference to the Dataset object.
      * @param fit_indices Vector with the indices of the feature vectors to which the Scaler is going to be fitted.
      */
-    virtual void fit(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &fit_indices) = 0;
+    virtual void fit(const Dataset<Datum_t, Label_t> &dataset, const std::vector<size_t> &fit_indices) = 0;
 
     /**
      * @brief Pure virtual method that scales the dataset according to the information obtained with the fit method.
@@ -83,7 +83,7 @@ class Scaler : public Processing<Datum_t, Label_t>, public Operator<Datum_t>{
      * @param fit_indices Vector with the indices of the feature vectors that are going to be scaled.
      * @return Dataset<Datum_t, Label_t> New dataset with the chosen feature vectors scaled.
      */
-    virtual Dataset<Datum_t, Label_t> transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &fit_indices) const = 0;
+    virtual Dataset<Datum_t, Label_t> transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<size_t> &fit_indices) const = 0;
 
     /**
      * @brief Scales a datum according to the information obtained with the fit method, outputting the scaled datum.

@@ -96,7 +96,7 @@ class RBFN : public Regressor<Datum_t, Label_t> {
      * 
      * @param fit_indices 
      */
-    virtual void fit(const std::vector<int> &fit_indices) override;
+    virtual void fit(const std::vector<size_t> &fit_indices) override;
 
     /**
      * @brief Override of the Regressor's eval() virtual member function. \n
@@ -222,7 +222,7 @@ class RBFNPolynomial : public RBFN<Datum_t, Label_t> {
      * 
      * @param fit_indices Vector with the indices of the feature vectors to which the RBFNPolynomial is going to be fitted.
      */
-    virtual void fit(const std::vector<int> &fit_indices) override;
+    virtual void fit(const std::vector<size_t> &fit_indices) override;
 
     /**
      * @brief Override of the Regressor's eval() virtual member function. \n

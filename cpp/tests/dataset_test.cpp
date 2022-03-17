@@ -44,8 +44,8 @@ int test_get_closest_data( ) {
 
   {
     auto vector_of_interest = (Eigen::VectorXf(2) << 0.0f, 0.0f).finished();
-    std::vector<int> expected({0, 1, 2, 3, 4, 5, 6, 7});
-    std::vector<int> predicted = dataset.get_closest_data(vector_of_interest);
+    std::vector<size_t> expected({0, 1, 2, 3, 4, 5, 6, 7});
+    std::vector<size_t> predicted = dataset.get_closest_data(vector_of_interest);
 
     std::cout << "Vector of interest:\n" << vector_of_interest << std::endl;
 
@@ -64,8 +64,8 @@ int test_get_closest_data( ) {
 
     {
       auto vector_of_interest = (Eigen::VectorXf(2) << 0.0f, 0.0f).finished();
-      std::vector<int> expected({0, 1, 2, 3, 4, 5, 6, 7});
-      std::vector<int> predicted = dataset.get_closest_data(vector_of_interest, -1);
+      std::vector<size_t> expected({0, 1, 2, 3, 4, 5, 6, 7});
+      std::vector<size_t> predicted = dataset.get_closest_data(vector_of_interest, -1);
 
       std::cout << "Vector of interest:\n" << vector_of_interest << std::endl;
 
@@ -85,8 +85,8 @@ int test_get_closest_data( ) {
 
     {
       auto vector_of_interest = (Eigen::VectorXf(2) << 0.0f, 0.0f).finished();
-      std::vector<int> expected({0, 1, 2, 4, 3, 6});
-      std::vector<int> predicted = dataset.get_closest_data(vector_of_interest, 6);
+      std::vector<size_t> expected({0, 1, 2, 4, 3, 6});
+      std::vector<size_t> predicted = dataset.get_closest_data(vector_of_interest, 6);
 
       std::cout << "Vector of interest:\n" << vector_of_interest << std::endl;
 
@@ -106,9 +106,9 @@ int test_get_closest_data( ) {
 
     {
       auto vector_of_interest = (Eigen::VectorXf(2) << -4.0f, 4.0f).finished();
-      std::vector<int> expected({3, 2, 4, 1, 0, 5, 6});
-      std::vector<int> expected_other({3, 4, 2, 1, 0, 5, 6});
-      std::vector<int> predicted = dataset.get_closest_data(vector_of_interest, 7);
+      std::vector<size_t> expected({3, 2, 4, 1, 0, 5, 6});
+      std::vector<size_t> expected_other({3, 4, 2, 1, 0, 5, 6});
+      std::vector<size_t> predicted = dataset.get_closest_data(vector_of_interest, 7);
 
       std::cout << "Vector of interest:\n" << vector_of_interest << std::endl;
 

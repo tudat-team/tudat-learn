@@ -92,7 +92,7 @@ class MinMaxScaler : Scaler<Datum_t, Label_t> {
      * @param dataset Constant reference to the Dataset object.
      * @param fit_indices Constant reference to the vector with the indices to which the MinMaxScaler is going to be fitted.
      */
-    virtual void fit(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &fit_indices) override;
+    virtual void fit(const Dataset<Datum_t, Label_t> &dataset, const std::vector<size_t> &fit_indices) override;
 
     /**
      * @brief Scales the dataset the dataset according to the information obtained with the fit method.
@@ -112,7 +112,7 @@ class MinMaxScaler : Scaler<Datum_t, Label_t> {
      * @param fit_indices Vector with the indices of the feature vectors that are going to be scaled.
      * @return Dataset<Datum_t, Label_t> New dataset with the chosen feature vectors scaled.
      */
-    virtual Dataset<Datum_t, Label_t> transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<int> &transform_indices) const override;
+    virtual Dataset<Datum_t, Label_t> transform(const Dataset<Datum_t, Label_t> &dataset, const std::vector<size_t> &transform_indices) const override;
 
     /**
      * @brief Scales a datum according to the information obtained with the fit method, outputting the scaled datum.

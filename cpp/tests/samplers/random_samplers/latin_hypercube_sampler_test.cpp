@@ -180,7 +180,7 @@ int main() {
 
   // generating data for plots.
   std::cout << "\nGenerating Plot Data:" << std::endl;
-  std::vector<int> number_samples_vector({3,5,10});
+  std::vector<size_t> number_samples_vector({3,5,10});
   for(const auto &n : number_samples_vector) {
     for(int j = 0; j < 3; ++j) {
       samples_static_eigen_vector = lhs_static_eigen_vector.sample(

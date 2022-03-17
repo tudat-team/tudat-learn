@@ -266,7 +266,7 @@ int main() {
 
   auto dataset_ptr_specific_indices = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, int> >(tudat_learn::Dataset(data_specific_indices, labels_specific_indices));
 
-  scaler_eigen.fit(*dataset_ptr_specific_indices, std::vector<int>({1,2,3,4,5,6,7,8,9,10}));
+  scaler_eigen.fit(*dataset_ptr_specific_indices, std::vector<size_t>({1,2,3,4,5,6,7,8,9,10}));
 
   std::cout << "Mean Specific Indices:\n" << scaler_eigen.get_mean().transpose() << std::endl;
   if( !expected_mean.isApprox(scaler_eigen.get_mean()) )
@@ -280,7 +280,7 @@ int main() {
   if( !expected_variance.isApprox(scaler_eigen.get_variance()) )
     return 1;
 
-  auto scaled_dataset_specific_indices(scaler_eigen.transform(*dataset_ptr_specific_indices, std::vector<int>({1,2,3,4,5,6,7,8,9,10})));
+  auto scaled_dataset_specific_indices(scaler_eigen.transform(*dataset_ptr_specific_indices, std::vector<size_t>({1,2,3,4,5,6,7,8,9,10})));
   std::cout << "Scaled Dataset Specific Indices:" << std::endl;
   for(std::size_t i = 0; i < scaled_dataset_specific_indices.size(); ++i) {
     std::cout << scaled_dataset_specific_indices.data_at(i).transpose() << std::endl;

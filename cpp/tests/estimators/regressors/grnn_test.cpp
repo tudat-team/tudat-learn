@@ -128,7 +128,7 @@ int main() {
     if( !grnn_fixed.eval(inputs[i]).isApprox(outputs_fixed.row(i).transpose()) )
       return 1;
 
-  // Testing fit(const std::vector<int> &fit_indices)
+  // Testing fit(const std::vector<size_t> &fit_indices)
   std::vector< Eigen::VectorXf > data_extra({
     (Eigen::VectorXf(7) << 1, 1, 2, 0, 0, 0, 0).finished(),
     (Eigen::VectorXf(7) << 0.548814, 0.715189, 0.602763, 0.544883, 0.423655, 0.645894, 0.437587).finished(),
@@ -162,7 +162,7 @@ int main() {
   auto dataset_extra_ptr = std::make_shared< tudat_learn::Dataset<Eigen::VectorXf, Eigen::VectorXf> >(tudat_learn::Dataset(data_extra, labels_extra));
 
   tudat_learn::GRNN<Eigen::VectorXf, Eigen::VectorXf> grnn_extra(dataset_extra_ptr, gaussian_rbf_ptr);
-  grnn_extra.fit(std::vector<int>({1,2,3,4,5,6,7,8,9,10}));
+  grnn_extra.fit(std::vector<size_t>({1,2,3,4,5,6,7,8,9,10}));
 
   Eigen::MatrixXf outputs_extra(3,2);
   outputs_extra = grnn_extra.eval(inputs);

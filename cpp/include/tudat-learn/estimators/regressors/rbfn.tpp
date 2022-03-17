@@ -66,7 +66,7 @@ void RBFN<Datum_t, Label_t>::fit( ) {
 }
 
 template <typename Datum_t, typename Label_t>
-void RBFN<Datum_t, Label_t>::fit(const std::vector<int> &fit_indices) {
+void RBFN<Datum_t, Label_t>::fit(const std::vector<size_t> &fit_indices) {
     using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 
     if(this->dataset_ptr->size() == 0) throw std::runtime_error("Dataset provided for fitting RBFNPolynomial is empty. Please add some entries to the dataset.");
@@ -253,7 +253,7 @@ void RBFNPolynomial<Datum_t, Label_t>::fit( ) {
 }
 
 template <typename Datum_t, typename Label_t>
-void RBFNPolynomial<Datum_t, Label_t>::fit(const std::vector<int> &fit_indices) {
+void RBFNPolynomial<Datum_t, Label_t>::fit(const std::vector<size_t> &fit_indices) {
     using MatrixX = Eigen::Matrix<typename Datum_t::Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 
     if(this->dataset_ptr->size() == 0) throw std::runtime_error("Dataset provided for fitting RBFNPolynomial is empty. Please add some entries to the dataset.");

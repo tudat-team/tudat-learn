@@ -10,17 +10,17 @@ namespace tudat_learn
 
 template <typename Datum_t>
 std::vector<Datum_t> LatinHypercubeSampler<Datum_t>::sample( ) const {
-  std::vector<int> single_indices_vector(buckets_per_dimension);
+  std::vector<size_t> single_indices_vector(buckets_per_dimension);
   std::iota(single_indices_vector.begin(), single_indices_vector.end(), 0);
 
   int dimensions = this->get_dimensions(this->range.first);
 
   // contains vectors with buckets_per_dimension elements which are vectors themselves
   // each of those vectors is filled in with 0, ..., buckets_per_dimension - 1
-  // std::vector< std::vector<int> > ordered_indices(dimensions, single_indices_vector);
+  // std::vector< std::vector<size_t> > ordered_indices(dimensions, single_indices_vector);
 
   // // contains the vectors with the bucket indices in order for each sample
-  // std::vector< std::vector<int> > sampled_indices(dimensions, std::vector<int>(buckets_per_dimension));
+  // std::vector< std::vector<size_t> > sampled_indices(dimensions, std::vector<size_t>(buckets_per_dimension));
 
   // for(int b = 0; b < buckets_per_dimension; ++b) {
   //   for(int d = 0; d < dimensions; ++d) {
@@ -35,7 +35,7 @@ std::vector<Datum_t> LatinHypercubeSampler<Datum_t>::sample( ) const {
   //   }
   // }
 
-  std::vector< std::vector<int> > sampled_indices(dimensions, single_indices_vector);
+  std::vector< std::vector<size_t> > sampled_indices(dimensions, single_indices_vector);
   for(int d = 0; d < dimensions; ++d)
     std::shuffle(sampled_indices.at(d).begin(), sampled_indices.at(d).end(), Random::get_rng());
 
@@ -87,14 +87,14 @@ std::vector<Datum_t> LatinHypercubeSampler<Datum_t>::sample(const int number_sam
 
 template <typename Datum_t> template <typename Datum_tt>
 typename std::enable_if< std::is_arithmetic<Datum_tt>::value,
-std::vector<Datum_tt> >::type LatinHypercubeSampler<Datum_t>::generate_buckets(const std::vector<std::vector<int>> &sampled_indices) const {
+std::vector<Datum_tt> >::type LatinHypercubeSampler<Datum_t>::generate_buckets(const std::vector<std::vector<size_t>> &sampled_indices) const {
   return std::vector<Datum_tt>(sampled_indices.at(0).begin(), sampled_indices.at(0).end());
 }
 
 
 template <typename Datum_t> template <typename Datum_tt>
 typename std::enable_if<           is_eigen<Datum_tt>::value,
-std::vector<Datum_tt> >::type LatinHypercubeSampler<Datum_t>::generate_buckets(const std::vector<std::vector<int>> &sampled_indices) const {
+std::vector<Datum_tt> >::type LatinHypercubeSampler<Datum_t>::generate_buckets(const std::vector<std::vector<size_t>> &sampled_indices) const {
   std::vector<Datum_tt> buckets;
   buckets.reserve(buckets_per_dimension);
 
@@ -110,7 +110,7 @@ std::vector<Datum_tt> >::type LatinHypercubeSampler<Datum_t>::generate_buckets(c
 
 template <typename Datum_t> template <typename Datum_tt>
 typename std::enable_if< is_stl_vector<Datum_tt>::value && std::is_arithmetic<typename Datum_tt::value_type>::value,
-std::vector<Datum_tt> >::type LatinHypercubeSampler<Datum_t>::generate_buckets(const std::vector<std::vector<int>> &sampled_indices) const {
+std::vector<Datum_tt> >::type LatinHypercubeSampler<Datum_t>::generate_buckets(const std::vector<std::vector<size_t>> &sampled_indices) const {
   std::vector<Datum_tt> buckets;
   buckets.reserve(buckets_per_dimension);
 

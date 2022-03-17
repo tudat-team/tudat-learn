@@ -35,7 +35,7 @@ namespace tudat_learn
 
 //   private:
 //     std::string       m_line;
-//     std::vector<int>  m_data;
+//     std::vector<size_t>  m_data;
 // };
 
 // std::istream& operator>>(std::istream& str, CSVRow& data)

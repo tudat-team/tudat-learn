@@ -61,7 +61,7 @@ class Clustering : public Estimator<Datum_t, Label_t> {
      * 
      * @param fit_indices Vector with the indices of the feature vectors to which the Clustering is going to be fitted.
      */
-    virtual void fit(const std::vector<int> &fit_indices) = 0;
+    virtual void fit(const std::vector<size_t> &fit_indices) = 0;
 
 };
   

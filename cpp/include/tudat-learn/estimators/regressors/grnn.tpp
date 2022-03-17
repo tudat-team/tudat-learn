@@ -33,7 +33,7 @@ void GRNN<Datum_t, Label_t>::fit( ) {
 }
 
 template <typename Datum_t, typename Label_t>
-void GRNN<Datum_t, Label_t>::fit(const std::vector<int> &fit_indices) {
+void GRNN<Datum_t, Label_t>::fit(const std::vector<size_t> &fit_indices) {
   if(this->dataset_ptr->size() == 0) throw std::runtime_error("Dataset provided for fitting GRNN is empty. Please add some entries to the dataset.");
   if(fit_indices.size() == 0) throw std::runtime_error("fit_indices vector provided for fitting RBFN is empty. Please provide a non-empty vector.");
 

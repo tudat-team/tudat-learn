@@ -193,11 +193,11 @@ class Dataset {
      * @param amount Desired amount of instances in the dataset. Defaults to data.size() if no amount is given or if
      * it is larger than the amount of instances in the vector
      * @return std::enable_if< std::is_floating_point<F>::value && is_floating_point_eigen_vector<Datum_tt>::value,
-     * std::vector<int> >::type 
+     * std::vector<size_t> >::type 
      */
     template <typename Datum_tt = Datum_t>
     typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, 
-    std::vector<int> >::type get_closest_data(Datum_tt vector_of_interest, int amount=-1);
+    std::vector<size_t> >::type get_closest_data(Datum_tt vector_of_interest, int amount=-1);
 
     template <typename Datum_tt, typename Response_tt>
     friend Dataset<Datum_tt, Response_tt> get_dataset_with_response(Dataset<Datum_tt> &dataset, std::vector<Response_tt> &response);
@@ -301,10 +301,10 @@ class Dataset<Datum_t, none_t> {
      * @param amount Desired amount of instances in the dataset. Defaults to data.size() if no amount is given or if
      * it is larger than the amount of instances in the vector
      * @return std::enable_if< std::is_floating_point<F>::value && is_floating_point_eigen_vector<Datum_tt>::value,
-     * std::vector<int> >::type 
+     * std::vector<size_t> >::type 
      */
     template <typename Datum_tt = Datum_t>
-    typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, std::vector<int> >::type
+    typename std::enable_if< is_floating_point_eigen_vector<Datum_tt>::value, std::vector<size_t> >::type
     get_closest_data(Datum_tt vector_of_interest, int amount=-1);
 
   private:
