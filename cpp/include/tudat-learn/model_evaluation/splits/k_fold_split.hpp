@@ -15,6 +15,7 @@
 #include <iterator>
 #include <memory>
 #include <numeric>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 

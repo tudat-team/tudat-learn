@@ -456,7 +456,7 @@ struct GaussianRBF : public RBF<T> {
   virtual std::vector<MatrixXt>  hessian_rbfn(const VectorXt &x, const MatrixXt &center_points) const override final;
 
 
-  private:
+  protected:
     const T sigma_sqrd; /**< Square of the sigma value provided as input. */
 };
   

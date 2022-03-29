@@ -20,6 +20,9 @@ namespace tudat_learn
 
 template <typename Datum_t, typename Label_t>
 std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> KFoldSplit<Datum_t, Label_t>::split( ) const {
+  if(this->dataset_ptr->size() < n_folds) 
+    throw std::runtime_error("Number of folds must be smaller than or equal to the size of the dataset to perform KFoldSplit.");
+
   // creates a vector of indices from 0 to dataset.size - 1
   std::vector<size_t> indices(this->dataset_ptr->size());
 

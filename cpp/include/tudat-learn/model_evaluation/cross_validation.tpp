@@ -21,7 +21,7 @@ namespace tudat_learn
 template <typename Datum_t, typename Label_t>
 std::vector< std::vector<double> > CrossValidation<Datum_t, Label_t>::cross_validate( ) const {
   std::vector< std::pair< std::vector<size_t>, std::vector<size_t> > > splits(this->split_ptr->split());
-  
+
   std::vector< std::vector<double> > result;
   result.reserve(splits.size());
 

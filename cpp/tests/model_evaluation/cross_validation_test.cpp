@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <iomanip>
 #include <type_traits>
 #include <cmath>
 
@@ -21,36 +22,13 @@
 #include <tudat-learn/model_evaluation/splits/k_fold_split.hpp>
 #include <tudat-learn/types.hpp>
 
-
-// template <typename Datum_t, typename Label_t, 
-//   typename std::enable_if_t<tudat_learn::is_floating_point_eigen_vector<Label_t>::value>
-// > double mean_absolute_percentage_error(
-//   const std::shared_ptr<tudat_learn::Dataset<Datum_t, Label_t> > &dataset_ptr,
-//   const std::shared_ptr<tudat_learn::Estimator<Datum_t, Label_t> > &estimator_ptr, 
-//   const std::vector<size_t> &eval_indices
-// ) {
-
-//   Label_t vector_mape = Label_t::Zero(dataset_ptr.data_at(eval_indices.at(0)).rows());
-
-//   for(size_t i = 0u; i < eval_indices.size(); ++i) 
-//     vector_mape += ((dataset_ptr->labels_at(eval_indices.at(i)).array() - estimator_ptr->eval(dataset_ptr->data_at(eval_indices.at(i)).array)) / dataset_ptr->labels_at(eval_indices.at(i)).array()).array().abs();
-    
-
-//   vector_mape /= eval_indices.size();
-
-//   // average of the error across all labels is returned
-//   double mape = vector_mape.mean();
-
-//   return mape;
-// }
-
 double mean_absolute_percentage_error(
   const std::shared_ptr<tudat_learn::Dataset<Eigen::VectorXd, Eigen::VectorXd> > &dataset_ptr,
   const std::shared_ptr<tudat_learn::Estimator<Eigen::VectorXd, Eigen::VectorXd> > &estimator_ptr, 
   const std::vector<size_t> &eval_indices
 ) {
 
-  Eigen::VectorXd vector_mape = Eigen::VectorXd::Zero(dataset_ptr->data_at(eval_indices.at(0)).rows());
+  Eigen::VectorXd vector_mape = Eigen::VectorXd::Zero(dataset_ptr->labels_at(eval_indices.at(0)).rows());
 
   for(size_t i = 0u; i < eval_indices.size(); ++i) {
     vector_mape += (
@@ -70,7 +48,34 @@ double mean_absolute_percentage_error(
   return mape;
 }
 
+double mean_absolute_error(
+  const std::shared_ptr<tudat_learn::Dataset<Eigen::VectorXd, Eigen::VectorXd> > &dataset_ptr,
+  const std::shared_ptr<tudat_learn::Estimator<Eigen::VectorXd, Eigen::VectorXd> > &estimator_ptr, 
+  const std::vector<size_t> &eval_indices
+) {
+
+  Eigen::VectorXd vector_mape = Eigen::VectorXd::Zero(dataset_ptr->labels_at(eval_indices.at(0)).rows());
+
+  for(size_t i = 0u; i < eval_indices.size(); ++i) {
+    vector_mape += (
+      dataset_ptr->labels_at(eval_indices.at(i)).array() - 
+      estimator_ptr->eval(dataset_ptr->data_at(eval_indices.at(i))).array()
+    ).array().abs().matrix();
+  }
+    
+
+  vector_mape /= eval_indices.size();
+
+  // average of the error across all labels is returned
+  double mape = vector_mape.mean();
+
+  return mape;
+}
+
+
+
 int main( ) {
+  std::cout << std::setprecision(16) << std::scientific;
 
   std::vector< Eigen::VectorXd > center_points({
     (Eigen::VectorXd(7) << 0.548814, 0.715189, 0.602763, 0.544883, 0.423655, 0.645894, 0.437587).finished(),
@@ -112,6 +117,7 @@ int main( ) {
   )> > metrics;
 
   metrics.push_back(&mean_absolute_percentage_error);
+  metrics.push_back(&mean_absolute_error);
 
   tudat_learn::CrossValidation<Eigen::VectorXd, Eigen::VectorXd> cv(
     dataset_ptr,
@@ -120,7 +126,36 @@ int main( ) {
     metrics
   );
 
-  // cv.cross_validate( );
+  auto cv_results = cv.cross_validate( );
+
+  std::vector< std::vector<double> > expected_metrics({
+    {0.9895423419658365, 0.6275994365799691 },
+    {0.90560138399332  , 0.23581549667841417},
+    {0.9898841239023177, 0.46060181635609654},
+  });
+
+  if(cv_results.size() != expected_metrics.size())
+    return 1;
+
+  for(size_t i = 0; i < cv_results.size(); i++) {
+    if(cv_results[i].size() != expected_metrics[i].size())
+      return 1;
+
+    for(size_t j = 0; j < cv_results[i].size(); ++j)
+      if(std::abs(cv_results[i][j] - expected_metrics[i][j]) > 1e12)
+        return 1;
+  }
+
+  std::cout << "Performance metrics for each of the folds:" << std::endl;
+  for(const auto &fold_result : cv_results) {
+    for(const auto &metric: fold_result)
+      std::cout << metric << ", ";
+
+    std::cout << "\n";
+  }
+
+  
+  
 
   return 0;
 }
