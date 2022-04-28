@@ -23,6 +23,11 @@ To build documentation, set the `BUILD_DOC` flag as `ON` when running `cmake`:
 cmake -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" -DCMAKE_INSTALL_PREFIX=../_install -DBUILD_DOC=ON ..
 ```
 
+To run the unit tests, while in the `_build` directory, run:
+```bash
+ctest
+```
+
 # Example project:
 
 Hierarchy of a very simple project, in which `main.cpp` uses `tudat-learn`:
