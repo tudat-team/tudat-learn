@@ -53,7 +53,7 @@ class Split {
     virtual ~Split( ) { }
 
     /**
-     * @brief Pure virtual method that makes test/validation splits using the dataset indices.
+     * @brief Pure virtual method that makes test/validation splits using the whole dataset.
      * 
      * @return std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> Vector of pairs of vectors of indices. There are
      * k pairs, where k is the number of times the dataset is split. The first vector in the pair contains the indices of the data
@@ -75,18 +75,6 @@ class Split {
     //  * data to be used in validation: 1st vector in the pair - training data; 2nd vector in the pair - validation data.
     //  */
     // virtual std::vector<std::pair< std::vector<size_t>, std::vector<size_t> >> split(const std::vector<size_t> &valid_indices ) const = 0;
-
-    // /**
-    //  * @brief Pure virtual method that makes splits on the whole dataset. Takes the size of the dataset as an input.
-    //  * 
-    //  * 
-    //  * @param dataset_size Size of the dataset.
-    //  * @return std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> Vector of pairs of vectors of indices. There are
-    //  * k pairs, where k is the number of times the dataset is split. The first vector in the pair contains the indices of the data
-    //  * within the dataset with which the estimator will be trained with, while the second vector contains indices pertaining to the
-    //  * data to be used in validation: 1st vector in the pair - training data; 2nd vector in the pair - validation data.
-    //  */
-    // virtual std::vector<std::pair<std::vector<size_t>, std::vector<size_t>>> split(const size_t dataset_size ) const = 0;
 
   protected:
     std::shared_ptr< Dataset<Datum_t, Label_t> > dataset_ptr;
