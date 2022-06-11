@@ -29,7 +29,7 @@ namespace tudat_learn
  * @tparam Datum_t The type of a single feature vector. Can be a simple scalar, an std::vector<T>, an Eigen::Matrix, ...
  * @tparam Label_t The type of a single label. Like the Datum_t, can be a simple scalar, an std::vector<T>, an Eigen::Matrix, ...
  */
-template <typename Datum_t, typename Label_t>
+template <typename Datum_t, typename Label_t = none_t>
 class Split {
   protected:
     /**
